@@ -62,3 +62,5 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+gameplay_api/python-flask-server/.swagger-codegen-ignore
+gameplay_api/python-flask-server/.swagger-codegen/
