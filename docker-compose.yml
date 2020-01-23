@@ -1,0 +1,36 @@
+version: "3"
+volumes:
+  db-data:
+services:
+  db:
+    image: mongo
+    environment:
+      # provide your credentials here
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=rootPass
+    volumes:
+      - db-data:/data/db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  gameplay:
+    image: youngres/youngres_gameplay_api
+    ports:
+      - "8887:8080"
+    expose:
+      - "8887"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  consuption:
+    image: youngres/youngres_comsuption_api
+    ports:
+      - "8886:8080"
+    expose:
+      - "8886"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
