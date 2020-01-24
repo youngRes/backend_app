@@ -195,10 +195,12 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.default_controller
 components:
   schemas:
-    Field:
-      type: object
+    Entry:
+      description: Object used as a entry of a general dictionary
       properties:
-        field:
+        key:
+          type: string
+        value:
           type: string
     Decision:
       type: object
@@ -206,7 +208,7 @@ components:
         decision:
           type: array
           items:
-            $ref: '#/components/schemas/Field'
+            $ref: '#/components/schemas/Entry'
     inline_response_200:
       type: object
       properties:

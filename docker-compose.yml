@@ -4,10 +4,6 @@ volumes:
 services:
   db:
     image: mongo
-    environment:
-      # provide your credentials here
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=rootPass
     volumes:
       - db-data:/data/db
     deploy:

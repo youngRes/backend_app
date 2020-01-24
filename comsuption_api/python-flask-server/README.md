@@ -21,13 +21,13 @@ python3 -m swagger_server
 and open your browser to here:
 
 ```
-http://localhost:8080/gameplay/ui/
+http://localhost:8080/data_comsuption_api/ui/
 ```
 
 Your Swagger definition lives here:
 
 ```
-http://localhost:8080/gameplay/swagger.json
+http://localhost:8080/data_comsuption_api/swagger.json
 ```
 
 To launch the integration tests, use tox:
@@ -41,13 +41,13 @@ tox
 
 ```bash
 # build the image
-docker build -t "youngres_gameplay_api:$(git rev-parse --short HEAD)" .
+docker build -t "youngres_consumption_api:$(git rev-parse --short HEAD)" .
 # tag the image with the path in dockerHub
-docker tag <image-id> "youngres/youngres_gameplay_api:$(git rev-parse --short HEAD)"
+docker tag <image-id> "youngres/youngres_consumption_api:$(git rev-parse --short HEAD)"
 # login into the youngres account
 docker login
 # upload the image to dockerHub
-docker push "youngres/youngres_gameplay_api:$(git rev-parse --short HEAD)"
+docker push "youngres/youngres_consumption_api:$(git rev-parse --short HEAD)"
 ```
 
 ## Running with Docker
@@ -56,5 +56,5 @@ To run the server on a Docker container, please execute the following from the r
 
 ```bash
 # starting up a container
-docker run -p 8080:8080 youngres/youngres_gameplay_api:<version from dockerhub>
+docker run -p 8080:8080 youngres/youngres_consumptiony_api:<version from dockerhub>
 ```
