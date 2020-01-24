@@ -13,19 +13,19 @@ services:
   gameplay:
     image: youngres/youngres_gameplay_api
     ports:
-      - "8887:8080"
+      - "8882:8080"
     expose:
-      - "8887"
+      - "8882"
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
   consuption:
-    image: youngres/youngres_comsuption_api
+    image: youngres/youngres_consumption_api
     ports:
-      - "8886:8080"
+      - "8883:8080"
     expose:
-      - "8886"
+      - "8883"
     deploy:
       replicas: 1
       restart_policy:
