@@ -61,19 +61,19 @@ docker run -p 8080:8080 youngres/youngres_consumptiony_api:<version from dockerh
 
 ## Project structure
 
-├── Dockerfile -> describes the youngres/youngres_gameplay_api image
-├── requirements.txt -> requirements of the application
-├── setup.py
-└── **swagger_server** -> contains the code used in the backend application
-    ├── **controllers** -> contains the functionality of the api endpoints
-    │   ├── authorization_controller.py -> contains functionality to check basic auth login
-    │   └── default_controller.py -> contains a function per each endpoint of the API
-    ├── encoder.py
-    ├── \__main\__.py -> file where the application is being initialized and where all external connections should be created
-    ├── **models** -> contains the data structures defined in the OpenAPI document on the components section.
-    ├── **mongo_connection** -> pakage with the connection to the mongo db database
-    │   ├── mongo_connector.py -> Static class that stores the object that opens connections to the database. Must be initialized at the start of the program.
-    │   └── mongo_queries.py -> file where all queries to the database are stored.
-    ├── **swagger**
-    │   └── swagger.yaml -> Open API definition of the gameplay api.
-    └── util.py -> file where miscellaneous functions are stored
+├── Dockerfile -> describes the youngres/youngres_gameplay_api image <br>
+├── requirements.txt -> requirements of the application <br>
+├── setup.py <br>
+└── **swagger_server** -> contains the code used in the backend application <br>
+    ├── **controllers** -> contains the functionality of the api endpoints <br>
+    │   ├── authorization_controller.py -> contains functionality to check basic auth login <br>
+    │   └── default_controller.py -> contains a function per each endpoint of the API <br>
+    ├── encoder.py <br>
+    ├── \__main\__.py -> file where the application is being initialized and where all external connections should be created <br>
+    ├── **models** -> contains the data structures defined in the OpenAPI document on the components section. <br>
+    ├── **mongo_connection** -> pakage with the connection to the mongo db database <br>
+    │   ├── mongo_connector.py -> Static class that stores the object that opens connections to the database. Must be initialized at the start of the program. <br>
+    │   └── mongo_queries.py -> file where all queries to the database are stored. <br>
+    ├── **swagger** <br>
+    │   └── swagger.yaml -> Open API definition of the gameplay api. <br>
+    └── util.py -> file where miscellaneous functions are stored <br>
