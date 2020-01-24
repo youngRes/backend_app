@@ -7,10 +7,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0
+- url: http://localhost/data
   description: SwaggerHub API Auto Mocking
-- url: http://localhost/comsuption
-  description: docker based server
 security:
 - basicAuth: []
 paths:
@@ -786,4 +784,3 @@ components:
       type: http
       scheme: basic
       x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
-
