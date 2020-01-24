@@ -64,4 +64,4 @@ target/
 .ipynb_checkpoints
 gameplay_api/python-flask-server/.swagger-codegen-ignore
 gameplay_api/python-flask-server/.swagger-codegen/
-comsuption_api/python-flask-server/.swagger-codegen/
+consumption_api/python-flask-server/.swagger-codegen/
