@@ -11,7 +11,7 @@ services:
       restart_policy:
         condition: on-failure
   gameplay:
-    image: youngres/youngres_gameplay_api
+    image: youngres/youngres_gameplay_api:4a04d0e
     ports:
       - "8882:8080"
     expose:
