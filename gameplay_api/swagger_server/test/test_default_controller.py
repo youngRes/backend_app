@@ -68,11 +68,12 @@ class TestDefaultController(BaseTestCase):
         Store/Update a new user decision related to the event eventCode with the variables data  into the database.
         """
         query_string = [('student_code', 'student_code_example'),
-                        ('event_code', 'event_code_example'),
-                        ('decision', Decision())]
+                        ('event_code', 'event_code_example')]
+        headers = [('decision', Decision())]
         response = self.client.open(
             '/ponxosio/YoungResGamePlay/1.0.0/storeDecision/',
             method='POST',
+            headers=headers,
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

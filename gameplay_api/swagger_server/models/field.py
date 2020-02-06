@@ -14,20 +14,25 @@ class Field(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, field: str=None):  # noqa: E501
+    def __init__(self, key: str=None, value: str=None):  # noqa: E501
         """Field - a model defined in Swagger
 
-        :param field: The field of this Field.  # noqa: E501
-        :type field: str
+        :param key: The key of this Field.  # noqa: E501
+        :type key: str
+        :param value: The value of this Field.  # noqa: E501
+        :type value: str
         """
         self.swagger_types = {
-            'field': str
+            'key': str,
+            'value': str
         }
 
         self.attribute_map = {
-            'field': 'field'
+            'key': 'key',
+            'value': 'value'
         }
-        self._field = field
+        self._key = key
+        self._value = value
 
     @classmethod
     def from_dict(cls, dikt) -> 'Field':
@@ -41,22 +46,43 @@ class Field(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def field(self) -> str:
-        """Gets the field of this Field.
+    def key(self) -> str:
+        """Gets the key of this Field.
 
 
-        :return: The field of this Field.
+        :return: The key of this Field.
         :rtype: str
         """
-        return self._field
+        return self._key
 
-    @field.setter
-    def field(self, field: str):
-        """Sets the field of this Field.
+    @key.setter
+    def key(self, key: str):
+        """Sets the key of this Field.
 
 
-        :param field: The field of this Field.
-        :type field: str
+        :param key: The key of this Field.
+        :type key: str
         """
 
-        self._field = field
+        self._key = key
+
+    @property
+    def value(self) -> str:
+        """Gets the value of this Field.
+
+
+        :return: The value of this Field.
+        :rtype: str
+        """
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
+        """Sets the value of this Field.
+
+
+        :param value: The value of this Field.
+        :type value: str
+        """
+
+        self._value = value

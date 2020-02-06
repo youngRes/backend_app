@@ -8,7 +8,7 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8882/gameplay
-  description: SwaggerHub API Auto Mocking
+  description: Gameplay api
 security:
 - basicAuth: []
 paths:
@@ -179,10 +179,10 @@ paths:
         schema:
           type: string
       - name: decision
-        in: query
+        in: header
         required: false
-        style: form
-        explode: true
+        style: simple
+        explode: false
         schema:
           $ref: '#/components/schemas/Decision'
       responses:
@@ -195,8 +195,8 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.default_controller
 components:
   schemas:
-    Entry:
-      description: Object used as a entry of a general dictionary
+    Field:
+      type: object
       properties:
         key:
           type: string
@@ -208,7 +208,7 @@ components:
         decision:
           type: array
           items:
-            $ref: '#/components/schemas/Entry'
+            $ref: '#/components/schemas/Field'
     inline_response_200:
       type: object
       properties:

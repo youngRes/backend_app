@@ -1,7 +1,6 @@
 import connexion
 import six
 
-import swagger_server.mongo_connection.mongo_queries as dbq
 from swagger_server.models.decision import Decision  # noqa: E501
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
@@ -74,11 +73,11 @@ def store_decision_post(student_code, event_code, decision=None):  # noqa: E501
     :type student_code: str
     :param event_code: code to identify an event
     :type event_code: str
-    :param decision:
+    :param decision: 
     :type decision: dict | bytes
 
     :rtype: None
     """
     if connexion.request.is_json:
-        decision = from_dict(connexion.request.get_json())  # noqa: E501
+        decision = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
