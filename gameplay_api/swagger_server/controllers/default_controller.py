@@ -73,11 +73,11 @@ def store_decision_post(student_code, event_code, decision=None):  # noqa: E501
     :type student_code: str
     :param event_code: code to identify an event
     :type event_code: str
-    :param decision: 
+    :param decision:
     :type decision: dict | bytes
 
     :rtype: None
     """
     if connexion.request.is_json:
-        decision = .from_dict(connexion.request.get_json())  # noqa: E501
+        decision = from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
