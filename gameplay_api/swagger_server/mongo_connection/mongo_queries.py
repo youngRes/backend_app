@@ -12,3 +12,40 @@ def check_connection():
     is working
     """
     return MongoDBConnection.driver.server_info()
+
+def get_start_scene(game_code, version, chapter_code):
+
+    gameChapters = MongoDBConnection.get_chapters_collection().find_one({'chapterCode':chapter_code,'game':{'gameCode':game_code,'version':version}})
+
+    try:
+        return str(gameChapters['startScene'])
+    except TypeError:
+        return ""
+
+def get_saved_state_scene(student_code, game_code, version, variable_name):
+
+    savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
+
+    return savedStateVariables['variables'][variable_name]
+
+def post_saved_state_scene(student_code, game_code, version, variable_name, value):
+
+
+    #docs = MongoDBConnection.get_saved_states_collection().find({'studentCode':str(student_code), 'gameCode':str(game_code), 'version':str(version)})
+    savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
+    savedStateVariables['variables'][variable_name] = value
+    MongoDBConnection.get_saved_states_collection().find_one_and_replace({'studentCode':student_code, 'gameCode':game_code, 'version':version}, savedStateVariables)
+    return True
+
+def post_decision(student_code, event_code, decision):
+
+    ids = MongoDBConnection.get_decisions_collection().find().distinct('decisionCode')
+    if len(ids) == 0:
+        decisionCode = 1
+    else:
+        decisionCode = max(ids) + 1
+    finalDecision = {}
+    for dec in decision._decision:
+        finalDecision[dec._key] = dec._value
+    MongoDBConnection.get_decisions_collection().insert_many([{'decisionCode':decisionCode,'eventCode':event_code, 'studentCode':student_code, 'fields':finalDecision}])
+    return True

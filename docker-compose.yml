@@ -6,12 +6,16 @@ services:
     image: mongo
     volumes:
       - db-data:/data/db
+    ports:
+      - "8884:27017"
+    expose:
+      - "8884"
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
   gameplay:
-    image: youngres/youngres_gameplay_api:4a04d0e
+    image: youngres_gameplay_api
     ports:
       - "8882:8080"
     expose:
