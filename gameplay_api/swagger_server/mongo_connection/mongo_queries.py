@@ -45,12 +45,16 @@ def post_saved_state_scene(student_code, game_code, version, variable_name, valu
 def post_decision(student_code, event_code, decision):
 
     ids = MongoDBConnection.get_decisions_collection().find().distinct('decisionCode')
-    if len(ids) == 0:
-        decisionCode = 1
-    else:
-        decisionCode = max(ids) + 1
+    
     finalDecision = {}
     for dec in decision._decision:
         finalDecision[dec._key] = dec._value
-    MongoDBConnection.get_decisions_collection().insert_many([{'decisionCode':decisionCode,'eventCode':event_code, 'studentCode':student_code, 'fields':finalDecision}])
+    
+    _existing = MongoDBConnection.get_decisions_collection().find_one({'eventCode':event_code, 'studentCode':student_code})
+    
+    if _existing is not None:
+        MongoDBConnection.get_decisions_collection().update_one({'eventCode':event_code, 'studentCode':student_code},{'$set': {'fields':finalDecision}})
+    else:
+        MongoDBConnection.get_decisions_collection().insert_one({'eventCode':event_code, 'studentCode':student_code,'fields':finalDecision})
+
     return True
