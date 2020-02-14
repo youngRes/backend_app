@@ -27,18 +27,18 @@ def main():
     {"studentCode" : "raquel", "groupCode" : "1", "sex" : "male", "age" : 14.0}])
 
     MongoDBConnection.get_chapters_collection().insert_many([
-    {"chapterCode" : "1", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 1: Introduccion", "startScene" : "1"},
-    {"chapterCode" : "2", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 2: Casa", "startScene" : "14"},
-    {"chapterCode" : "3", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 3", "startScene" : "29"},
-    {"chapterCode" : "4", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 4: Recreo", "startScene" : "41"},
-    {"chapterCode" : "5", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 5: Recuerdo", "startScene" : "49"},
-    {"chapterCode" : "6", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 6", "startScene" : "53"},
-    {"chapterCode" : "7", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 7: Exterior de la Casa de Ahmed", "startScene" : "67"},
-    {"chapterCode" : "8", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 8: Clase", "startScene" : "80"},
-    {"chapterCode" : "9", "game" : { "gameCode" : "1", "version" : "1"}, "chapterDescription" : "Capitulo 9: Interior de Casa", "startScene" : "87"}])
+    {"chapterCode" : "1", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 1: Introduccion", "startScene" : "1"},
+    {"chapterCode" : "2", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 10, "startY" : 2, "chapterDescription" : "Capitulo 2: Casa", "startScene" : "24"},
+    {"chapterCode" : "3", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 3", "startScene" : "29"},
+    {"chapterCode" : "4", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 4: Recreo", "startScene" : "41"},
+    {"chapterCode" : "5", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 5: Recuerdo", "startScene" : "49"},
+    {"chapterCode" : "6", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 6", "startScene" : "53"},
+    {"chapterCode" : "7", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 7: Exterior de la Casa de Ahmed", "startScene" : "67"},
+    {"chapterCode" : "8", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 8: Clase", "startScene" : "80"},
+    {"chapterCode" : "9", "game" : { "gameCode" : "1", "version" : "1"}, "startX" : 0, "startY" : 0, "chapterDescription" : "Capitulo 9: Interior de Casa", "startScene" : "87"}])
 
     MongoDBConnection.get_saved_states_collection().insert_many([
-    {"stateCode" : "1", "studentCode" : "1", "gameCode" : "1", "version" : "1", "variables" : {"variable1":"value1","variable2":"value2",'variable4':'value4'}},
+    {"stateCode" : "1", "studentCode" : "1", "gameCode" : "1", "version" : "1", "variables" : {"playerName":"Pepito","variable1":"value1","variable2":"value2",'variable4':'value4'}},
     {"stateCode" : "2", "studentCode" : "2", "gameCode" : "1", "version" : "1", "variables" : {"variable3":"value3","variable2":"value2"}},
     {"stateCode" : "3", "studentCode" : "3", "gameCode" : "1", "version" : "1", "variables" : {"variable1":"value1","variable2":"value2"}},
     {"stateCode" : "4", "studentCode" : "4", "gameCode" : "1", "version" : "1", "variables" : {"variable1":"value1","variable4":"value4"}}])

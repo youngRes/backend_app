@@ -18,7 +18,7 @@ def get_start_scene(game_code, version, chapter_code):
     gameChapters = MongoDBConnection.get_chapters_collection().find_one({'chapterCode':chapter_code,'game':{'gameCode':game_code,'version':version}})
 
     try:
-        return str(gameChapters['startScene'])
+        return {'startScene':gameChapters['startScene'], 'startX':gameChapters['startX'],'startY':gameChapters['startY']}
     except TypeError:
         return ""
 
@@ -26,7 +26,12 @@ def get_saved_state_scene(student_code, game_code, version, variable_name):
 
     savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
 
-    return savedStateVariables['variables'][variable_name]
+    try:
+        _return = savedStateVariables['variables'][variable_name]
+    except:
+        _return = ""
+
+    return _return
 
 def post_saved_state_scene(student_code, game_code, version, variable_name, value):
 

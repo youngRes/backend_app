@@ -48,11 +48,7 @@ def saved_variables_get(student_code, game_code, version, variable_name):  # noq
     """
 
     queryResult = dbq.get_saved_state_scene(student_code, game_code, version, variable_name)
-    if queryResult != "":
-        return InlineResponse2001(queryResult)
-    else:
-        return "No data found"
-
+    return InlineResponse2001(queryResult)
 
 def saved_variables_post(student_code, game_code, version, variable_name, value):  # noqa: E501
     """Store/Update a variable with variableName and value value if possible. If the user has no saved state for a specific game a new saved state must be generated.
