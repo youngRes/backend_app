@@ -1,6 +1,7 @@
 import connexion
 import six
 
+import swagger_server.mongo_connection.mongo_queries as dbq
 from swagger_server.models.decision import Decision  # noqa: E501
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
@@ -21,7 +22,12 @@ def chapter_start_scene_get(game_code, version, chapter_code):  # noqa: E501
 
     :rtype: InlineResponse2001
     """
-    return 'do some magic!'
+
+    queryResult = dbq.get_start_scene(game_code, version, chapter_code)
+    if queryResult != "":
+        return InlineResponse2001(queryResult)
+    else:
+        return "No data found"
 
 
 def saved_variables_get(student_code, game_code, version, variable_name):  # noqa: E501
@@ -40,8 +46,9 @@ def saved_variables_get(student_code, game_code, version, variable_name):  # noq
 
     :rtype: InlineResponse200
     """
-    return 'do some magic!'
 
+    queryResult = dbq.get_saved_state_scene(student_code, game_code, version, variable_name)
+    return InlineResponse2001(queryResult)
 
 def saved_variables_post(student_code, game_code, version, variable_name, value):  # noqa: E501
     """Store/Update a variable with variableName and value value if possible. If the user has no saved state for a specific game a new saved state must be generated.
@@ -61,7 +68,12 @@ def saved_variables_post(student_code, game_code, version, variable_name, value)
 
     :rtype: None
     """
-    return 'do some magic!'
+    queryResult = dbq.post_saved_state_scene(student_code, game_code, version, variable_name, value)
+    if queryResult == True:
+        return {'msg':'Variable Correctly Saved'}
+    else:
+        return {'errorMsg':'Error when saving variable to DD.BB.',
+                'newDoc':queryResult}
 
 
 def store_decision_post(student_code, event_code, decision=None):  # noqa: E501
@@ -79,5 +91,6 @@ def store_decision_post(student_code, event_code, decision=None):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        decision = from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        decision = Decision.from_dict(connexion.request.get_json())  # noqa: E501
+    queryResult = dbq.post_decision(student_code, event_code, decision)
+    return queryResult
