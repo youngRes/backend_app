@@ -46,7 +46,7 @@ def post_saved_state_scene(student_code, game_code, version, variable_name, valu
         savedStateVariables = {
             'stateCode': student_code,
             'studentCode': student_code,
-            'game_code': game_code,
+            'gameCode': game_code,
             'version': version,
             'variables': {
                 variable_name: value
