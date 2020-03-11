@@ -38,20 +38,34 @@ def post_saved_state_scene(student_code, game_code, version, variable_name, valu
 
     #docs = MongoDBConnection.get_saved_states_collection().find({'studentCode':str(student_code), 'gameCode':str(game_code), 'version':str(version)})
     savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
-    savedStateVariables['variables'][variable_name] = value
-    MongoDBConnection.get_saved_states_collection().find_one_and_replace({'studentCode':student_code, 'gameCode':game_code, 'version':version}, savedStateVariables)
+    if savedStateVariables is not None:
+        savedStateVariables['variables'][variable_name] = value
+        MongoDBConnection.get_saved_states_collection().find_one_and_replace({'studentCode':student_code, 'gameCode':game_code, 'version':version}, savedStateVariables)
+    else:
+        # make default saved state
+        savedStateVariables = {
+            'stateCode': student_code,
+            'studentCode': student_code,
+            'game_code': game_code,
+            'version': version,
+            'variables': {
+                variable_name: value
+            }
+        }
+        MongoDBConnection.get_saved_states_collection().insert_one(savedStateVariables)
+
     return True
 
 def post_decision(student_code, event_code, decision):
 
     ids = MongoDBConnection.get_decisions_collection().find().distinct('decisionCode')
-    
+
     finalDecision = {}
     for dec in decision._decision:
         finalDecision[dec._key] = dec._value
-    
+
     _existing = MongoDBConnection.get_decisions_collection().find_one({'eventCode':event_code, 'studentCode':student_code})
-    
+
     if _existing is not None:
         MongoDBConnection.get_decisions_collection().update_one({'eventCode':event_code, 'studentCode':student_code},{'$set': {'fields':finalDecision}})
     else:
