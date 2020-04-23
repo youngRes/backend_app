@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.entry import Entry  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,30 +14,35 @@ class Decision(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, event_code: str=None, event_type: str=None, choices: List[Entry]=None):  # noqa: E501
+    def __init__(self, event_code: str=None, event_description: str=None, event_type: str=None, choice: str=None):  # noqa: E501
         """Decision - a model defined in Swagger
 
         :param event_code: The event_code of this Decision.  # noqa: E501
         :type event_code: str
+        :param event_description: The event_description of this Decision.  # noqa: E501
+        :type event_description: str
         :param event_type: The event_type of this Decision.  # noqa: E501
         :type event_type: str
-        :param choices: The choices of this Decision.  # noqa: E501
-        :type choices: List[Entry]
+        :param choice: The choice of this Decision.  # noqa: E501
+        :type choice: str
         """
         self.swagger_types = {
             'event_code': str,
+            'event_description': str,
             'event_type': str,
-            'choices': List[Entry]
+            'choice': str
         }
 
         self.attribute_map = {
             'event_code': 'eventCode',
+            'event_description': 'eventDescription',
             'event_type': 'eventType',
-            'choices': 'choices'
+            'choice': 'choice'
         }
         self._event_code = event_code
+        self._event_description = event_description
         self._event_type = event_type
-        self._choices = choices
+        self._choice = choice
 
     @classmethod
     def from_dict(cls, dikt) -> 'Decision':
@@ -75,6 +79,29 @@ class Decision(Model):
         self._event_code = event_code
 
     @property
+    def event_description(self) -> str:
+        """Gets the event_description of this Decision.
+
+        description of the events where this decession was taken  # noqa: E501
+
+        :return: The event_description of this Decision.
+        :rtype: str
+        """
+        return self._event_description
+
+    @event_description.setter
+    def event_description(self, event_description: str):
+        """Sets the event_description of this Decision.
+
+        description of the events where this decession was taken  # noqa: E501
+
+        :param event_description: The event_description of this Decision.
+        :type event_description: str
+        """
+
+        self._event_description = event_description
+
+    @property
     def event_type(self) -> str:
         """Gets the event_type of this Decision.
 
@@ -98,24 +125,24 @@ class Decision(Model):
         self._event_type = event_type
 
     @property
-    def choices(self) -> List[Entry]:
-        """Gets the choices of this Decision.
+    def choice(self) -> str:
+        """Gets the choice of this Decision.
 
-        dictionary where the choice made by the student is stored. The keys are different attributes in the event and the values are the choices taken by the student. The dictionary changes depending on the type of event.  # noqa: E501
+        String with the choice a student take in that event, depending on eventType this value can be numeric or a string. However the API always returns an string an latter conversion need to be made on the front-end.  # noqa: E501
 
-        :return: The choices of this Decision.
-        :rtype: List[Entry]
+        :return: The choice of this Decision.
+        :rtype: str
         """
-        return self._choices
+        return self._choice
 
-    @choices.setter
-    def choices(self, choices: List[Entry]):
-        """Sets the choices of this Decision.
+    @choice.setter
+    def choice(self, choice: str):
+        """Sets the choice of this Decision.
 
-        dictionary where the choice made by the student is stored. The keys are different attributes in the event and the values are the choices taken by the student. The dictionary changes depending on the type of event.  # noqa: E501
+        String with the choice a student take in that event, depending on eventType this value can be numeric or a string. However the API always returns an string an latter conversion need to be made on the front-end.  # noqa: E501
 
-        :param choices: The choices of this Decision.
-        :type choices: List[Entry]
+        :param choice: The choice of this Decision.
+        :type choice: str
         """
 
-        self._choices = choices
+        self._choice = choice

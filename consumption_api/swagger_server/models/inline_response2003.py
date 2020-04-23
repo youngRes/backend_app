@@ -6,7 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.event import Event  # noqa: F401,E501
+from swagger_server.models.decision import Decision  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,25 +15,20 @@ class InlineResponse2003(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, count: int=None, events: List[Event]=None):  # noqa: E501
+    def __init__(self, decisions: List[Decision]=None):  # noqa: E501
         """InlineResponse2003 - a model defined in Swagger
 
-        :param count: The count of this InlineResponse2003.  # noqa: E501
-        :type count: int
-        :param events: The events of this InlineResponse2003.  # noqa: E501
-        :type events: List[Event]
+        :param decisions: The decisions of this InlineResponse2003.  # noqa: E501
+        :type decisions: List[Decision]
         """
         self.swagger_types = {
-            'count': int,
-            'events': List[Event]
+            'decisions': List[Decision]
         }
 
         self.attribute_map = {
-            'count': 'count',
-            'events': 'events'
+            'decisions': 'decisions'
         }
-        self._count = count
-        self._events = events
+        self._decisions = decisions
 
     @classmethod
     def from_dict(cls, dikt) -> 'InlineResponse2003':
@@ -47,43 +42,22 @@ class InlineResponse2003(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def count(self) -> int:
-        """Gets the count of this InlineResponse2003.
+    def decisions(self) -> List[Decision]:
+        """Gets the decisions of this InlineResponse2003.
 
 
-        :return: The count of this InlineResponse2003.
-        :rtype: int
+        :return: The decisions of this InlineResponse2003.
+        :rtype: List[Decision]
         """
-        return self._count
+        return self._decisions
 
-    @count.setter
-    def count(self, count: int):
-        """Sets the count of this InlineResponse2003.
-
-
-        :param count: The count of this InlineResponse2003.
-        :type count: int
-        """
-
-        self._count = count
-
-    @property
-    def events(self) -> List[Event]:
-        """Gets the events of this InlineResponse2003.
+    @decisions.setter
+    def decisions(self, decisions: List[Decision]):
+        """Sets the decisions of this InlineResponse2003.
 
 
-        :return: The events of this InlineResponse2003.
-        :rtype: List[Event]
-        """
-        return self._events
-
-    @events.setter
-    def events(self, events: List[Event]):
-        """Sets the events of this InlineResponse2003.
-
-
-        :param events: The events of this InlineResponse2003.
-        :type events: List[Event]
+        :param decisions: The decisions of this InlineResponse2003.
+        :type decisions: List[Decision]
         """
 
-        self._events = events
+        self._decisions = decisions

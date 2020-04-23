@@ -6,7 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.test import Test  # noqa: F401,E501
+from swagger_server.models.filter import Filter  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,24 +15,19 @@ class InlineResponse2001(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, count: int=None, filters: List[Test]=None):  # noqa: E501
+    def __init__(self, filters: List[Filter]=None):  # noqa: E501
         """InlineResponse2001 - a model defined in Swagger
 
-        :param count: The count of this InlineResponse2001.  # noqa: E501
-        :type count: int
         :param filters: The filters of this InlineResponse2001.  # noqa: E501
-        :type filters: List[Test]
+        :type filters: List[Filter]
         """
         self.swagger_types = {
-            'count': int,
-            'filters': List[Test]
+            'filters': List[Filter]
         }
 
         self.attribute_map = {
-            'count': 'count',
             'filters': 'filters'
         }
-        self._count = count
         self._filters = filters
 
     @classmethod
@@ -47,43 +42,22 @@ class InlineResponse2001(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def count(self) -> int:
-        """Gets the count of this InlineResponse2001.
-
-
-        :return: The count of this InlineResponse2001.
-        :rtype: int
-        """
-        return self._count
-
-    @count.setter
-    def count(self, count: int):
-        """Sets the count of this InlineResponse2001.
-
-
-        :param count: The count of this InlineResponse2001.
-        :type count: int
-        """
-
-        self._count = count
-
-    @property
-    def filters(self) -> List[Test]:
+    def filters(self) -> List[Filter]:
         """Gets the filters of this InlineResponse2001.
 
 
         :return: The filters of this InlineResponse2001.
-        :rtype: List[Test]
+        :rtype: List[Filter]
         """
         return self._filters
 
     @filters.setter
-    def filters(self, filters: List[Test]):
+    def filters(self, filters: List[Filter]):
         """Sets the filters of this InlineResponse2001.
 
 
         :param filters: The filters of this InlineResponse2001.
-        :type filters: List[Test]
+        :type filters: List[Filter]
         """
 
         self._filters = filters

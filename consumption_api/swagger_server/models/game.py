@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.chapter import Chapter  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,7 +14,7 @@ class Game(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, game_code: str=None, game_version: str=None, game_description: str=None, number_chapter: int=None, chapters: List[Chapter]=None):  # noqa: E501
+    def __init__(self, game_code: str=None, game_version: str=None, game_description: str=None, number_players: int=None, contries: List[str]=None, chapters: List[str]=None):  # noqa: E501
         """Game - a model defined in Swagger
 
         :param game_code: The game_code of this Game.  # noqa: E501
@@ -24,30 +23,35 @@ class Game(Model):
         :type game_version: str
         :param game_description: The game_description of this Game.  # noqa: E501
         :type game_description: str
-        :param number_chapter: The number_chapter of this Game.  # noqa: E501
-        :type number_chapter: int
+        :param number_players: The number_players of this Game.  # noqa: E501
+        :type number_players: int
+        :param contries: The contries of this Game.  # noqa: E501
+        :type contries: List[str]
         :param chapters: The chapters of this Game.  # noqa: E501
-        :type chapters: List[Chapter]
+        :type chapters: List[str]
         """
         self.swagger_types = {
             'game_code': str,
             'game_version': str,
             'game_description': str,
-            'number_chapter': int,
-            'chapters': List[Chapter]
+            'number_players': int,
+            'contries': List[str],
+            'chapters': List[str]
         }
 
         self.attribute_map = {
             'game_code': 'gameCode',
             'game_version': 'gameVersion',
             'game_description': 'gameDescription',
-            'number_chapter': 'numberChapter',
+            'number_players': 'numberPlayers',
+            'contries': 'contries',
             'chapters': 'chapters'
         }
         self._game_code = game_code
         self._game_version = game_version
         self._game_description = game_description
-        self._number_chapter = number_chapter
+        self._number_players = number_players
+        self._contries = contries
         self._chapters = chapters
 
     @classmethod
@@ -131,47 +135,70 @@ class Game(Model):
         self._game_description = game_description
 
     @property
-    def number_chapter(self) -> int:
-        """Gets the number_chapter of this Game.
+    def number_players(self) -> int:
+        """Gets the number_players of this Game.
 
-        number of chapters that a video game has.  # noqa: E501
+        number of players that has played a particular video game.  # noqa: E501
 
-        :return: The number_chapter of this Game.
+        :return: The number_players of this Game.
         :rtype: int
         """
-        return self._number_chapter
+        return self._number_players
 
-    @number_chapter.setter
-    def number_chapter(self, number_chapter: int):
-        """Sets the number_chapter of this Game.
+    @number_players.setter
+    def number_players(self, number_players: int):
+        """Sets the number_players of this Game.
 
-        number of chapters that a video game has.  # noqa: E501
+        number of players that has played a particular video game.  # noqa: E501
 
-        :param number_chapter: The number_chapter of this Game.
-        :type number_chapter: int
+        :param number_players: The number_players of this Game.
+        :type number_players: int
         """
 
-        self._number_chapter = number_chapter
+        self._number_players = number_players
 
     @property
-    def chapters(self) -> List[Chapter]:
+    def contries(self) -> List[str]:
+        """Gets the contries of this Game.
+
+        nationality of the players thta have played a particular game.  # noqa: E501
+
+        :return: The contries of this Game.
+        :rtype: List[str]
+        """
+        return self._contries
+
+    @contries.setter
+    def contries(self, contries: List[str]):
+        """Sets the contries of this Game.
+
+        nationality of the players thta have played a particular game.  # noqa: E501
+
+        :param contries: The contries of this Game.
+        :type contries: List[str]
+        """
+
+        self._contries = contries
+
+    @property
+    def chapters(self) -> List[str]:
         """Gets the chapters of this Game.
 
-        list of chapters that compose a video game.  # noqa: E501
+        list of chapter's ids that compose a video game.  # noqa: E501
 
         :return: The chapters of this Game.
-        :rtype: List[Chapter]
+        :rtype: List[str]
         """
         return self._chapters
 
     @chapters.setter
-    def chapters(self, chapters: List[Chapter]):
+    def chapters(self, chapters: List[str]):
         """Sets the chapters of this Game.
 
-        list of chapters that compose a video game.  # noqa: E501
+        list of chapter's ids that compose a video game.  # noqa: E501
 
         :param chapters: The chapters of this Game.
-        :type chapters: List[Chapter]
+        :type chapters: List[str]
         """
 
         self._chapters = chapters

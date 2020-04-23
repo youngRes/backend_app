@@ -16,13 +16,15 @@ class Event(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, event_code: str=None, event_description: str=None, event_type: str=None, parent_decision: Decision=None, possible_choices: List[EntryList]=None):  # noqa: E501
+    def __init__(self, event_code: str=None, event_description: str=None, highlights: List[str]=None, event_type: str=None, parent_decision: Decision=None, possible_choices: List[EntryList]=None):  # noqa: E501
         """Event - a model defined in Swagger
 
         :param event_code: The event_code of this Event.  # noqa: E501
         :type event_code: str
         :param event_description: The event_description of this Event.  # noqa: E501
         :type event_description: str
+        :param highlights: The highlights of this Event.  # noqa: E501
+        :type highlights: List[str]
         :param event_type: The event_type of this Event.  # noqa: E501
         :type event_type: str
         :param parent_decision: The parent_decision of this Event.  # noqa: E501
@@ -33,6 +35,7 @@ class Event(Model):
         self.swagger_types = {
             'event_code': str,
             'event_description': str,
+            'highlights': List[str],
             'event_type': str,
             'parent_decision': Decision,
             'possible_choices': List[EntryList]
@@ -41,12 +44,14 @@ class Event(Model):
         self.attribute_map = {
             'event_code': 'eventCode',
             'event_description': 'eventDescription',
+            'highlights': 'highlights',
             'event_type': 'eventType',
             'parent_decision': 'parentDecision',
             'possible_choices': 'possibleChoices'
         }
         self._event_code = event_code
         self._event_description = event_description
+        self._highlights = highlights
         self._event_type = event_type
         self._parent_decision = parent_decision
         self._possible_choices = possible_choices
@@ -107,6 +112,29 @@ class Event(Model):
         """
 
         self._event_description = event_description
+
+    @property
+    def highlights(self) -> List[str]:
+        """Gets the highlights of this Event.
+
+        Tips for the teachers to understand what the results obtained can means  # noqa: E501
+
+        :return: The highlights of this Event.
+        :rtype: List[str]
+        """
+        return self._highlights
+
+    @highlights.setter
+    def highlights(self, highlights: List[str]):
+        """Sets the highlights of this Event.
+
+        Tips for the teachers to understand what the results obtained can means  # noqa: E501
+
+        :param highlights: The highlights of this Event.
+        :type highlights: List[str]
+        """
+
+        self._highlights = highlights
 
     @property
     def event_type(self) -> str:

@@ -7,8 +7,10 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: http://localhost:8883/data
+- url: https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0
   description: SwaggerHub API Auto Mocking
+- url: http://localhost/comsuption
+  description: docker based server
 security:
 - basicAuth: []
 paths:
@@ -42,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/inline_response_200_1'
         "401":
           description: Wrong credentials
         "500":
@@ -60,103 +62,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
-        "401":
-          description: Wrong credentials
-        "500":
-          description: Internal server error with the error message
-      x-openapi-router-controller: swagger_server.controllers.default_controller
-  /test:
-    get:
-      summary: returns the results of the tests taken by the students.
-      operationId: test_get
-      parameters:
-      - name: groupFilter
-        in: query
-        description: dictionary with the filters to apply to the groups. If empty
-          no filter is applied.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
-      - name: studentFilter
-        in: query
-        description: dictionary with the filters to apply to the students. If empty
-          no filter is applied.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
-      - name: testFilter
-        in: query
-        description: dictionary with the filters to apply to the tests. If empty no
-          filter is applied.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
-      - name: limit
-        in: query
-        description: limits the number of results returned.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-          default: 20
-      - name: page
-        in: query
-        description: used for pagination, allows skyping limit entries before starting
-          to return results.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-          default: 0
-      responses:
-        "200":
-          description: Ok, test are returned
-          content:
-            application/json:
-              schema:
                 $ref: '#/components/schemas/inline_response_200_1'
         "401":
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
       x-openapi-router-controller: swagger_server.controllers.default_controller
-  /games:
+  /descriptions/games:
     get:
       summary: returns information about the available games.
-      operationId: games_get
+      operationId: descriptions_games_get
       parameters:
-      - name: gameCode
-        in: query
-        description: id of the game to be selected. If Null all games are ruterned.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: gameVersion
-        in: query
-        description: Only used if gameCode is not null, version of a game to be retrieve.
-          If null all versions are returned.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
       - name: limit
         in: query
         description: limits the number of results returned.
@@ -178,7 +94,7 @@ paths:
           default: 0
       responses:
         "200":
-          description: Ok, test are returned
+          description: Ok, games information is returned
           content:
             application/json:
               schema:
@@ -188,48 +104,102 @@ paths:
         "500":
           description: Internal server error with the error message
       x-openapi-router-controller: swagger_server.controllers.default_controller
-  /events:
+  /descriptions/chapter:
+    get:
+      summary: returns information about the available games.
+      operationId: descriptions_chapter_get
+      parameters:
+      - name: gameCode
+        in: query
+        description: code that identifies a video game. Together  with the version
+          uniquely identifies a video game.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Game-1
+      - name: gameVersion
+        in: query
+        description: version of an specific video game. Together  with the gameCode
+          uniquely identifies a video game.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: v.0.1
+      - name: chapterCode
+        in: query
+        description: chapter to retrieve information from
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: chapter_3
+      responses:
+        "200":
+          description: Ok, games information is returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        "401":
+          description: Wrong credentials
+        "500":
+          description: Internal server error with the error message
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /descriptions/event:
     get:
       summary: returns information about events inside the video game.
-      operationId: events_get
+      operationId: descriptions_event_get
       parameters:
-      - name: eventsCodes
+      - name: gameCode
         in: query
-        description: if null all events are returned, otherwise only the events at
-          the list are returned.
+        description: code that identifies a video game. Together  with the version
+          uniquely identifies a video game.
         required: false
         style: form
         explode: true
         schema:
-          type: array
-          items:
-            type: string
-      - name: limit
+          type: string
+          example: Game-1
+      - name: gameVersion
         in: query
-        description: limits the number of results returned.
+        description: version of an specific video game. Together  with the gameCode
+          uniquely identifies a video game.
         required: false
         style: form
         explode: true
         schema:
-          type: integer
-          default: 100
-      - name: page
+          type: string
+          example: v.0.1
+      - name: chapterCode
         in: query
-        description: used for pagination, allows skyping limit entries before starting
-          to return results.
+        description: chapter to retrieve information from
         required: false
         style: form
         explode: true
         schema:
-          type: integer
-          default: 0
+          type: string
+          example: chapter_3
+      - name: eventCode
+        in: query
+        description: code of the event to be retreive
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: event3.5
       responses:
         "200":
           description: Ok, test are returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_3'
+                $ref: '#/components/schemas/Event'
         "401":
           description: Wrong credentials
         "500":
@@ -242,91 +212,71 @@ paths:
       parameters:
       - name: gameCode
         in: query
-        description: id of the game to be selected. If Null all games are ruterned.
+        description: id of the game to be selected
         required: false
         style: form
         explode: true
         schema:
           type: string
+          example: Game 3
       - name: gameVersion
         in: query
-        description: Only used if gameCode is not null, version of a game to be retrieve.
-          If null all versions are returned.
+        description: version of a game to be retrieve
         required: false
         style: form
         explode: true
         schema:
           type: string
-      - name: chapterCodes
+          example: v0.1
+      - name: chapterCode
         in: query
-        description: Only used if gameCode and version is not null, only decisions
-          from chapters in the list are returned.
+        description: only decisions taken in events from this chapter are returned.
         required: false
         style: form
         explode: true
         schema:
-          type: array
-          items:
-            type: string
-      - name: eventsCodes
-        in: query
-        description: if null all events are returned, otherwise only the events at
-          the list are returned.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+          type: string
+          example: chapter 3
       - name: groupFilter
-        in: query
+        in: header
         description: dictionary with the filters to apply to the groups. If empty
           no filter is applied.
         required: false
-        style: form
-        explode: true
+        style: simple
+        explode: false
         schema:
           type: array
           items:
             $ref: '#/components/schemas/EntryList'
       - name: studentFilter
-        in: query
+        in: header
         description: dictionary with the filters to apply to the students. If empty
           no filter is applied.
         required: false
-        style: form
-        explode: true
+        style: simple
+        explode: false
         schema:
           type: array
           items:
             $ref: '#/components/schemas/EntryList'
-      - name: limit
-        in: query
-        description: limits the number of results returned.
+      - name: testFilter
+        in: header
+        description: dictionary with the filters to apply to the test paased by the
+          students. If empty no filter is applied.
         required: false
-        style: form
-        explode: true
+        style: simple
+        explode: false
         schema:
-          type: integer
-          default: 100
-      - name: page
-        in: query
-        description: used for pagination, allows skyping limit entries before starting
-          to return results.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-          default: 0
+          type: array
+          items:
+            $ref: '#/components/schemas/EntryList'
       responses:
         "200":
           description: Ok, test are returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_4'
+                $ref: '#/components/schemas/inline_response_200_3'
         "401":
           description: Wrong credentials
         "500":
@@ -382,36 +332,18 @@ components:
         - Oulu
         id: city
         type: textual
-    Test:
+    Group:
       properties:
-        testCode:
+        group_id:
           type: string
-          description: unique id of an specific test done by a specific student.
-          example: Test-2345adb
-        testType:
+          example: class_3A
+        description:
           type: string
-          description: identify the type of test
-          example: SocioEconomical
-        fields:
-          type: array
-          description: dictionary of strings where the key are questions of the test
-            and the values the scores obtained for a question.
-          example:
-          - key: fathers-studies
-            value: phd
-          - key: mother-studies
-            value: phd
-          items:
-            $ref: '#/components/schemas/Entry'
-      description: data type to store the results of a specific test.
+          example: students from the class 3A of school...
+      description: Object used to store information about a group or class
       example:
-        testCode: Test-2345adb
-        testType: SocioEconomical
-        fields:
-        - key: fathers-studies
-          value: phd
-        - key: mother-studies
-          value: phd
+        group_id: class_3A
+        description: students from the class 3A of school...
     Game:
       properties:
         gameCode:
@@ -428,47 +360,39 @@ components:
           type: string
           description: short description of a game.
           example: Game where LGTBI content is included...
-        numberChapter:
+        numberPlayers:
           type: integer
-          description: number of chapters that a video game has.
-          example: 3
+          description: number of players that has played a particular video game.
+          example: 30
+        contries:
+          type: array
+          description: nationality of the players thta have played a particular game.
+          example:
+          - Spain
+          - Greece
+          - Finland
+          items:
+            type: string
         chapters:
           type: array
-          description: list of chapters that compose a video game.
+          description: list of chapter's ids that compose a video game.
+          example:
+          - chapter_1
+          - chapter_2
+          - chapter_3
           items:
-            $ref: '#/components/schemas/Chapter'
+            type: string
       description: data type to store the information related to a video game.
       example:
-        numberChapter: 3
+        contries:
+        - Spain
+        - Greece
+        - Finland
+        numberPlayers: 30
         chapters:
-        - chapterCode: chapter-5
-          chapterDescription: Chapter where Paul ...
-          numberEvents: 3
-          events:
-          - eventCode: e1
-            eventDescription: first event of chapter
-            eventType: choice
-            possibleChoices:
-            - key: favority-animal
-              values:
-              - cat
-              - dog
-              - bird
-              - fish
-        - chapterCode: chapter-5
-          chapterDescription: Chapter where Paul ...
-          numberEvents: 3
-          events:
-          - eventCode: e1
-            eventDescription: first event of chapter
-            eventType: choice
-            possibleChoices:
-            - key: favority-animal
-              values:
-              - cat
-              - dog
-              - bird
-              - fish
+        - chapter_1
+        - chapter_2
+        - chapter_3
         gameVersion: v.0.1
         gameCode: Game-1
         gameDescription: Game where LGTBI content is included...
@@ -482,43 +406,28 @@ components:
           type: string
           description: short description of a chapter.
           example: Chapter where Paul ...
-        numberEvents:
-          type: integer
-          description: Number of events in a chapter
-          example: 3
-        events:
+        highlights:
           type: array
-          description: list with all the events of the chapter.
+          description: Tips for the teachers to understand what the results obtained
+            can means
           example:
-          - eventCode: e1
-            eventDescription: first event of chapter
-            eventType: choice
-            possibleChoices:
-            - key: favority-animal
-              values:
-              - cat
-              - dog
-              - bird
-              - fish
+          - this chapter study empathy ....
+          - low values on ...
           items:
-            $ref: '#/components/schemas/Event'
+            type: string
+        snapshot:
+          type: string
+          description: url where the picture of the snapshot of the cahpter is stored
+          example: www.serverlocations.com/img/snp_3.png
       description: data type to store the information related to a chapter of a video
         game.
       example:
         chapterCode: chapter-5
+        highlights:
+        - this chapter study empathy ....
+        - low values on ...
         chapterDescription: Chapter where Paul ...
-        numberEvents: 3
-        events:
-        - eventCode: e1
-          eventDescription: first event of chapter
-          eventType: choice
-          possibleChoices:
-          - key: favority-animal
-            values:
-            - cat
-            - dog
-            - bird
-            - fish
+        snapshot: www.serverlocations.com/img/snp_3.png
     Event:
       properties:
         eventCode:
@@ -529,6 +438,15 @@ components:
           type: string
           description: short description of the event.
           example: event that occurs after ...
+        highlights:
+          type: array
+          description: Tips for the teachers to understand what the results obtained
+            can means
+          example:
+          - Select fish means ....
+          - low values on ...
+          items:
+            type: string
         eventType:
           type: string
           description: type of  the event (multiple choice, timed ...etc)
@@ -554,10 +472,12 @@ components:
         eventCode: event-1-2-3
         parentDecision:
           eventCode: event-1-2-3
+          eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
-          choices:
-          - key: favorite-animal
-            value: cat
+          choice: cat
+        highlights:
+        - Select fish means ....
+        - low values on ...
         eventDescription: event that occurs after ...
         possibleChoices:
         - key: favority-animal
@@ -573,29 +493,54 @@ components:
           type: string
           description: code that uniquely identifies an event
           example: event-1-2-3
+        eventDescription:
+          type: string
+          description: description of the events where this decession was taken
+          example: in this event the student is asked for its favorite pet...
         eventType:
           type: string
           description: type of  the event (multiple choice, timed ...etc)
           example: choice
-        choices:
-          type: array
-          description: dictionary where the choice made by the student is stored.
-            The keys are different attributes in the event and the values are the
-            choices taken by the student. The dictionary changes depending on the
-            type of event.
-          example:
-          - key: favorite-animal
-            value: cat
-          items:
-            $ref: '#/components/schemas/Entry'
+        choice:
+          type: string
+          description: String with the choice a student take in that event, depending
+            on eventType this value can be numeric or a string. However the API always
+            returns an string an latter conversion need to be made on the front-end.
+          example: cat
       description: data type to store the decision taken during an event
       example:
         eventCode: event-1-2-3
+        eventDescription: in this event the student is asked for its favorite pet...
         eventType: choice
-        choices:
-        - key: favorite-animal
-          value: cat
+        choice: cat
     inline_response_200:
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+        group_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+      example:
+        group_ids:
+        - group_id: class_3A
+          description: students from the class 3A of school...
+        - group_id: class_3A
+          description: students from the class 3A of school...
+        filters:
+        - values:
+          - Madrid
+          - Oulu
+          id: city
+          type: textual
+        - values:
+          - Madrid
+          - Oulu
+          id: city
+          type: textual
+    inline_response_200_1:
       properties:
         filters:
           type: array
@@ -613,174 +558,57 @@ components:
           - Oulu
           id: city
           type: textual
-    inline_response_200_1:
-      properties:
-        count:
-          type: integer
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/Test'
-      example:
-        count: 0
-        filters:
-        - testCode: Test-2345adb
-          testType: SocioEconomical
-          fields:
-          - key: fathers-studies
-            value: phd
-          - key: mother-studies
-            value: phd
-        - testCode: Test-2345adb
-          testType: SocioEconomical
-          fields:
-          - key: fathers-studies
-            value: phd
-          - key: mother-studies
-            value: phd
     inline_response_200_2:
       properties:
-        count:
-          type: integer
         games:
           type: array
           items:
             $ref: '#/components/schemas/Game'
       example:
-        count: 0
         games:
-        - numberChapter: 3
+        - contries:
+          - Spain
+          - Greece
+          - Finland
+          numberPlayers: 30
           chapters:
-          - chapterCode: chapter-5
-            chapterDescription: Chapter where Paul ...
-            numberEvents: 3
-            events:
-            - eventCode: e1
-              eventDescription: first event of chapter
-              eventType: choice
-              possibleChoices:
-              - key: favority-animal
-                values:
-                - cat
-                - dog
-                - bird
-                - fish
-          - chapterCode: chapter-5
-            chapterDescription: Chapter where Paul ...
-            numberEvents: 3
-            events:
-            - eventCode: e1
-              eventDescription: first event of chapter
-              eventType: choice
-              possibleChoices:
-              - key: favority-animal
-                values:
-                - cat
-                - dog
-                - bird
-                - fish
+          - chapter_1
+          - chapter_2
+          - chapter_3
           gameVersion: v.0.1
           gameCode: Game-1
           gameDescription: Game where LGTBI content is included...
-        - numberChapter: 3
+        - contries:
+          - Spain
+          - Greece
+          - Finland
+          numberPlayers: 30
           chapters:
-          - chapterCode: chapter-5
-            chapterDescription: Chapter where Paul ...
-            numberEvents: 3
-            events:
-            - eventCode: e1
-              eventDescription: first event of chapter
-              eventType: choice
-              possibleChoices:
-              - key: favority-animal
-                values:
-                - cat
-                - dog
-                - bird
-                - fish
-          - chapterCode: chapter-5
-            chapterDescription: Chapter where Paul ...
-            numberEvents: 3
-            events:
-            - eventCode: e1
-              eventDescription: first event of chapter
-              eventType: choice
-              possibleChoices:
-              - key: favority-animal
-                values:
-                - cat
-                - dog
-                - bird
-                - fish
+          - chapter_1
+          - chapter_2
+          - chapter_3
           gameVersion: v.0.1
           gameCode: Game-1
           gameDescription: Game where LGTBI content is included...
     inline_response_200_3:
       properties:
-        count:
-          type: integer
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
-      example:
-        count: 0
-        events:
-        - eventCode: event-1-2-3
-          parentDecision:
-            eventCode: event-1-2-3
-            eventType: choice
-            choices:
-            - key: favorite-animal
-              value: cat
-          eventDescription: event that occurs after ...
-          possibleChoices:
-          - key: favority-animal
-            values:
-            - cat
-            - dog
-            - bird
-            - fish
-          eventType: choice
-        - eventCode: event-1-2-3
-          parentDecision:
-            eventCode: event-1-2-3
-            eventType: choice
-            choices:
-            - key: favorite-animal
-              value: cat
-          eventDescription: event that occurs after ...
-          possibleChoices:
-          - key: favority-animal
-            values:
-            - cat
-            - dog
-            - bird
-            - fish
-          eventType: choice
-    inline_response_200_4:
-      properties:
-        count:
-          type: integer
-        events:
+        decisions:
           type: array
           items:
             $ref: '#/components/schemas/Decision'
       example:
-        count: 0
-        events:
+        decisions:
         - eventCode: event-1-2-3
+          eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
-          choices:
-          - key: favorite-animal
-            value: cat
+          choice: cat
         - eventCode: event-1-2-3
+          eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
-          choices:
-          - key: favorite-animal
-            value: cat
+          choice: cat
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
       x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
+

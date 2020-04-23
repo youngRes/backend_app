@@ -15,24 +15,19 @@ class InlineResponse2002(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, count: int=None, games: List[Game]=None):  # noqa: E501
+    def __init__(self, games: List[Game]=None):  # noqa: E501
         """InlineResponse2002 - a model defined in Swagger
 
-        :param count: The count of this InlineResponse2002.  # noqa: E501
-        :type count: int
         :param games: The games of this InlineResponse2002.  # noqa: E501
         :type games: List[Game]
         """
         self.swagger_types = {
-            'count': int,
             'games': List[Game]
         }
 
         self.attribute_map = {
-            'count': 'count',
             'games': 'games'
         }
-        self._count = count
         self._games = games
 
     @classmethod
@@ -45,27 +40,6 @@ class InlineResponse2002(Model):
         :rtype: InlineResponse2002
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def count(self) -> int:
-        """Gets the count of this InlineResponse2002.
-
-
-        :return: The count of this InlineResponse2002.
-        :rtype: int
-        """
-        return self._count
-
-    @count.setter
-    def count(self, count: int):
-        """Sets the count of this InlineResponse2002.
-
-
-        :param count: The count of this InlineResponse2002.
-        :type count: int
-        """
-
-        self._count = count
 
     @property
     def games(self) -> List[Game]:
