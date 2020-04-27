@@ -14,7 +14,7 @@ class Game(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, game_code: str=None, game_version: str=None, game_description: str=None, number_players: int=None, contries: List[str]=None, chapters: List[str]=None):  # noqa: E501
+    def __init__(self, game_code: str=None, game_version: str=None, game_description: str=None, number_players: int=None, countries: List[str]=None, chapters: List[str]=None):  # noqa: E501
         """Game - a model defined in Swagger
 
         :param game_code: The game_code of this Game.  # noqa: E501
@@ -25,8 +25,8 @@ class Game(Model):
         :type game_description: str
         :param number_players: The number_players of this Game.  # noqa: E501
         :type number_players: int
-        :param contries: The contries of this Game.  # noqa: E501
-        :type contries: List[str]
+        :param countries: The countries of this Game.  # noqa: E501
+        :type countries: List[str]
         :param chapters: The chapters of this Game.  # noqa: E501
         :type chapters: List[str]
         """
@@ -35,7 +35,7 @@ class Game(Model):
             'game_version': str,
             'game_description': str,
             'number_players': int,
-            'contries': List[str],
+            'countries': List[str],
             'chapters': List[str]
         }
 
@@ -44,14 +44,14 @@ class Game(Model):
             'game_version': 'gameVersion',
             'game_description': 'gameDescription',
             'number_players': 'numberPlayers',
-            'contries': 'contries',
+            'countries': 'countries',
             'chapters': 'chapters'
         }
         self._game_code = game_code
         self._game_version = game_version
         self._game_description = game_description
         self._number_players = number_players
-        self._contries = contries
+        self._countries = countries
         self._chapters = chapters
 
     @classmethod
@@ -158,27 +158,27 @@ class Game(Model):
         self._number_players = number_players
 
     @property
-    def contries(self) -> List[str]:
-        """Gets the contries of this Game.
+    def countries(self) -> List[str]:
+        """Gets the countries of this Game.
 
         nationality of the players thta have played a particular game.  # noqa: E501
 
-        :return: The contries of this Game.
+        :return: The countries of this Game.
         :rtype: List[str]
         """
-        return self._contries
+        return self._countries
 
-    @contries.setter
-    def contries(self, contries: List[str]):
-        """Sets the contries of this Game.
+    @countries.setter
+    def countries(self, countries: List[str]):
+        """Sets the countries of this Game.
 
         nationality of the players thta have played a particular game.  # noqa: E501
 
-        :param contries: The contries of this Game.
-        :type contries: List[str]
+        :param countries: The countries of this Game.
+        :type countries: List[str]
         """
 
-        self._contries = contries
+        self._countries = countries
 
     @property
     def chapters(self) -> List[str]:

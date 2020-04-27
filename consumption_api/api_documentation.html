@@ -690,6 +690,7 @@
     // Script section to load models into a JS Var
     var defs = {}
             defs.Chapter = {
+  "type" : "object",
   "properties" : {
     "chapterCode" : {
       "type" : "string",
@@ -718,6 +719,7 @@
   "description" : "data type to store the information related to a chapter of a video game."
 };
             defs.Decision = {
+  "type" : "object",
   "properties" : {
     "eventCode" : {
       "type" : "string",
@@ -743,19 +745,25 @@
   "description" : "data type to store the decision taken during an event"
 };
             defs.Entry = {
+  "type" : "object",
   "properties" : {
     "key" : {
       "type" : "string",
       "example" : "age"
     },
-    "value" : {
+    "min_value" : {
+      "type" : "string",
+      "example" : "10"
+    },
+    "max_value" : {
       "type" : "string",
       "example" : "13"
     }
   },
-  "description" : "Object used as a entry of a general dictionary"
+  "description" : "Object used field of a Filter. Is used to indicate that a 'key' value of  numeric (to know the type of Filter please refer to the Filter entry) must be between a 'min_value' and 'max_value'. In the case of being of type textual the max_value is ignored and the filter is equivalen of 'key == min_value'"
 };
             defs.EntryList = {
+  "type" : "object",
   "properties" : {
     "key" : {
       "type" : "string",
@@ -772,6 +780,7 @@
   "description" : "Object used as a entry of a general dictionary"
 };
             defs.Event = {
+  "type" : "object",
   "properties" : {
     "eventCode" : {
       "type" : "string",
@@ -801,19 +810,17 @@
     },
     "possibleChoices" : {
       "type" : "array",
-      "description" : "dictionaries where the keys are attributes in the event and the values are all the possible choices. This dictionary changes depending on the type of event.",
-      "example" : [ {
-        "key" : "favority-animal",
-        "values" : [ "cat", "dog", "bird", "fish" ]
-      } ],
+      "description" : "List with all the possible chioces for the event if the type os 'multiple-choice' or with the min (1º element) and max(2º element) time if type is 'timed'.",
+      "example" : [ "cat", "dog", "bird", "fish" ],
       "items" : {
-        "$ref" : "#/components/schemas/EntryList"
+        "type" : "string"
       }
     }
   },
   "description" : "data type used to store an specific event inside a game"
 };
             defs.Filter = {
+  "type" : "object",
   "properties" : {
     "id" : {
       "type" : "string",
@@ -827,15 +834,41 @@
     },
     "values" : {
       "type" : "array",
+      "description" : "contains all the possible values of that field if type is textual. If types is numeric contains two elements, the first one is the minimum, the second one is the maximum.",
       "example" : [ "Madrid", "Oulu" ],
       "items" : {
         "type" : "string"
       }
     }
   },
-  "description" : "data type used to retrieve the information related to a filter."
+  "description" : "data type used to retrieve the information related to a filter. Type can be numeric or textual, if textual values contains a list with all the possible values of that filter. If numeric, then the list contains two elements, the first one is the minimun and the second one is the maximum."
+};
+            defs.FilterApply = {
+  "type" : "object",
+  "properties" : {
+    "group" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    },
+    "student" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    },
+    "test" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    }
+  },
+  "description" : "Contains a list of filter to be applied when retrieving decissions. Is a Json object with a \"group\",\"student\" and \"test\" attributes that contains a List of \"Entry\" objects with the filters to applied to their respective fields. If any attribute (group, student or test) contains an empty list no filter is applied."
 };
             defs.Game = {
+  "type" : "object",
   "properties" : {
     "gameCode" : {
       "type" : "string",
@@ -857,7 +890,7 @@
       "description" : "number of players that has played a particular video game.",
       "example" : 30
     },
-    "contries" : {
+    "countries" : {
       "type" : "array",
       "description" : "nationality of the players thta have played a particular game.",
       "example" : [ "Spain", "Greece", "Finland" ],
@@ -877,6 +910,7 @@
   "description" : "data type to store the information related to a video game."
 };
             defs.Group = {
+  "type" : "object",
   "properties" : {
     "group_id" : {
       "type" : "string",
@@ -1050,11 +1084,9 @@ public class DefaultApiExample {
         String gameCode = gameCode_example; // String | id of the game to be selected
         String gameVersion = gameVersion_example; // String | version of a game to be retrieve
         String chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        array[EntryList] testFilter = ; // array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+          = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
         try {
-            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, groupFilter, studentFilter, testFilter);
+            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#decisionGet");
@@ -1074,11 +1106,9 @@ public class DefaultApiExample {
         String gameCode = gameCode_example; // String | id of the game to be selected
         String gameVersion = gameVersion_example; // String | version of a game to be retrieve
         String chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        array[EntryList] testFilter = ; // array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+          = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
         try {
-            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, groupFilter, studentFilter, testFilter);
+            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#decisionGet");
@@ -1096,12 +1126,10 @@ public class DefaultApiExample {
 // Configure HTTP basic authorization (authentication scheme: basicAuth)
 [apiConfig setUsername:@"YOUR_USERNAME"];
 [apiConfig setPassword:@"YOUR_PASSWORD"];
-String *gameCode = gameCode_example; // id of the game to be selected (optional)
-String *gameVersion = gameVersion_example; // version of a game to be retrieve (optional)
-String *chapterCode = chapterCode_example; // only decisions taken in events from this chapter are returned. (optional)
-array[EntryList] *groupFilter = ; // dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-array[EntryList] *studentFilter = ; // dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-array[EntryList] *testFilter = ; // dictionary with the filters to apply to the test paased by the students. If empty no filter is applied. (optional)
+String *gameCode = gameCode_example; // id of the game to be selected
+String *gameVersion = gameVersion_example; // version of a game to be retrieve
+String *chapterCode = chapterCode_example; // only decisions taken in events from this chapter are returned.
+ * = ; // Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional)
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -1109,9 +1137,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 [apiInstance decisionGetWith:gameCode
     gameVersion:gameVersion
     chapterCode:chapterCode
-    groupFilter:groupFilter
-    studentFilter:studentFilter
-    testFilter:testFilter
+    :
               completionHandler: ^(inline_response_200_3 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -1132,13 +1158,11 @@ basicAuth.username = 'YOUR USERNAME'
 basicAuth.password = 'YOUR PASSWORD'
 
 var api = new YoungResDataComsuptionApi.DefaultApi()
+var gameCode = gameCode_example; // {{String}} id of the game to be selected
+var gameVersion = gameVersion_example; // {{String}} version of a game to be retrieve
+var chapterCode = chapterCode_example; // {{String}} only decisions taken in events from this chapter are returned.
 var opts = { 
-  'gameCode': gameCode_example, // {{String}} id of the game to be selected
-  'gameVersion': gameVersion_example, // {{String}} version of a game to be retrieve
-  'chapterCode': chapterCode_example, // {{String}} only decisions taken in events from this chapter are returned.
-  'groupFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the groups. If empty no filter is applied.
-  'studentFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the students. If empty no filter is applied.
-  'testFilter':  // {{array[EntryList]}} dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+  '':  // {{}} Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 };
 var callback = function(error, data, response) {
   if (error) {
@@ -1147,7 +1171,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.decisionGet(opts, callback);
+api.decisionGet(gameCode, gameVersion, chapterCode, opts, callback);
 </code></pre>
                             </div>
 
@@ -1172,17 +1196,15 @@ namespace Example
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new DefaultApi();
-            var gameCode = gameCode_example;  // String | id of the game to be selected (optional) 
-            var gameVersion = gameVersion_example;  // String | version of a game to be retrieve (optional) 
-            var chapterCode = chapterCode_example;  // String | only decisions taken in events from this chapter are returned. (optional) 
-            var groupFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional) 
-            var studentFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional) 
-            var testFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied. (optional) 
+            var gameCode = gameCode_example;  // String | id of the game to be selected
+            var gameVersion = gameVersion_example;  // String | version of a game to be retrieve
+            var chapterCode = chapterCode_example;  // String | only decisions taken in events from this chapter are returned.
+            var  = new (); //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional) 
 
             try
             {
                 // returns decisions taken by students. Has several filter options.
-                inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, groupFilter, studentFilter, testFilter);
+                inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1206,12 +1228,10 @@ $api_instance = new Swagger\Client\ApiDefaultApi();
 $gameCode = gameCode_example; // String | id of the game to be selected
 $gameVersion = gameVersion_example; // String | version of a game to be retrieve
 $chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
-$groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-$studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-$testFilter = ; // array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+$ = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 
 try {
-    $result = $api_instance->decisionGet($gameCode, $gameVersion, $chapterCode, $groupFilter, $studentFilter, $testFilter);
+    $result = $api_instance->decisionGet($gameCode, $gameVersion, $chapterCode, $);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->decisionGet: ', $e->getMessage(), PHP_EOL;
@@ -1231,12 +1251,10 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $gameCode = gameCode_example; # String | id of the game to be selected
 my $gameVersion = gameVersion_example; # String | version of a game to be retrieve
 my $chapterCode = chapterCode_example; # String | only decisions taken in events from this chapter are returned.
-my $groupFilter = []; # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-my $studentFilter = []; # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-my $testFilter = []; # array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+my $ = ; #  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 
 eval { 
-    my $result = $api_instance->decisionGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCode => $chapterCode, groupFilter => $groupFilter, studentFilter => $studentFilter, testFilter => $testFilter);
+    my $result = $api_instance->decisionGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCode => $chapterCode,  => $);
     print Dumper($result);
 };
 if ($@) {
@@ -1256,16 +1274,14 @@ swagger_client.configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-gameCode = gameCode_example # String | id of the game to be selected (optional)
-gameVersion = gameVersion_example # String | version of a game to be retrieve (optional)
-chapterCode = chapterCode_example # String | only decisions taken in events from this chapter are returned. (optional)
-groupFilter =  # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-studentFilter =  # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-testFilter =  # array[EntryList] | dictionary with the filters to apply to the test paased by the students. If empty no filter is applied. (optional)
+gameCode = gameCode_example # String | id of the game to be selected
+gameVersion = gameVersion_example # String | version of a game to be retrieve
+chapterCode = chapterCode_example # String | only decisions taken in events from this chapter are returned.
+ =  #  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional)
 
 try: 
     # returns decisions taken by students. Has several filter options.
-    api_response = api_instance.decision_get(gameCode=gameCode, gameVersion=gameVersion, chapterCode=chapterCode, groupFilter=groupFilter, studentFilter=studentFilter, testFilter=testFilter)
+    api_response = api_instance.decision_get(gameCode, gameVersion, chapterCode, =)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->decisionGet: %s\n" % e)</code></pre>
@@ -1281,57 +1297,19 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                  <tr><td style="width:150px;">groupFilter</td>
+                                  <tr><td style="width:150px;">filters</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_decisionGet_groupFilter">
+                                      <div id="d2e199_decisionGet_">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      array[EntryList]
+                                                      
                                                   </span>
                                   
                                                       <div class="inner description">
-                                                          dictionary with the filters to apply to the groups. If empty no filter is applied.
-                                                      </div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                                  <tr><td style="width:150px;">studentFilter</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_decisionGet_studentFilter">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      array[EntryList]
-                                                  </span>
-                                  
-                                                      <div class="inner description">
-                                                          dictionary with the filters to apply to the students. If empty no filter is applied.
-                                                      </div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                                  <tr><td style="width:150px;">testFilter</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_decisionGet_testFilter">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      array[EntryList]
-                                                  </span>
-                                  
-                                                      <div class="inner description">
-                                                          dictionary with the filters to apply to the test paased by the students. If empty no filter is applied.
+                                                          Json object of type &quot;FiltersApply&quot; that contains the filters to be applied to the serach. If empty no filters are applied.
                                                       </div>
                                               </div>
                                           </div>
@@ -1348,7 +1326,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">gameCode</td>
+                                <tr><td style="width:150px;">gameCode*</td>
                                 <td>
                                 
                                 
@@ -1363,11 +1341,14 @@ except ApiException as e:
                                                         id of the game to be selected
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">gameVersion</td>
+                                <tr><td style="width:150px;">gameVersion*</td>
                                 <td>
                                 
                                 
@@ -1382,11 +1363,14 @@ except ApiException as e:
                                                         version of a game to be retrieve
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">chapterCode</td>
+                                <tr><td style="width:150px;">chapterCode*</td>
                                 <td>
                                 
                                 
@@ -1401,6 +1385,9 @@ except ApiException as e:
                                                         only decisions taken in events from this chapter are returned.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
@@ -1571,9 +1558,9 @@ public class DefaultApiExample {
 // Configure HTTP basic authorization (authentication scheme: basicAuth)
 [apiConfig setUsername:@"YOUR_USERNAME"];
 [apiConfig setPassword:@"YOUR_PASSWORD"];
-String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game. (optional)
-String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional)
-String *chapterCode = chapterCode_example; // chapter to retrieve information from (optional)
+String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game.
+String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+String *chapterCode = chapterCode_example; // chapter to retrieve information from
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -1601,11 +1588,10 @@ basicAuth.username = 'YOUR USERNAME'
 basicAuth.password = 'YOUR PASSWORD'
 
 var api = new YoungResDataComsuptionApi.DefaultApi()
-var opts = { 
-  'gameCode': gameCode_example, // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
-  'gameVersion': gameVersion_example, // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
-  'chapterCode': chapterCode_example // {{String}} chapter to retrieve information from
-};
+var gameCode = gameCode_example; // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
+var gameVersion = gameVersion_example; // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+var chapterCode = chapterCode_example; // {{String}} chapter to retrieve information from
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -1613,7 +1599,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.descriptionsChapterGet(opts, callback);
+api.descriptionsChapterGet(gameCode, gameVersion, chapterCode, callback);
 </code></pre>
                             </div>
 
@@ -1638,9 +1624,9 @@ namespace Example
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new DefaultApi();
-            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game. (optional) 
-            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional) 
-            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from (optional) 
+            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from
 
             try
             {
@@ -1713,13 +1699,13 @@ swagger_client.configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game. (optional)
-gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional)
-chapterCode = chapterCode_example # String | chapter to retrieve information from (optional)
+gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+chapterCode = chapterCode_example # String | chapter to retrieve information from
 
 try: 
     # returns information about the available games.
-    api_response = api_instance.descriptions_chapter_get(gameCode=gameCode, gameVersion=gameVersion, chapterCode=chapterCode)
+    api_response = api_instance.descriptions_chapter_get(gameCode, gameVersion, chapterCode)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->descriptionsChapterGet: %s\n" % e)</code></pre>
@@ -1738,7 +1724,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">gameCode</td>
+                                <tr><td style="width:150px;">gameCode*</td>
                                 <td>
                                 
                                 
@@ -1753,11 +1739,14 @@ except ApiException as e:
                                                         code that identifies a video game. Together  with the version uniquely identifies a video game.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">gameVersion</td>
+                                <tr><td style="width:150px;">gameVersion*</td>
                                 <td>
                                 
                                 
@@ -1772,11 +1761,14 @@ except ApiException as e:
                                                         version of an specific video game. Together  with the gameCode uniquely identifies a video game.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">chapterCode</td>
+                                <tr><td style="width:150px;">chapterCode*</td>
                                 <td>
                                 
                                 
@@ -1791,6 +1783,9 @@ except ApiException as e:
                                                         chapter to retrieve information from
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
@@ -1963,10 +1958,10 @@ public class DefaultApiExample {
 // Configure HTTP basic authorization (authentication scheme: basicAuth)
 [apiConfig setUsername:@"YOUR_USERNAME"];
 [apiConfig setPassword:@"YOUR_PASSWORD"];
-String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game. (optional)
-String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional)
-String *chapterCode = chapterCode_example; // chapter to retrieve information from (optional)
-String *eventCode = eventCode_example; // code of the event to be retreive (optional)
+String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game.
+String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+String *chapterCode = chapterCode_example; // chapter to retrieve information from
+String *eventCode = eventCode_example; // code of the event to be retreive
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -1995,12 +1990,11 @@ basicAuth.username = 'YOUR USERNAME'
 basicAuth.password = 'YOUR PASSWORD'
 
 var api = new YoungResDataComsuptionApi.DefaultApi()
-var opts = { 
-  'gameCode': gameCode_example, // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
-  'gameVersion': gameVersion_example, // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
-  'chapterCode': chapterCode_example, // {{String}} chapter to retrieve information from
-  'eventCode': eventCode_example // {{String}} code of the event to be retreive
-};
+var gameCode = gameCode_example; // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
+var gameVersion = gameVersion_example; // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+var chapterCode = chapterCode_example; // {{String}} chapter to retrieve information from
+var eventCode = eventCode_example; // {{String}} code of the event to be retreive
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -2008,7 +2002,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.descriptionsEventGet(opts, callback);
+api.descriptionsEventGet(gameCode, gameVersion, chapterCode, eventCode, callback);
 </code></pre>
                             </div>
 
@@ -2033,10 +2027,10 @@ namespace Example
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new DefaultApi();
-            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game. (optional) 
-            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional) 
-            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from (optional) 
-            var eventCode = eventCode_example;  // String | code of the event to be retreive (optional) 
+            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from
+            var eventCode = eventCode_example;  // String | code of the event to be retreive
 
             try
             {
@@ -2111,14 +2105,14 @@ swagger_client.configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game. (optional)
-gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game. (optional)
-chapterCode = chapterCode_example # String | chapter to retrieve information from (optional)
-eventCode = eventCode_example # String | code of the event to be retreive (optional)
+gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+chapterCode = chapterCode_example # String | chapter to retrieve information from
+eventCode = eventCode_example # String | code of the event to be retreive
 
 try: 
     # returns information about events inside the video game.
-    api_response = api_instance.descriptions_event_get(gameCode=gameCode, gameVersion=gameVersion, chapterCode=chapterCode, eventCode=eventCode)
+    api_response = api_instance.descriptions_event_get(gameCode, gameVersion, chapterCode, eventCode)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->descriptionsEventGet: %s\n" % e)</code></pre>
@@ -2137,7 +2131,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">gameCode</td>
+                                <tr><td style="width:150px;">gameCode*</td>
                                 <td>
                                 
                                 
@@ -2152,11 +2146,14 @@ except ApiException as e:
                                                         code that identifies a video game. Together  with the version uniquely identifies a video game.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">gameVersion</td>
+                                <tr><td style="width:150px;">gameVersion*</td>
                                 <td>
                                 
                                 
@@ -2171,11 +2168,14 @@ except ApiException as e:
                                                         version of an specific video game. Together  with the gameCode uniquely identifies a video game.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">chapterCode</td>
+                                <tr><td style="width:150px;">chapterCode*</td>
                                 <td>
                                 
                                 
@@ -2190,11 +2190,14 @@ except ApiException as e:
                                                         chapter to retrieve information from
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">eventCode</td>
+                                <tr><td style="width:150px;">eventCode*</td>
                                 <td>
                                 
                                 
@@ -2209,6 +2212,9 @@ except ApiException as e:
                                                         code of the event to be retreive
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>

@@ -9,6 +9,7 @@ from swagger_server.models.entry import Entry
 from swagger_server.models.entry_list import EntryList
 from swagger_server.models.event import Event
 from swagger_server.models.filter import Filter
+from swagger_server.models.filter_apply import FilterApply
 from swagger_server.models.game import Game
 from swagger_server.models.group import Group
 from swagger_server.models.inline_response200 import InlineResponse200
