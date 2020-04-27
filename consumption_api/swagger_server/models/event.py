@@ -7,7 +7,6 @@ from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
 from swagger_server.models.decision import Decision  # noqa: F401,E501
-from swagger_server.models.entry_list import EntryList  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -16,7 +15,7 @@ class Event(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, event_code: str=None, event_description: str=None, highlights: List[str]=None, event_type: str=None, parent_decision: Decision=None, possible_choices: List[EntryList]=None):  # noqa: E501
+    def __init__(self, event_code: str=None, event_description: str=None, highlights: List[str]=None, event_type: str=None, parent_decision: Decision=None, possible_choices: List[str]=None):  # noqa: E501
         """Event - a model defined in Swagger
 
         :param event_code: The event_code of this Event.  # noqa: E501
@@ -30,7 +29,7 @@ class Event(Model):
         :param parent_decision: The parent_decision of this Event.  # noqa: E501
         :type parent_decision: Decision
         :param possible_choices: The possible_choices of this Event.  # noqa: E501
-        :type possible_choices: List[EntryList]
+        :type possible_choices: List[str]
         """
         self.swagger_types = {
             'event_code': str,
@@ -38,7 +37,7 @@ class Event(Model):
             'highlights': List[str],
             'event_type': str,
             'parent_decision': Decision,
-            'possible_choices': List[EntryList]
+            'possible_choices': List[str]
         }
 
         self.attribute_map = {
@@ -181,24 +180,24 @@ class Event(Model):
         self._parent_decision = parent_decision
 
     @property
-    def possible_choices(self) -> List[EntryList]:
+    def possible_choices(self) -> List[str]:
         """Gets the possible_choices of this Event.
 
-        dictionaries where the keys are attributes in the event and the values are all the possible choices. This dictionary changes depending on the type of event.  # noqa: E501
+        List with all the possible chioces for the event if the type os 'multiple-choice' or with the min (1º element) and max(2º element) time if type is 'timed'.  # noqa: E501
 
         :return: The possible_choices of this Event.
-        :rtype: List[EntryList]
+        :rtype: List[str]
         """
         return self._possible_choices
 
     @possible_choices.setter
-    def possible_choices(self, possible_choices: List[EntryList]):
+    def possible_choices(self, possible_choices: List[str]):
         """Sets the possible_choices of this Event.
 
-        dictionaries where the keys are attributes in the event and the values are all the possible choices. This dictionary changes depending on the type of event.  # noqa: E501
+        List with all the possible chioces for the event if the type os 'multiple-choice' or with the min (1º element) and max(2º element) time if type is 'timed'.  # noqa: E501
 
         :param possible_choices: The possible_choices of this Event.
-        :type possible_choices: List[EntryList]
+        :type possible_choices: List[str]
         """
 
         self._possible_choices = possible_choices

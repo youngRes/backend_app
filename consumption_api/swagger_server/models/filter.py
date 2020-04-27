@@ -100,6 +100,7 @@ class Filter(Model):
     def values(self) -> List[str]:
         """Gets the values of this Filter.
 
+        contains all the possible values of that field if type is textual. If types is numeric contains two elements, the first one is the minimum, the second one is the maximum.  # noqa: E501
 
         :return: The values of this Filter.
         :rtype: List[str]
@@ -110,6 +111,7 @@ class Filter(Model):
     def values(self, values: List[str]):
         """Sets the values of this Filter.
 
+        contains all the possible values of that field if type is textual. If types is numeric contains two elements, the first one is the minimum, the second one is the maximum.  # noqa: E501
 
         :param values: The values of this Filter.
         :type values: List[str]

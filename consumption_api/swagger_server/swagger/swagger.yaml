@@ -111,7 +111,7 @@ paths:
         in: query
         description: code that identifies a video game. Together  with the version
           uniquely identifies a video game.
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -121,7 +121,7 @@ paths:
         in: query
         description: version of an specific video game. Together  with the gameCode
           uniquely identifies a video game.
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -130,7 +130,7 @@ paths:
       - name: chapterCode
         in: query
         description: chapter to retrieve information from
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -157,7 +157,7 @@ paths:
         in: query
         description: code that identifies a video game. Together  with the version
           uniquely identifies a video game.
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -167,7 +167,7 @@ paths:
         in: query
         description: version of an specific video game. Together  with the gameCode
           uniquely identifies a video game.
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -176,7 +176,7 @@ paths:
       - name: chapterCode
         in: query
         description: chapter to retrieve information from
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -185,7 +185,7 @@ paths:
       - name: eventCode
         in: query
         description: code of the event to be retreive
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -211,7 +211,7 @@ paths:
       - name: gameCode
         in: query
         description: id of the game to be selected
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -220,7 +220,7 @@ paths:
       - name: gameVersion
         in: query
         description: version of a game to be retrieve
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -229,45 +229,23 @@ paths:
       - name: chapterCode
         in: query
         description: only decisions taken in events from this chapter are returned.
-        required: false
+        required: true
         style: form
         explode: true
         schema:
           type: string
           example: chapter 3
-      - name: groupFilter
+      - name: filters
         in: header
-        description: dictionary with the filters to apply to the groups. If empty
-          no filter is applied.
+        description: Json object of type "FiltersApply" that contains the filters
+          to be applied to the serach. If empty no filters are applied.
         required: false
         style: simple
         explode: false
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
-      - name: studentFilter
-        in: header
-        description: dictionary with the filters to apply to the students. If empty
-          no filter is applied.
-        required: false
-        style: simple
-        explode: false
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
-      - name: testFilter
-        in: header
-        description: dictionary with the filters to apply to the test paased by the
-          students. If empty no filter is applied.
-        required: false
-        style: simple
-        explode: false
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntryList'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterApply'
       responses:
         "200":
           description: Ok, test are returned
@@ -283,15 +261,23 @@ paths:
 components:
   schemas:
     Entry:
+      type: object
       properties:
         key:
           type: string
           example: age
-        value:
+        min_value:
+          type: string
+          example: "10"
+        max_value:
           type: string
           example: "13"
-      description: Object used as a entry of a general dictionary
+      description: Object used field of a Filter. Is used to indicate that a 'key'
+        value of  numeric (to know the type of Filter please refer to the Filter entry)
+        must be between a 'min_value' and 'max_value'. In the case of being of type
+        textual the max_value is ignored and the filter is equivalen of 'key == min_value'
     EntryList:
+      type: object
       properties:
         key:
           type: string
@@ -307,6 +293,7 @@ components:
             type: string
       description: Object used as a entry of a general dictionary
     Filter:
+      type: object
       properties:
         id:
           type: string
@@ -318,19 +305,46 @@ components:
           example: textual
         values:
           type: array
+          description: contains all the possible values of that field if type is textual.
+            If types is numeric contains two elements, the first one is the minimum,
+            the second one is the maximum.
           example:
           - Madrid
           - Oulu
           items:
             type: string
       description: data type used to retrieve the information related to a filter.
+        Type can be numeric or textual, if textual values contains a list with all
+        the possible values of that filter. If numeric, then the list contains two
+        elements, the first one is the minimun and the second one is the maximum.
       example:
         values:
         - Madrid
         - Oulu
         id: city
         type: textual
+    FilterApply:
+      type: object
+      properties:
+        group:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+        student:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+        test:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+      description: Contains a list of filter to be applied when retrieving decissions.
+        Is a Json object with a "group","student" and "test" attributes that contains
+        a List of "Entry" objects with the filters to applied to their respective
+        fields. If any attribute (group, student or test) contains an empty list no
+        filter is applied.
     Group:
+      type: object
       properties:
         group_id:
           type: string
@@ -343,6 +357,7 @@ components:
         group_id: class_3A
         description: students from the class 3A of school...
     Game:
+      type: object
       properties:
         gameCode:
           type: string
@@ -362,7 +377,7 @@ components:
           type: integer
           description: number of players that has played a particular video game.
           example: 30
-        contries:
+        countries:
           type: array
           description: nationality of the players thta have played a particular game.
           example:
@@ -395,6 +410,7 @@ components:
         gameCode: Game-1
         gameDescription: Game where LGTBI content is included...
     Chapter:
+      type: object
       properties:
         chapterCode:
           type: string
@@ -427,6 +443,7 @@ components:
         chapterDescription: Chapter where Paul ...
         snapshot: www.serverlocations.com/img/snp_3.png
     Event:
+      type: object
       properties:
         eventCode:
           type: string
@@ -453,18 +470,16 @@ components:
           $ref: '#/components/schemas/Decision'
         possibleChoices:
           type: array
-          description: dictionaries where the keys are attributes in the event and
-            the values are all the possible choices. This dictionary changes depending
-            on the type of event.
+          description: List with all the possible chioces for the event if the type
+            os 'multiple-choice' or with the min (1º element) and max(2º element)
+            time if type is 'timed'.
           example:
-          - key: favority-animal
-            values:
-            - cat
-            - dog
-            - bird
-            - fish
+          - cat
+          - dog
+          - bird
+          - fish
           items:
-            $ref: '#/components/schemas/EntryList'
+            type: string
       description: data type used to store an specific event inside a game
       example:
         eventCode: event-1-2-3
@@ -478,14 +493,13 @@ components:
         - low values on ...
         eventDescription: event that occurs after ...
         possibleChoices:
-        - key: favority-animal
-          values:
-          - cat
-          - dog
-          - bird
-          - fish
+        - cat
+        - dog
+        - bird
+        - fish
         eventType: choice
     Decision:
+      type: object
       properties:
         eventCode:
           type: string

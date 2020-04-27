@@ -6,7 +6,6 @@ from flask import json
 from six import BytesIO
 
 from swagger_server.models.chapter import Chapter  # noqa: E501
-from swagger_server.models.entry_list import EntryList  # noqa: E501
 from swagger_server.models.event import Event  # noqa: E501
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
@@ -26,9 +25,7 @@ class TestDefaultController(BaseTestCase):
         query_string = [('game_code', 'game_code_example'),
                         ('game_version', 'game_version_example'),
                         ('chapter_code', 'chapter_code_example')]
-        headers = [('group_filter', EntryList()),
-                   ('student_filter', EntryList()),
-                   ('test_filter', EntryList())]
+        headers = [('', null())]
         response = self.client.open(
             '/ponxosio/data_comsuption_api/1.0.0/decision',
             method='GET',
