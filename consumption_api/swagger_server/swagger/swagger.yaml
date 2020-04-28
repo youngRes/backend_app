@@ -8,7 +8,9 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8883/data
-  description: docker based server
+  description: for local testing
+- url: http://toresquevedo.eui.upm.es:8883/data
+  description: development server at UPM
 security:
 - basicAuth: []
 paths:
