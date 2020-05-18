@@ -14,24 +14,32 @@ class Entry(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, key: str=None, value: str=None):  # noqa: E501
+    def __init__(self, key: str=None, min_value: str=None, max_value: str=None, value: str=None):  # noqa: E501
         """Entry - a model defined in Swagger
 
         :param key: The key of this Entry.  # noqa: E501
         :type key: str
-        :param value: The value of this Entry.  # noqa: E501
-        :type value: str
+        :param min_value: The min_value of this Entry.  # noqa: E501
+        :type min_value: str
+        :param max_value: The max_value of this Entry.  # noqa: E501
+        :type max_value: str
         """
         self.swagger_types = {
             'key': str,
+            'min_value': str,
+            'max_value': str,
             'value': str
         }
 
         self.attribute_map = {
             'key': 'key',
+            'min_value': 'min_value',
+            'max_value': 'max_value',
             'value': 'value'
         }
         self._key = key
+        self._min_value = min_value
+        self._max_value = max_value
         self._value = value
 
     @classmethod
@@ -67,6 +75,48 @@ class Entry(Model):
         self._key = key
 
     @property
+    def min_value(self) -> str:
+        """Gets the min_value of this Entry.
+
+
+        :return: The min_value of this Entry.
+        :rtype: str
+        """
+        return self._min_value
+
+    @min_value.setter
+    def min_value(self, min_value: str):
+        """Sets the min_value of this Entry.
+
+
+        :param min_value: The min_value of this Entry.
+        :type min_value: str
+        """
+
+        self._min_value = min_value
+
+    @property
+    def max_value(self) -> str:
+        """Gets the max_value of this Entry.
+
+
+        :return: The max_value of this Entry.
+        :rtype: str
+        """
+        return self._max_value
+
+    @max_value.setter
+    def max_value(self, max_value: str):
+        """Sets the max_value of this Entry.
+
+
+        :param max_value: The max_value of this Entry.
+        :type max_value: str
+        """
+
+        self._max_value = max_value
+
+    @property
     def value(self) -> str:
         """Gets the value of this Entry.
 
@@ -76,13 +126,14 @@ class Entry(Model):
         """
         return self._value
 
-    @value.setter
+    @max_value.setter
     def value(self, value: str):
-        """Sets the value of this Entry.
+        """Sets the max_value of this Entry.
 
 
         :param value: The value of this Entry.
-        :type value: str
+        :type max_value: str
         """
 
         self._value = value
+

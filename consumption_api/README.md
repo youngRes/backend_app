@@ -56,9 +56,8 @@ To run the server on a Docker container, please execute the following from the r
 
 ```bash
 # starting up a container
-docker run -p 8080:8080 youngres/youngres_consumptiony_api:<version from dockerhub>
+docker run -p 8080:8080 youngres/youngres_consumption_api:<version from dockerhub>
 ```
-
 ## Project structure
 
 ├── Dockerfile -> describes the youngres/youngres_gameplay_api image <br>
@@ -71,9 +70,9 @@ docker run -p 8080:8080 youngres/youngres_consumptiony_api:<version from dockerh
     ├── encoder.py <br>
     ├── \__main\__.py -> file where the application is being initialized and where all external connections should be created <br>
     ├── **models** -> contains the data structures defined in the OpenAPI document on the components section. <br>
-    ├── **mongo_connection** -> pakage with the connection to the mongo db database <br>
+    ├── **mongo_connection** -> pakage with the connection to the mongo db database. <br>
     │   ├── mongo_connector.py -> Static class that stores the object that opens connections to the database. Must be initialized at the start of the program. <br>
     │   └── mongo_queries.py -> file where all queries to the database are stored. <br>
     ├── **swagger** <br>
     │   └── swagger.yaml -> Open API definition of the gameplay api. <br>
-    └── util.py -> file where miscellaneous functions are stored <br>
+    └── util.py -> file where miscellaneous functions are stored. <br>

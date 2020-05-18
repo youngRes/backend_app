@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
 from swagger_server.models.filter import Filter  # noqa: F401,E501
+from swagger_server.models.group import Group  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,20 +16,25 @@ class InlineResponse200(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, filters: List[Filter]=None):  # noqa: E501
+    def __init__(self, filters: List[Filter]=None, group_ids: List[Group]=None):  # noqa: E501
         """InlineResponse200 - a model defined in Swagger
 
         :param filters: The filters of this InlineResponse200.  # noqa: E501
         :type filters: List[Filter]
+        :param group_ids: The group_ids of this InlineResponse200.  # noqa: E501
+        :type group_ids: List[Group]
         """
         self.swagger_types = {
-            'filters': List[Filter]
+            'filters': List[Filter],
+            'group_ids': List[Group]
         }
 
         self.attribute_map = {
-            'filters': 'filters'
+            'filters': 'filters',
+            'group_ids': 'group_ids'
         }
         self._filters = filters
+        self._group_ids = group_ids
 
     @classmethod
     def from_dict(cls, dikt) -> 'InlineResponse200':
@@ -61,3 +67,24 @@ class InlineResponse200(Model):
         """
 
         self._filters = filters
+
+    @property
+    def group_ids(self) -> List[Group]:
+        """Gets the group_ids of this InlineResponse200.
+
+
+        :return: The group_ids of this InlineResponse200.
+        :rtype: List[Group]
+        """
+        return self._group_ids
+
+    @group_ids.setter
+    def group_ids(self, group_ids: List[Group]):
+        """Sets the group_ids of this InlineResponse200.
+
+
+        :param group_ids: The group_ids of this InlineResponse200.
+        :type group_ids: List[Group]
+        """
+
+        self._group_ids = group_ids

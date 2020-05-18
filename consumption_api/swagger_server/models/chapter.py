@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.event import Event  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,35 +14,35 @@ class Chapter(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, chapter_code: str=None, chapter_description: str=None, number_events: int=None, events: List[Event]=None):  # noqa: E501
+    def __init__(self, chapter_code: str=None, chapter_description: str=None, highlights: List[str]=None, snapshot: str=None):  # noqa: E501
         """Chapter - a model defined in Swagger
 
         :param chapter_code: The chapter_code of this Chapter.  # noqa: E501
         :type chapter_code: str
         :param chapter_description: The chapter_description of this Chapter.  # noqa: E501
         :type chapter_description: str
-        :param number_events: The number_events of this Chapter.  # noqa: E501
-        :type number_events: int
-        :param events: The events of this Chapter.  # noqa: E501
-        :type events: List[Event]
+        :param highlights: The highlights of this Chapter.  # noqa: E501
+        :type highlights: List[str]
+        :param snapshot: The snapshot of this Chapter.  # noqa: E501
+        :type snapshot: str
         """
         self.swagger_types = {
             'chapter_code': str,
             'chapter_description': str,
-            'number_events': int,
-            'events': List[Event]
+            'highlights': List[str],
+            'snapshot': str
         }
 
         self.attribute_map = {
             'chapter_code': 'chapterCode',
             'chapter_description': 'chapterDescription',
-            'number_events': 'numberEvents',
-            'events': 'events'
+            'highlights': 'highlights',
+            'snapshot': 'snapshot'
         }
         self._chapter_code = chapter_code
         self._chapter_description = chapter_description
-        self._number_events = number_events
-        self._events = events
+        self._highlights = highlights
+        self._snapshot = snapshot
 
     @classmethod
     def from_dict(cls, dikt) -> 'Chapter':
@@ -103,47 +102,47 @@ class Chapter(Model):
         self._chapter_description = chapter_description
 
     @property
-    def number_events(self) -> int:
-        """Gets the number_events of this Chapter.
+    def highlights(self) -> List[str]:
+        """Gets the highlights of this Chapter.
 
-        Number of events in a chapter  # noqa: E501
+        Tips for the teachers to understand what the results obtained can means  # noqa: E501
 
-        :return: The number_events of this Chapter.
-        :rtype: int
+        :return: The highlights of this Chapter.
+        :rtype: List[str]
         """
-        return self._number_events
+        return self._highlights
 
-    @number_events.setter
-    def number_events(self, number_events: int):
-        """Sets the number_events of this Chapter.
+    @highlights.setter
+    def highlights(self, highlights: List[str]):
+        """Sets the highlights of this Chapter.
 
-        Number of events in a chapter  # noqa: E501
+        Tips for the teachers to understand what the results obtained can means  # noqa: E501
 
-        :param number_events: The number_events of this Chapter.
-        :type number_events: int
+        :param highlights: The highlights of this Chapter.
+        :type highlights: List[str]
         """
 
-        self._number_events = number_events
+        self._highlights = highlights
 
     @property
-    def events(self) -> List[Event]:
-        """Gets the events of this Chapter.
+    def snapshot(self) -> str:
+        """Gets the snapshot of this Chapter.
 
-        list with all the events of the chapter.  # noqa: E501
+        url where the picture of the snapshot of the cahpter is stored  # noqa: E501
 
-        :return: The events of this Chapter.
-        :rtype: List[Event]
+        :return: The snapshot of this Chapter.
+        :rtype: str
         """
-        return self._events
+        return self._snapshot
 
-    @events.setter
-    def events(self, events: List[Event]):
-        """Sets the events of this Chapter.
+    @snapshot.setter
+    def snapshot(self, snapshot: str):
+        """Sets the snapshot of this Chapter.
 
-        list with all the events of the chapter.  # noqa: E501
+        url where the picture of the snapshot of the cahpter is stored  # noqa: E501
 
-        :param events: The events of this Chapter.
-        :type events: List[Event]
+        :param snapshot: The snapshot of this Chapter.
+        :type snapshot: str
         """
 
-        self._events = events
+        self._snapshot = snapshot

@@ -690,6 +690,7 @@
     // Script section to load models into a JS Var
     var defs = {}
             defs.Chapter = {
+  "type" : "object",
   "properties" : {
     "chapterCode" : {
       "type" : "string",
@@ -701,70 +702,68 @@
       "description" : "short description of a chapter.",
       "example" : "Chapter where Paul ..."
     },
-    "numberEvents" : {
-      "type" : "integer",
-      "description" : "Number of events in a chapter",
-      "example" : 3
-    },
-    "events" : {
+    "highlights" : {
       "type" : "array",
-      "description" : "list with all the events of the chapter.",
-      "example" : [ {
-        "eventCode" : "e1",
-        "eventDescription" : "first event of chapter",
-        "eventType" : "choice",
-        "possibleChoices" : [ {
-          "key" : "favority-animal",
-          "values" : [ "cat", "dog", "bird", "fish" ]
-        } ]
-      } ],
+      "description" : "Tips for the teachers to understand what the results obtained can means",
+      "example" : [ "this chapter study empathy ....", "low values on ..." ],
       "items" : {
-        "$ref" : "#/components/schemas/Event"
+        "type" : "string"
       }
+    },
+    "snapshot" : {
+      "type" : "string",
+      "description" : "url where the picture of the snapshot of the cahpter is stored",
+      "example" : "www.serverlocations.com/img/snp_3.png"
     }
   },
   "description" : "data type to store the information related to a chapter of a video game."
 };
             defs.Decision = {
+  "type" : "object",
   "properties" : {
     "eventCode" : {
       "type" : "string",
       "description" : "code that uniquely identifies an event",
       "example" : "event-1-2-3"
     },
+    "eventDescription" : {
+      "type" : "string",
+      "description" : "description of the events where this decession was taken",
+      "example" : "in this event the student is asked for its favorite pet..."
+    },
     "eventType" : {
       "type" : "string",
       "description" : "type of  the event (multiple choice, timed ...etc)",
       "example" : "choice"
     },
-    "choices" : {
-      "type" : "array",
-      "description" : "dictionary where the choice made by the student is stored. The keys are different attributes in the event and the values are the choices taken by the student. The dictionary changes depending on the type of event.",
-      "example" : [ {
-        "key" : "favorite-animal",
-        "value" : "cat"
-      } ],
-      "items" : {
-        "$ref" : "#/components/schemas/Entry"
-      }
+    "choice" : {
+      "type" : "string",
+      "description" : "String with the choice a student take in that event, depending on eventType this value can be numeric or a string. However the API always returns an string an latter conversion need to be made on the front-end.",
+      "example" : "cat"
     }
   },
   "description" : "data type to store the decision taken during an event"
 };
             defs.Entry = {
+  "type" : "object",
   "properties" : {
     "key" : {
       "type" : "string",
       "example" : "age"
     },
-    "value" : {
+    "min_value" : {
+      "type" : "string",
+      "example" : "10"
+    },
+    "max_value" : {
       "type" : "string",
       "example" : "13"
     }
   },
-  "description" : "Object used as a entry of a general dictionary"
+  "description" : "Object used field of a Filter. Is used to indicate that a 'key' value of  numeric (to know the type of Filter please refer to the Filter entry) must be between a 'min_value' and 'max_value'. In the case of being of type textual the max_value is ignored and the filter is equivalen of 'key == min_value'"
 };
             defs.EntryList = {
+  "type" : "object",
   "properties" : {
     "key" : {
       "type" : "string",
@@ -781,6 +780,7 @@
   "description" : "Object used as a entry of a general dictionary"
 };
             defs.Event = {
+  "type" : "object",
   "properties" : {
     "eventCode" : {
       "type" : "string",
@@ -792,6 +792,14 @@
       "description" : "short description of the event.",
       "example" : "event that occurs after ..."
     },
+    "highlights" : {
+      "type" : "array",
+      "description" : "Tips for the teachers to understand what the results obtained can means",
+      "example" : [ "Select fish means ....", "low values on ..." ],
+      "items" : {
+        "type" : "string"
+      }
+    },
     "eventType" : {
       "type" : "string",
       "description" : "type of  the event (multiple choice, timed ...etc)",
@@ -802,19 +810,17 @@
     },
     "possibleChoices" : {
       "type" : "array",
-      "description" : "dictionaries where the keys are attributes in the event and the values are all the possible choices. This dictionary changes depending on the type of event.",
-      "example" : [ {
-        "key" : "favority-animal",
-        "values" : [ "cat", "dog", "bird", "fish" ]
-      } ],
+      "description" : "List with all the possible chioces for the event if the type os 'multiple-choice' or with the min (1º element) and max(2º element) time if type is 'timed'.",
+      "example" : [ "cat", "dog", "bird", "fish" ],
       "items" : {
-        "$ref" : "#/components/schemas/EntryList"
+        "type" : "string"
       }
     }
   },
   "description" : "data type used to store an specific event inside a game"
 };
             defs.Filter = {
+  "type" : "object",
   "properties" : {
     "id" : {
       "type" : "string",
@@ -828,15 +834,41 @@
     },
     "values" : {
       "type" : "array",
+      "description" : "contains all the possible values of that field if type is textual. If types is numeric contains two elements, the first one is the minimum, the second one is the maximum.",
       "example" : [ "Madrid", "Oulu" ],
       "items" : {
         "type" : "string"
       }
     }
   },
-  "description" : "data type used to retrieve the information related to a filter."
+  "description" : "data type used to retrieve the information related to a filter. Type can be numeric or textual, if textual values contains a list with all the possible values of that filter. If numeric, then the list contains two elements, the first one is the minimun and the second one is the maximum."
+};
+            defs.FilterApply = {
+  "type" : "object",
+  "properties" : {
+    "group" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    },
+    "student" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    },
+    "test" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Entry"
+      }
+    }
+  },
+  "description" : "Contains a list of filter to be applied when retrieving decissions. Is a Json object with a \"group\",\"student\" and \"test\" attributes that contains a List of \"Entry\" objects with the filters to applied to their respective fields. If any attribute (group, student or test) contains an empty list no filter is applied."
 };
             defs.Game = {
+  "type" : "object",
   "properties" : {
     "gameCode" : {
       "type" : "string",
@@ -853,22 +885,61 @@
       "description" : "short description of a game.",
       "example" : "Game where LGTBI content is included..."
     },
-    "numberChapter" : {
+    "numberPlayers" : {
       "type" : "integer",
-      "description" : "number of chapters that a video game has.",
-      "example" : 3
+      "description" : "number of players that has played a particular video game.",
+      "example" : 30
+    },
+    "countries" : {
+      "type" : "array",
+      "description" : "nationality of the players thta have played a particular game.",
+      "example" : [ "Spain", "Greece", "Finland" ],
+      "items" : {
+        "type" : "string"
+      }
     },
     "chapters" : {
       "type" : "array",
-      "description" : "list of chapters that compose a video game.",
+      "description" : "list of chapter's ids that compose a video game.",
+      "example" : [ "chapter_1", "chapter_2", "chapter_3" ],
       "items" : {
-        "$ref" : "#/components/schemas/Chapter"
+        "type" : "string"
       }
     }
   },
   "description" : "data type to store the information related to a video game."
 };
+            defs.Group = {
+  "type" : "object",
+  "properties" : {
+    "group_id" : {
+      "type" : "string",
+      "example" : "class_3A"
+    },
+    "description" : {
+      "type" : "string",
+      "example" : "students from the class 3A of school..."
+    }
+  },
+  "description" : "Object used to store information about a group or class"
+};
             defs.inline_response_200 = {
+  "properties" : {
+    "filters" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Filter"
+      }
+    },
+    "group_ids" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Group"
+      }
+    }
+  }
+};
+            defs.inline_response_200_1 = {
   "properties" : {
     "filters" : {
       "type" : "array",
@@ -878,24 +949,8 @@
     }
   }
 };
-            defs.inline_response_200_1 = {
-  "properties" : {
-    "count" : {
-      "type" : "integer"
-    },
-    "filters" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/Test"
-      }
-    }
-  }
-};
             defs.inline_response_200_2 = {
   "properties" : {
-    "count" : {
-      "type" : "integer"
-    },
     "games" : {
       "type" : "array",
       "items" : {
@@ -906,58 +961,13 @@
 };
             defs.inline_response_200_3 = {
   "properties" : {
-    "count" : {
-      "type" : "integer"
-    },
-    "events" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/Event"
-      }
-    }
-  }
-};
-            defs.inline_response_200_4 = {
-  "properties" : {
-    "count" : {
-      "type" : "integer"
-    },
-    "events" : {
+    "decisions" : {
       "type" : "array",
       "items" : {
         "$ref" : "#/components/schemas/Decision"
       }
     }
   }
-};
-            defs.Test = {
-  "properties" : {
-    "testCode" : {
-      "type" : "string",
-      "description" : "unique id of an specific test done by a specific student.",
-      "example" : "Test-2345adb"
-    },
-    "testType" : {
-      "type" : "string",
-      "description" : "identify the type of test",
-      "example" : "SocioEconomical"
-    },
-    "fields" : {
-      "type" : "array",
-      "description" : "dictionary of strings where the key are questions of the test and the values the scores obtained for a question.",
-      "example" : [ {
-        "key" : "fathers-studies",
-        "value" : "phd"
-      }, {
-        "key" : "mother-studies",
-        "value" : "phd"
-      } ],
-      "items" : {
-        "$ref" : "#/components/schemas/Entry"
-      }
-    }
-  },
-  "description" : "data type to store the results of a specific test."
 };
   </script>
 
@@ -979,8 +989,14 @@
                     <li data-group="Default" data-name="decisionGet" class="">
                       <a href="#api-Default-decisionGet">decisionGet</a>
                     </li>
-                    <li data-group="Default" data-name="eventsGet" class="">
-                      <a href="#api-Default-eventsGet">eventsGet</a>
+                    <li data-group="Default" data-name="descriptionsChapterGet" class="">
+                      <a href="#api-Default-descriptionsChapterGet">descriptionsChapterGet</a>
+                    </li>
+                    <li data-group="Default" data-name="descriptionsEventGet" class="">
+                      <a href="#api-Default-descriptionsEventGet">descriptionsEventGet</a>
+                    </li>
+                    <li data-group="Default" data-name="descriptionsGamesGet" class="">
+                      <a href="#api-Default-descriptionsGamesGet">descriptionsGamesGet</a>
                     </li>
                     <li data-group="Default" data-name="filtersGroupGet" class="">
                       <a href="#api-Default-filtersGroupGet">filtersGroupGet</a>
@@ -990,12 +1006,6 @@
                     </li>
                     <li data-group="Default" data-name="filtersTestGet" class="">
                       <a href="#api-Default-filtersTestGet">filtersTestGet</a>
-                    </li>
-                    <li data-group="Default" data-name="gamesGet" class="">
-                      <a href="#api-Default-gamesGet">gamesGet</a>
-                    </li>
-                    <li data-group="Default" data-name="testGet" class="">
-                      <a href="#api-Default-testGet">testGet</a>
                     </li>
           </ul>
         </nav>
@@ -1050,7 +1060,7 @@
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-decisionGet-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/decision?gameCode=&gameVersion=&chapterCodes=&eventsCodes=&groupFilter=&studentFilter=&limit=&page="</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/decision?gameCode=&gameVersion=&chapterCode="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Default-decisionGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1071,16 +1081,12 @@ public class DefaultApiExample {
         basicAuth.setPassword("YOUR PASSWORD");
 
         DefaultApi apiInstance = new DefaultApi();
-        String gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-        String gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-        array[String] chapterCodes = ; // array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
-        array[String] eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        String gameCode = gameCode_example; // String | id of the game to be selected
+        String gameVersion = gameVersion_example; // String | version of a game to be retrieve
+        String chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
+          = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
         try {
-            inline_response_200_4 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCodes, eventsCodes, groupFilter, studentFilter, limit, page);
+            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#decisionGet");
@@ -1097,16 +1103,12 @@ public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        String gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-        String gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-        array[String] chapterCodes = ; // array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
-        array[String] eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        String gameCode = gameCode_example; // String | id of the game to be selected
+        String gameVersion = gameVersion_example; // String | version of a game to be retrieve
+        String chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
+          = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
         try {
-            inline_response_200_4 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCodes, eventsCodes, groupFilter, studentFilter, limit, page);
+            inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#decisionGet");
@@ -1124,27 +1126,19 @@ public class DefaultApiExample {
 // Configure HTTP basic authorization (authentication scheme: basicAuth)
 [apiConfig setUsername:@"YOUR_USERNAME"];
 [apiConfig setPassword:@"YOUR_PASSWORD"];
-String *gameCode = gameCode_example; // id of the game to be selected. If Null all games are ruterned. (optional)
-String *gameVersion = gameVersion_example; // Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional)
-array[String] *chapterCodes = ; // Only used if gameCode and version is not null, only decisions from chapters in the list are returned. (optional)
-array[String] *eventsCodes = ; // if null all events are returned, otherwise only the events at the list are returned. (optional)
-array[EntryList] *groupFilter = ; // dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-array[EntryList] *studentFilter = ; // dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-Integer *limit = 56; // limits the number of results returned. (optional)
-Integer *page = 56; // used for pagination, allows skyping limit entries before starting to return results. (optional)
+String *gameCode = gameCode_example; // id of the game to be selected
+String *gameVersion = gameVersion_example; // version of a game to be retrieve
+String *chapterCode = chapterCode_example; // only decisions taken in events from this chapter are returned.
+ * = ; // Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional)
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // returns decisions taken by students. Has several filter options.
 [apiInstance decisionGetWith:gameCode
     gameVersion:gameVersion
-    chapterCodes:chapterCodes
-    eventsCodes:eventsCodes
-    groupFilter:groupFilter
-    studentFilter:studentFilter
-    limit:limit
-    page:page
-              completionHandler: ^(inline_response_200_4 output, NSError* error) {
+    chapterCode:chapterCode
+    :
+              completionHandler: ^(inline_response_200_3 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1164,15 +1158,11 @@ basicAuth.username = 'YOUR USERNAME'
 basicAuth.password = 'YOUR PASSWORD'
 
 var api = new YoungResDataComsuptionApi.DefaultApi()
+var gameCode = gameCode_example; // {{String}} id of the game to be selected
+var gameVersion = gameVersion_example; // {{String}} version of a game to be retrieve
+var chapterCode = chapterCode_example; // {{String}} only decisions taken in events from this chapter are returned.
 var opts = { 
-  'gameCode': gameCode_example, // {{String}} id of the game to be selected. If Null all games are ruterned.
-  'gameVersion': gameVersion_example, // {{String}} Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-  'chapterCodes': , // {{array[String]}} Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
-  'eventsCodes': , // {{array[String]}} if null all events are returned, otherwise only the events at the list are returned.
-  'groupFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the groups. If empty no filter is applied.
-  'studentFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the students. If empty no filter is applied.
-  'limit': 56, // {{Integer}} limits the number of results returned.
-  'page': 56 // {{Integer}} used for pagination, allows skyping limit entries before starting to return results.
+  '':  // {{}} Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 };
 var callback = function(error, data, response) {
   if (error) {
@@ -1181,7 +1171,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.decisionGet(opts, callback);
+api.decisionGet(gameCode, gameVersion, chapterCode, opts, callback);
 </code></pre>
                             </div>
 
@@ -1206,19 +1196,15 @@ namespace Example
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new DefaultApi();
-            var gameCode = gameCode_example;  // String | id of the game to be selected. If Null all games are ruterned. (optional) 
-            var gameVersion = gameVersion_example;  // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional) 
-            var chapterCodes = new array[String](); // array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned. (optional) 
-            var eventsCodes = new array[String](); // array[String] | if null all events are returned, otherwise only the events at the list are returned. (optional) 
-            var groupFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional) 
-            var studentFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional) 
-            var limit = 56;  // Integer | limits the number of results returned. (optional) 
-            var page = 56;  // Integer | used for pagination, allows skyping limit entries before starting to return results. (optional) 
+            var gameCode = gameCode_example;  // String | id of the game to be selected
+            var gameVersion = gameVersion_example;  // String | version of a game to be retrieve
+            var chapterCode = chapterCode_example;  // String | only decisions taken in events from this chapter are returned.
+            var  = new (); //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional) 
 
             try
             {
                 // returns decisions taken by students. Has several filter options.
-                inline_response_200_4 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCodes, eventsCodes, groupFilter, studentFilter, limit, page);
+                inline_response_200_3 result = apiInstance.decisionGet(gameCode, gameVersion, chapterCode, );
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1239,17 +1225,13 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERN
 Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
-$gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-$gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-$chapterCodes = ; // array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
-$eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-$groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-$studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-$limit = 56; // Integer | limits the number of results returned.
-$page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+$gameCode = gameCode_example; // String | id of the game to be selected
+$gameVersion = gameVersion_example; // String | version of a game to be retrieve
+$chapterCode = chapterCode_example; // String | only decisions taken in events from this chapter are returned.
+$ = ; //  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 
 try {
-    $result = $api_instance->decisionGet($gameCode, $gameVersion, $chapterCodes, $eventsCodes, $groupFilter, $studentFilter, $limit, $page);
+    $result = $api_instance->decisionGet($gameCode, $gameVersion, $chapterCode, $);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->decisionGet: ', $e->getMessage(), PHP_EOL;
@@ -1266,17 +1248,13 @@ $WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
 $WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $gameCode = gameCode_example; # String | id of the game to be selected. If Null all games are ruterned.
-my $gameVersion = gameVersion_example; # String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-my $chapterCodes = []; # array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
-my $eventsCodes = []; # array[String] | if null all events are returned, otherwise only the events at the list are returned.
-my $groupFilter = []; # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-my $studentFilter = []; # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-my $limit = 56; # Integer | limits the number of results returned.
-my $page = 56; # Integer | used for pagination, allows skyping limit entries before starting to return results.
+my $gameCode = gameCode_example; # String | id of the game to be selected
+my $gameVersion = gameVersion_example; # String | version of a game to be retrieve
+my $chapterCode = chapterCode_example; # String | only decisions taken in events from this chapter are returned.
+my $ = ; #  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied.
 
 eval { 
-    my $result = $api_instance->decisionGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCodes => $chapterCodes, eventsCodes => $eventsCodes, groupFilter => $groupFilter, studentFilter => $studentFilter, limit => $limit, page => $page);
+    my $result = $api_instance->decisionGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCode => $chapterCode,  => $);
     print Dumper($result);
 };
 if ($@) {
@@ -1296,18 +1274,14 @@ swagger_client.configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-gameCode = gameCode_example # String | id of the game to be selected. If Null all games are ruterned. (optional)
-gameVersion = gameVersion_example # String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional)
-chapterCodes =  # array[String] | Only used if gameCode and version is not null, only decisions from chapters in the list are returned. (optional)
-eventsCodes =  # array[String] | if null all events are returned, otherwise only the events at the list are returned. (optional)
-groupFilter =  # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-studentFilter =  # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-limit = 56 # Integer | limits the number of results returned. (optional)
-page = 56 # Integer | used for pagination, allows skyping limit entries before starting to return results. (optional)
+gameCode = gameCode_example # String | id of the game to be selected
+gameVersion = gameVersion_example # String | version of a game to be retrieve
+chapterCode = chapterCode_example # String | only decisions taken in events from this chapter are returned.
+ =  #  | Json object of type "FiltersApply" that contains the filters to be applied to the serach. If empty no filters are applied. (optional)
 
 try: 
     # returns decisions taken by students. Has several filter options.
-    api_response = api_instance.decision_get(gameCode=gameCode, gameVersion=gameVersion, chapterCodes=chapterCodes, eventsCodes=eventsCodes, groupFilter=groupFilter, studentFilter=studentFilter, limit=limit, page=page)
+    api_response = api_instance.decision_get(gameCode, gameVersion, chapterCode, =)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->decisionGet: %s\n" % e)</code></pre>
@@ -1317,6 +1291,32 @@ except ApiException as e:
                           <h2>Parameters</h2>
 
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">filters</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_decisionGet_">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Json object of type &quot;FiltersApply&quot; that contains the filters to be applied to the serach. If empty no filters are applied.
+                                                      </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
 
 
 
@@ -1326,7 +1326,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">gameCode</td>
+                                <tr><td style="width:150px;">gameCode*</td>
                                 <td>
                                 
                                 
@@ -1338,14 +1338,17 @@ except ApiException as e:
                                                 </span>
                                 
                                                     <div class="inner description">
-                                                        id of the game to be selected. If Null all games are ruterned.
+                                                        id of the game to be selected
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">gameVersion</td>
+                                <tr><td style="width:150px;">gameVersion*</td>
                                 <td>
                                 
                                 
@@ -1357,123 +1360,34 @@ except ApiException as e:
                                                 </span>
                                 
                                                     <div class="inner description">
-                                                        Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
+                                                        version of a game to be retrieve
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">chapterCodes</td>
+                                <tr><td style="width:150px;">chapterCode*</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_decisionGet_chapterCodes">
+                                    <div id="d2e199_decisionGet_chapterCode">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
-                                                    array[String]
+                                                    String
                                                 </span>
                                 
                                                     <div class="inner description">
-                                                        Only used if gameCode and version is not null, only decisions from chapters in the list are returned.
+                                                        only decisions taken in events from this chapter are returned.
                                                     </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">eventsCodes</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_decisionGet_eventsCodes">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[String]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        if null all events are returned, otherwise only the events at the list are returned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">groupFilter</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_decisionGet_groupFilter">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[EntryList]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        dictionary with the filters to apply to the groups. If empty no filter is applied.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">studentFilter</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_decisionGet_studentFilter">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[EntryList]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        dictionary with the filters to apply to the students. If empty no filter is applied.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">limit</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_decisionGet_limit">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        limits the number of results returned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">page</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_decisionGet_page">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        used for pagination, allows skyping limit entries before starting to return results.
-                                                    </div>
-                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
@@ -1500,7 +1414,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_4"
+        "$ref" : "#/components/schemas/inline_response_200_3"
       }
     }
   }
@@ -1548,11 +1462,11 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-eventsGet">
-                      <article id="api-Default-eventsGet-0" data-group="User" data-name="eventsGet" data-version="0">
+                    <div id="api-Default-descriptionsChapterGet">
+                      <article id="api-Default-descriptionsChapterGet-0" data-group="User" data-name="descriptionsChapterGet" data-version="0">
                         <div class="pull-left">
-                          <h1>eventsGet</h1>
-                          <p>returns information about events inside the video game.</p>
+                          <h1>descriptionsChapterGet</h1>
+                          <p>returns information about the available games.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1560,29 +1474,29 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/events</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/descriptions/chapter</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-eventsGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-eventsGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-eventsGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-eventsGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-eventsGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-eventsGet-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-descriptionsChapterGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsChapterGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsChapterGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsChapterGet-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-eventsGet-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/events?eventsCodes=&limit=&page="</code></pre>
+                          <div class="tab-pane active" id="examples-Default-descriptionsChapterGet-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/descriptions/chapter?gameCode=&gameVersion=&chapterCode="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-eventsGet-0-java">
+                          <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -1601,60 +1515,60 @@ public class DefaultApiExample {
         basicAuth.setPassword("YOUR PASSWORD");
 
         DefaultApi apiInstance = new DefaultApi();
-        array[String] eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        String gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+        String gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+        String chapterCode = chapterCode_example; // String | chapter to retrieve information from
         try {
-            inline_response_200_3 result = apiInstance.eventsGet(eventsCodes, limit, page);
+            Chapter result = apiInstance.descriptionsChapterGet(gameCode, gameVersion, chapterCode);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#eventsGet");
+            System.err.println("Exception when calling DefaultApi#descriptionsChapterGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-eventsGet-0-android">
+                          <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        array[String] eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        String gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+        String gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+        String chapterCode = chapterCode_example; // String | chapter to retrieve information from
         try {
-            inline_response_200_3 result = apiInstance.eventsGet(eventsCodes, limit, page);
+            Chapter result = apiInstance.descriptionsChapterGet(gameCode, gameVersion, chapterCode);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#eventsGet");
+            System.err.println("Exception when calling DefaultApi#descriptionsChapterGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-eventsGet-0-groovy">
+  <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-objc">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure HTTP basic authorization (authentication scheme: basicAuth)
 [apiConfig setUsername:@"YOUR_USERNAME"];
 [apiConfig setPassword:@"YOUR_PASSWORD"];
-array[String] *eventsCodes = ; // if null all events are returned, otherwise only the events at the list are returned. (optional)
-Integer *limit = 56; // limits the number of results returned. (optional)
-Integer *page = 56; // used for pagination, allows skyping limit entries before starting to return results. (optional)
+String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game.
+String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+String *chapterCode = chapterCode_example; // chapter to retrieve information from
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// returns information about events inside the video game.
-[apiInstance eventsGetWith:eventsCodes
-    limit:limit
-    page:page
-              completionHandler: ^(inline_response_200_3 output, NSError* error) {
+// returns information about the available games.
+[apiInstance descriptionsChapterGetWith:gameCode
+    gameVersion:gameVersion
+    chapterCode:chapterCode
+              completionHandler: ^(Chapter output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1665,7 +1579,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-javascript">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var YoungResDataComsuptionApi = require('young_res_data_comsuption_api');
 var defaultClient = YoungResDataComsuptionApi.ApiClient.instance;
 // Configure HTTP basic authorization: basicAuth
@@ -1674,11 +1588,10 @@ basicAuth.username = 'YOUR USERNAME'
 basicAuth.password = 'YOUR PASSWORD'
 
 var api = new YoungResDataComsuptionApi.DefaultApi()
-var opts = { 
-  'eventsCodes': , // {{array[String]}} if null all events are returned, otherwise only the events at the list are returned.
-  'limit': 56, // {{Integer}} limits the number of results returned.
-  'page': 56 // {{Integer}} used for pagination, allows skyping limit entries before starting to return results.
-};
+var gameCode = gameCode_example; // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
+var gameVersion = gameVersion_example; // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+var chapterCode = chapterCode_example; // {{String}} chapter to retrieve information from
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -1686,14 +1599,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.eventsGet(opts, callback);
+api.descriptionsChapterGet(gameCode, gameVersion, chapterCode, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-eventsGet-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-csharp">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -1702,7 +1615,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class eventsGetExample
+    public class descriptionsChapterGetExample
     {
         public void main()
         {
@@ -1711,19 +1624,19 @@ namespace Example
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new DefaultApi();
-            var eventsCodes = new array[String](); // array[String] | if null all events are returned, otherwise only the events at the list are returned. (optional) 
-            var limit = 56;  // Integer | limits the number of results returned. (optional) 
-            var page = 56;  // Integer | used for pagination, allows skyping limit entries before starting to return results. (optional) 
+            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from
 
             try
             {
-                // returns information about events inside the video game.
-                inline_response_200_3 result = apiInstance.eventsGet(eventsCodes, limit, page);
+                // returns information about the available games.
+                Chapter result = apiInstance.descriptionsChapterGet(gameCode, gameVersion, chapterCode);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.eventsGet: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.descriptionsChapterGet: " + e.Message );
             }
         }
     }
@@ -1731,7 +1644,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-php">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 // Configure HTTP basic authorization: basicAuth
@@ -1739,20 +1652,20 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERN
 Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
-$eventsCodes = ; // array[String] | if null all events are returned, otherwise only the events at the list are returned.
-$limit = 56; // Integer | limits the number of results returned.
-$page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+$gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+$gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+$chapterCode = chapterCode_example; // String | chapter to retrieve information from
 
 try {
-    $result = $api_instance->eventsGet($eventsCodes, $limit, $page);
+    $result = $api_instance->descriptionsChapterGet($gameCode, $gameVersion, $chapterCode);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->eventsGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->descriptionsChapterGet: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-perl">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
@@ -1761,20 +1674,20 @@ $WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
 $WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $eventsCodes = []; # array[String] | if null all events are returned, otherwise only the events at the list are returned.
-my $limit = 56; # Integer | limits the number of results returned.
-my $page = 56; # Integer | used for pagination, allows skyping limit entries before starting to return results.
+my $gameCode = gameCode_example; # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+my $gameVersion = gameVersion_example; # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+my $chapterCode = chapterCode_example; # String | chapter to retrieve information from
 
 eval { 
-    my $result = $api_instance->eventsGet(eventsCodes => $eventsCodes, limit => $limit, page => $page);
+    my $result = $api_instance->descriptionsChapterGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCode => $chapterCode);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->eventsGet: $@\n";
+    warn "Exception when calling DefaultApi->descriptionsChapterGet: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-eventsGet-0-python">
+                            <div class="tab-pane" id="examples-Default-descriptionsChapterGet-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1786,16 +1699,16 @@ swagger_client.configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-eventsCodes =  # array[String] | if null all events are returned, otherwise only the events at the list are returned. (optional)
-limit = 56 # Integer | limits the number of results returned. (optional)
-page = 56 # Integer | used for pagination, allows skyping limit entries before starting to return results. (optional)
+gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+chapterCode = chapterCode_example # String | chapter to retrieve information from
 
 try: 
-    # returns information about events inside the video game.
-    api_response = api_instance.events_get(eventsCodes=eventsCodes, limit=limit, page=page)
+    # returns information about the available games.
+    api_response = api_instance.descriptions_chapter_get(gameCode, gameVersion, chapterCode)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->eventsGet: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->descriptionsChapterGet: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1811,30 +1724,830 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">eventsCodes</td>
+                                <tr><td style="width:150px;">gameCode*</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_eventsGet_eventsCodes">
+                                    <div id="d2e199_descriptionsChapterGet_gameCode">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
-                                                    array[String]
+                                                    String
                                                 </span>
                                 
                                                     <div class="inner description">
-                                                        if null all events are returned, otherwise only the events at the list are returned.
+                                                        code that identifies a video game. Together  with the version uniquely identifies a video game.
                                                     </div>
                                             </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
+                                <tr><td style="width:150px;">gameVersion*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsChapterGet_gameVersion">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">chapterCode*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsChapterGet_chapterCode">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        chapter to retrieve information from
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Ok, games information is returned </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-descriptionsChapterGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-descriptionsChapterGet-200-schema">
+                                  <div id='responses-descriptionsChapterGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Ok, games information is returned",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Chapter"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-descriptionsChapterGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-descriptionsChapterGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-descriptionsChapterGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Wrong credentials </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal server error with the error message </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-descriptionsEventGet">
+                      <article id="api-Default-descriptionsEventGet-0" data-group="User" data-name="descriptionsEventGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>descriptionsEventGet</h1>
+                          <p>returns information about events inside the video game.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/descriptions/event</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-descriptionsEventGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsEventGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsEventGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsEventGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-descriptionsEventGet-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/descriptions/event?gameCode=&gameVersion=&chapterCode=&eventCode="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        // Configure HTTP basic authorization: basicAuth
+        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
+        basicAuth.setUsername("YOUR USERNAME");
+        basicAuth.setPassword("YOUR PASSWORD");
+
+        DefaultApi apiInstance = new DefaultApi();
+        String gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+        String gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+        String chapterCode = chapterCode_example; // String | chapter to retrieve information from
+        String eventCode = eventCode_example; // String | code of the event to be retreive
+        try {
+            Event result = apiInstance.descriptionsEventGet(gameCode, gameVersion, chapterCode, eventCode);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#descriptionsEventGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        String gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+        String gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+        String chapterCode = chapterCode_example; // String | chapter to retrieve information from
+        String eventCode = eventCode_example; // String | code of the event to be retreive
+        try {
+            Event result = apiInstance.descriptionsEventGet(gameCode, gameVersion, chapterCode, eventCode);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#descriptionsEventGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure HTTP basic authorization (authentication scheme: basicAuth)
+[apiConfig setUsername:@"YOUR_USERNAME"];
+[apiConfig setPassword:@"YOUR_PASSWORD"];
+String *gameCode = gameCode_example; // code that identifies a video game. Together  with the version uniquely identifies a video game.
+String *gameVersion = gameVersion_example; // version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+String *chapterCode = chapterCode_example; // chapter to retrieve information from
+String *eventCode = eventCode_example; // code of the event to be retreive
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// returns information about events inside the video game.
+[apiInstance descriptionsEventGetWith:gameCode
+    gameVersion:gameVersion
+    chapterCode:chapterCode
+    eventCode:eventCode
+              completionHandler: ^(Event output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YoungResDataComsuptionApi = require('young_res_data_comsuption_api');
+var defaultClient = YoungResDataComsuptionApi.ApiClient.instance;
+// Configure HTTP basic authorization: basicAuth
+var basicAuth = defaultClient.authentications['basicAuth'];
+basicAuth.username = 'YOUR USERNAME'
+basicAuth.password = 'YOUR PASSWORD'
+
+var api = new YoungResDataComsuptionApi.DefaultApi()
+var gameCode = gameCode_example; // {{String}} code that identifies a video game. Together  with the version uniquely identifies a video game.
+var gameVersion = gameVersion_example; // {{String}} version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+var chapterCode = chapterCode_example; // {{String}} chapter to retrieve information from
+var eventCode = eventCode_example; // {{String}} code of the event to be retreive
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.descriptionsEventGet(gameCode, gameVersion, chapterCode, eventCode, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-descriptionsEventGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class descriptionsEventGetExample
+    {
+        public void main()
+        {
+            // Configure HTTP basic authorization: basicAuth
+            Configuration.Default.Username = "YOUR_USERNAME";
+            Configuration.Default.Password = "YOUR_PASSWORD";
+
+            var apiInstance = new DefaultApi();
+            var gameCode = gameCode_example;  // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+            var gameVersion = gameVersion_example;  // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+            var chapterCode = chapterCode_example;  // String | chapter to retrieve information from
+            var eventCode = eventCode_example;  // String | code of the event to be retreive
+
+            try
+            {
+                // returns information about events inside the video game.
+                Event result = apiInstance.descriptionsEventGet(gameCode, gameVersion, chapterCode, eventCode);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.descriptionsEventGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+// Configure HTTP basic authorization: basicAuth
+Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERNAME');
+Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$gameCode = gameCode_example; // String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+$gameVersion = gameVersion_example; // String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+$chapterCode = chapterCode_example; // String | chapter to retrieve information from
+$eventCode = eventCode_example; // String | code of the event to be retreive
+
+try {
+    $result = $api_instance->descriptionsEventGet($gameCode, $gameVersion, $chapterCode, $eventCode);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->descriptionsEventGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+# Configure HTTP basic authorization: basicAuth
+$WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
+$WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $gameCode = gameCode_example; # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+my $gameVersion = gameVersion_example; # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+my $chapterCode = chapterCode_example; # String | chapter to retrieve information from
+my $eventCode = eventCode_example; # String | code of the event to be retreive
+
+eval { 
+    my $result = $api_instance->descriptionsEventGet(gameCode => $gameCode, gameVersion => $gameVersion, chapterCode => $chapterCode, eventCode => $eventCode);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->descriptionsEventGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsEventGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+# Configure HTTP basic authorization: basicAuth
+swagger_client.configuration.username = 'YOUR_USERNAME'
+swagger_client.configuration.password = 'YOUR_PASSWORD'
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+gameCode = gameCode_example # String | code that identifies a video game. Together  with the version uniquely identifies a video game.
+gameVersion = gameVersion_example # String | version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+chapterCode = chapterCode_example # String | chapter to retrieve information from
+eventCode = eventCode_example # String | code of the event to be retreive
+
+try: 
+    # returns information about events inside the video game.
+    api_response = api_instance.descriptions_event_get(gameCode, gameVersion, chapterCode, eventCode)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->descriptionsEventGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">gameCode*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsEventGet_gameCode">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        code that identifies a video game. Together  with the version uniquely identifies a video game.
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">gameVersion*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsEventGet_gameVersion">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        version of an specific video game. Together  with the gameCode uniquely identifies a video game.
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">chapterCode*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsEventGet_chapterCode">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        chapter to retrieve information from
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">eventCode*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_descriptionsEventGet_eventCode">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        code of the event to be retreive
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Ok, test are returned </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-descriptionsEventGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-descriptionsEventGet-200-schema">
+                                  <div id='responses-descriptionsEventGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Ok, test are returned",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Event"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-descriptionsEventGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-descriptionsEventGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-descriptionsEventGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Wrong credentials </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal server error with the error message </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-descriptionsGamesGet">
+                      <article id="api-Default-descriptionsGamesGet-0" data-group="User" data-name="descriptionsGamesGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>descriptionsGamesGet</h1>
+                          <p>returns information about the available games.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/descriptions/games</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-descriptionsGamesGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsGamesGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-descriptionsGamesGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-descriptionsGamesGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-descriptionsGamesGet-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/descriptions/games?limit=&page="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        // Configure HTTP basic authorization: basicAuth
+        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
+        basicAuth.setUsername("YOUR USERNAME");
+        basicAuth.setPassword("YOUR PASSWORD");
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer limit = 56; // Integer | limits the number of results returned.
+        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        try {
+            inline_response_200_2 result = apiInstance.descriptionsGamesGet(limit, page);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#descriptionsGamesGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer limit = 56; // Integer | limits the number of results returned.
+        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+        try {
+            inline_response_200_2 result = apiInstance.descriptionsGamesGet(limit, page);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#descriptionsGamesGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure HTTP basic authorization (authentication scheme: basicAuth)
+[apiConfig setUsername:@"YOUR_USERNAME"];
+[apiConfig setPassword:@"YOUR_PASSWORD"];
+Integer *limit = 56; // limits the number of results returned. (optional) (default to 20)
+Integer *page = 56; // used for pagination, allows skyping limit entries before starting to return results. (optional) (default to 0)
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// returns information about the available games.
+[apiInstance descriptionsGamesGetWith:limit
+    page:page
+              completionHandler: ^(inline_response_200_2 output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YoungResDataComsuptionApi = require('young_res_data_comsuption_api');
+var defaultClient = YoungResDataComsuptionApi.ApiClient.instance;
+// Configure HTTP basic authorization: basicAuth
+var basicAuth = defaultClient.authentications['basicAuth'];
+basicAuth.username = 'YOUR USERNAME'
+basicAuth.password = 'YOUR PASSWORD'
+
+var api = new YoungResDataComsuptionApi.DefaultApi()
+var opts = { 
+  'limit': 56, // {{Integer}} limits the number of results returned.
+  'page': 56 // {{Integer}} used for pagination, allows skyping limit entries before starting to return results.
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.descriptionsGamesGet(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class descriptionsGamesGetExample
+    {
+        public void main()
+        {
+            // Configure HTTP basic authorization: basicAuth
+            Configuration.Default.Username = "YOUR_USERNAME";
+            Configuration.Default.Password = "YOUR_PASSWORD";
+
+            var apiInstance = new DefaultApi();
+            var limit = 56;  // Integer | limits the number of results returned. (optional)  (default to 20)
+            var page = 56;  // Integer | used for pagination, allows skyping limit entries before starting to return results. (optional)  (default to 0)
+
+            try
+            {
+                // returns information about the available games.
+                inline_response_200_2 result = apiInstance.descriptionsGamesGet(limit, page);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.descriptionsGamesGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+// Configure HTTP basic authorization: basicAuth
+Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERNAME');
+Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$limit = 56; // Integer | limits the number of results returned.
+$page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
+
+try {
+    $result = $api_instance->descriptionsGamesGet($limit, $page);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->descriptionsGamesGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+# Configure HTTP basic authorization: basicAuth
+$WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
+$WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $limit = 56; # Integer | limits the number of results returned.
+my $page = 56; # Integer | used for pagination, allows skyping limit entries before starting to return results.
+
+eval { 
+    my $result = $api_instance->descriptionsGamesGet(limit => $limit, page => $page);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->descriptionsGamesGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-descriptionsGamesGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+# Configure HTTP basic authorization: basicAuth
+swagger_client.configuration.username = 'YOUR_USERNAME'
+swagger_client.configuration.password = 'YOUR_PASSWORD'
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+limit = 56 # Integer | limits the number of results returned. (optional) (default to 20)
+page = 56 # Integer | used for pagination, allows skyping limit entries before starting to return results. (optional) (default to 0)
+
+try: 
+    # returns information about the available games.
+    api_response = api_instance.descriptions_games_get(limit=limit, page=page)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->descriptionsGamesGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
                                 <tr><td style="width:150px;">limit</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_eventsGet_limit">
+                                    <div id="d2e199_descriptionsGamesGet_limit">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -1853,7 +2566,7 @@ except ApiException as e:
                                 <td>
                                 
                                 
-                                    <div id="d2e199_eventsGet_page">
+                                    <div id="d2e199_descriptionsGamesGet_page">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -1871,26 +2584,26 @@ except ApiException as e:
                             </table>
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Ok, test are returned </h3>
+                            <h3> Status: 200 - Ok, games information is returned </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-eventsGet-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-descriptionsGamesGet-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-eventsGet-200-schema">
-                                  <div id='responses-eventsGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-descriptionsGamesGet-200-schema">
+                                  <div id='responses-descriptionsGamesGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Ok, test are returned",
+  "description" : "Ok, games information is returned",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_3"
+        "$ref" : "#/components/schemas/inline_response_200_2"
       }
     }
   }
@@ -1908,14 +2621,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-eventsGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-eventsGet-200-schema-200');
+                                        $('#responses-descriptionsGamesGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-descriptionsGamesGet-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-eventsGet-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-descriptionsGamesGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -2290,7 +3003,7 @@ public class DefaultApiExample {
 
         DefaultApi apiInstance = new DefaultApi();
         try {
-            inline_response_200 result = apiInstance.filtersStudentGet();
+            inline_response_200_1 result = apiInstance.filtersStudentGet();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#filtersStudentGet");
@@ -2308,7 +3021,7 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
         try {
-            inline_response_200 result = apiInstance.filtersStudentGet();
+            inline_response_200_1 result = apiInstance.filtersStudentGet();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#filtersStudentGet");
@@ -2331,7 +3044,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // returns information related to the possible filters that can be apply to the students. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 [apiInstance filtersStudentGetWithCompletionHandler: 
-              ^(inline_response_200 output, NSError* error) {
+              ^(inline_response_200_1 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -2387,7 +3100,7 @@ namespace Example
             try
             {
                 // returns information related to the possible filters that can be apply to the students. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
-                inline_response_200 result = apiInstance.filtersStudentGet();
+                inline_response_200_1 result = apiInstance.filtersStudentGet();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -2486,7 +3199,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200"
+        "$ref" : "#/components/schemas/inline_response_200_1"
       }
     }
   }
@@ -2588,7 +3301,7 @@ public class DefaultApiExample {
 
         DefaultApi apiInstance = new DefaultApi();
         try {
-            inline_response_200 result = apiInstance.filtersTestGet();
+            inline_response_200_1 result = apiInstance.filtersTestGet();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#filtersTestGet");
@@ -2606,7 +3319,7 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
         try {
-            inline_response_200 result = apiInstance.filtersTestGet();
+            inline_response_200_1 result = apiInstance.filtersTestGet();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#filtersTestGet");
@@ -2629,7 +3342,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // returns information related to the possible filters that can be apply to the test. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 [apiInstance filtersTestGetWithCompletionHandler: 
-              ^(inline_response_200 output, NSError* error) {
+              ^(inline_response_200_1 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -2685,7 +3398,7 @@ namespace Example
             try
             {
                 // returns information related to the possible filters that can be apply to the test. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
-                inline_response_200 result = apiInstance.filtersTestGet();
+                inline_response_200_1 result = apiInstance.filtersTestGet();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -2784,7 +3497,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200"
+        "$ref" : "#/components/schemas/inline_response_200_1"
       }
     }
   }
@@ -2810,870 +3523,6 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-filtersTestGet-200-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 401 - Wrong credentials </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status: 500 - Internal server error with the error message </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-gamesGet">
-                      <article id="api-Default-gamesGet-0" data-group="User" data-name="gamesGet" data-version="0">
-                        <div class="pull-left">
-                          <h1>gamesGet</h1>
-                          <p>returns information about the available games.</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/games</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-gamesGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-gamesGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-gamesGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-gamesGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-gamesGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-gamesGet-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-gamesGet-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/games?gameCode=&gameVersion=&limit=&page="</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-gamesGet-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        // Configure HTTP basic authorization: basicAuth
-        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-        basicAuth.setUsername("YOUR USERNAME");
-        basicAuth.setPassword("YOUR PASSWORD");
-
-        DefaultApi apiInstance = new DefaultApi();
-        String gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-        String gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-        try {
-            inline_response_200_2 result = apiInstance.gamesGet(gameCode, gameVersion, limit, page);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#gamesGet");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-gamesGet-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        String gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-        String gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-        try {
-            inline_response_200_2 result = apiInstance.gamesGet(gameCode, gameVersion, limit, page);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#gamesGet");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-gamesGet-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-// Configure HTTP basic authorization (authentication scheme: basicAuth)
-[apiConfig setUsername:@"YOUR_USERNAME"];
-[apiConfig setPassword:@"YOUR_PASSWORD"];
-String *gameCode = gameCode_example; // id of the game to be selected. If Null all games are ruterned. (optional)
-String *gameVersion = gameVersion_example; // Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional)
-Integer *limit = 56; // limits the number of results returned. (optional)
-Integer *page = 56; // used for pagination, allows skyping limit entries before starting to return results. (optional)
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-// returns information about the available games.
-[apiInstance gamesGetWith:gameCode
-    gameVersion:gameVersion
-    limit:limit
-    page:page
-              completionHandler: ^(inline_response_200_2 output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var YoungResDataComsuptionApi = require('young_res_data_comsuption_api');
-var defaultClient = YoungResDataComsuptionApi.ApiClient.instance;
-// Configure HTTP basic authorization: basicAuth
-var basicAuth = defaultClient.authentications['basicAuth'];
-basicAuth.username = 'YOUR USERNAME'
-basicAuth.password = 'YOUR PASSWORD'
-
-var api = new YoungResDataComsuptionApi.DefaultApi()
-var opts = { 
-  'gameCode': gameCode_example, // {{String}} id of the game to be selected. If Null all games are ruterned.
-  'gameVersion': gameVersion_example, // {{String}} Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-  'limit': 56, // {{Integer}} limits the number of results returned.
-  'page': 56 // {{Integer}} used for pagination, allows skyping limit entries before starting to return results.
-};
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.gamesGet(opts, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-gamesGet-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class gamesGetExample
-    {
-        public void main()
-        {
-            // Configure HTTP basic authorization: basicAuth
-            Configuration.Default.Username = "YOUR_USERNAME";
-            Configuration.Default.Password = "YOUR_PASSWORD";
-
-            var apiInstance = new DefaultApi();
-            var gameCode = gameCode_example;  // String | id of the game to be selected. If Null all games are ruterned. (optional) 
-            var gameVersion = gameVersion_example;  // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional) 
-            var limit = 56;  // Integer | limits the number of results returned. (optional) 
-            var page = 56;  // Integer | used for pagination, allows skyping limit entries before starting to return results. (optional) 
-
-            try
-            {
-                // returns information about the available games.
-                inline_response_200_2 result = apiInstance.gamesGet(gameCode, gameVersion, limit, page);
-                Debug.WriteLine(result);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.gamesGet: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-// Configure HTTP basic authorization: basicAuth
-Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERNAME');
-Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$gameCode = gameCode_example; // String | id of the game to be selected. If Null all games are ruterned.
-$gameVersion = gameVersion_example; // String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-$limit = 56; // Integer | limits the number of results returned.
-$page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-
-try {
-    $result = $api_instance->gamesGet($gameCode, $gameVersion, $limit, $page);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->gamesGet: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-# Configure HTTP basic authorization: basicAuth
-$WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
-$WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $gameCode = gameCode_example; # String | id of the game to be selected. If Null all games are ruterned.
-my $gameVersion = gameVersion_example; # String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-my $limit = 56; # Integer | limits the number of results returned.
-my $page = 56; # Integer | used for pagination, allows skyping limit entries before starting to return results.
-
-eval { 
-    my $result = $api_instance->gamesGet(gameCode => $gameCode, gameVersion => $gameVersion, limit => $limit, page => $page);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->gamesGet: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-gamesGet-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-# Configure HTTP basic authorization: basicAuth
-swagger_client.configuration.username = 'YOUR_USERNAME'
-swagger_client.configuration.password = 'YOUR_PASSWORD'
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-gameCode = gameCode_example # String | id of the game to be selected. If Null all games are ruterned. (optional)
-gameVersion = gameVersion_example # String | Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned. (optional)
-limit = 56 # Integer | limits the number of results returned. (optional)
-page = 56 # Integer | used for pagination, allows skyping limit entries before starting to return results. (optional)
-
-try: 
-    # returns information about the available games.
-    api_response = api_instance.games_get(gameCode=gameCode, gameVersion=gameVersion, limit=limit, page=page)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->gamesGet: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-
-
-
-
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">gameCode</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_gamesGet_gameCode">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    String
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        id of the game to be selected. If Null all games are ruterned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">gameVersion</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_gamesGet_gameVersion">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    String
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        Only used if gameCode is not null, version of a game to be retrieve. If null all versions are returned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">limit</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_gamesGet_limit">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        limits the number of results returned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">page</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_gamesGet_page">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        used for pagination, allows skyping limit entries before starting to return results.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            </table>
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - Ok, test are returned </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-gamesGet-200-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-gamesGet-200-schema">
-                                  <div id='responses-gamesGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Ok, test are returned",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_2"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-gamesGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-gamesGet-200-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-gamesGet-200-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 401 - Wrong credentials </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status: 500 - Internal server error with the error message </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-testGet">
-                      <article id="api-Default-testGet-0" data-group="User" data-name="testGet" data-version="0">
-                        <div class="pull-left">
-                          <h1>testGet</h1>
-                          <p>returns the results of the tests taken by the students.</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/test</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-testGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-testGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-testGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-testGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-testGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-testGet-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-testGet-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET -H "Authorization: Basic [[basicHash]]" "https://virtserver.swaggerhub.com/ponxosio/data_comsuption_api/1.0.0/test?groupFilter=&studentFilter=&testFilter=&limit=&page="</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-testGet-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        // Configure HTTP basic authorization: basicAuth
-        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-        basicAuth.setUsername("YOUR USERNAME");
-        basicAuth.setPassword("YOUR PASSWORD");
-
-        DefaultApi apiInstance = new DefaultApi();
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        array[EntryList] testFilter = ; // array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-        try {
-            inline_response_200_1 result = apiInstance.testGet(groupFilter, studentFilter, testFilter, limit, page);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#testGet");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-testGet-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        array[EntryList] groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-        array[EntryList] studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-        array[EntryList] testFilter = ; // array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied.
-        Integer limit = 56; // Integer | limits the number of results returned.
-        Integer page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-        try {
-            inline_response_200_1 result = apiInstance.testGet(groupFilter, studentFilter, testFilter, limit, page);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#testGet");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-testGet-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-testGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-// Configure HTTP basic authorization (authentication scheme: basicAuth)
-[apiConfig setUsername:@"YOUR_USERNAME"];
-[apiConfig setPassword:@"YOUR_PASSWORD"];
-array[EntryList] *groupFilter = ; // dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-array[EntryList] *studentFilter = ; // dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-array[EntryList] *testFilter = ; // dictionary with the filters to apply to the tests. If empty no filter is applied. (optional)
-Integer *limit = 56; // limits the number of results returned. (optional)
-Integer *page = 56; // used for pagination, allows skyping limit entries before starting to return results. (optional)
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-// returns the results of the tests taken by the students.
-[apiInstance testGetWith:groupFilter
-    studentFilter:studentFilter
-    testFilter:testFilter
-    limit:limit
-    page:page
-              completionHandler: ^(inline_response_200_1 output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-testGet-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var YoungResDataComsuptionApi = require('young_res_data_comsuption_api');
-var defaultClient = YoungResDataComsuptionApi.ApiClient.instance;
-// Configure HTTP basic authorization: basicAuth
-var basicAuth = defaultClient.authentications['basicAuth'];
-basicAuth.username = 'YOUR USERNAME'
-basicAuth.password = 'YOUR PASSWORD'
-
-var api = new YoungResDataComsuptionApi.DefaultApi()
-var opts = { 
-  'groupFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the groups. If empty no filter is applied.
-  'studentFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the students. If empty no filter is applied.
-  'testFilter': , // {{array[EntryList]}} dictionary with the filters to apply to the tests. If empty no filter is applied.
-  'limit': 56, // {{Integer}} limits the number of results returned.
-  'page': 56 // {{Integer}} used for pagination, allows skyping limit entries before starting to return results.
-};
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.testGet(opts, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-testGet-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-testGet-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class testGetExample
-    {
-        public void main()
-        {
-            // Configure HTTP basic authorization: basicAuth
-            Configuration.Default.Username = "YOUR_USERNAME";
-            Configuration.Default.Password = "YOUR_PASSWORD";
-
-            var apiInstance = new DefaultApi();
-            var groupFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional) 
-            var studentFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional) 
-            var testFilter = new array[EntryList](); // array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied. (optional) 
-            var limit = 56;  // Integer | limits the number of results returned. (optional) 
-            var page = 56;  // Integer | used for pagination, allows skyping limit entries before starting to return results. (optional) 
-
-            try
-            {
-                // returns the results of the tests taken by the students.
-                inline_response_200_1 result = apiInstance.testGet(groupFilter, studentFilter, testFilter, limit, page);
-                Debug.WriteLine(result);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.testGet: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-testGet-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-// Configure HTTP basic authorization: basicAuth
-Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERNAME');
-Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$groupFilter = ; // array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-$studentFilter = ; // array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-$testFilter = ; // array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied.
-$limit = 56; // Integer | limits the number of results returned.
-$page = 56; // Integer | used for pagination, allows skyping limit entries before starting to return results.
-
-try {
-    $result = $api_instance->testGet($groupFilter, $studentFilter, $testFilter, $limit, $page);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->testGet: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-testGet-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-# Configure HTTP basic authorization: basicAuth
-$WWW::SwaggerClient::Configuration::username = 'YOUR_USERNAME';
-$WWW::SwaggerClient::Configuration::password = 'YOUR_PASSWORD';
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $groupFilter = []; # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied.
-my $studentFilter = []; # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied.
-my $testFilter = []; # array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied.
-my $limit = 56; # Integer | limits the number of results returned.
-my $page = 56; # Integer | used for pagination, allows skyping limit entries before starting to return results.
-
-eval { 
-    my $result = $api_instance->testGet(groupFilter => $groupFilter, studentFilter => $studentFilter, testFilter => $testFilter, limit => $limit, page => $page);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->testGet: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-testGet-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-# Configure HTTP basic authorization: basicAuth
-swagger_client.configuration.username = 'YOUR_USERNAME'
-swagger_client.configuration.password = 'YOUR_PASSWORD'
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-groupFilter =  # array[EntryList] | dictionary with the filters to apply to the groups. If empty no filter is applied. (optional)
-studentFilter =  # array[EntryList] | dictionary with the filters to apply to the students. If empty no filter is applied. (optional)
-testFilter =  # array[EntryList] | dictionary with the filters to apply to the tests. If empty no filter is applied. (optional)
-limit = 56 # Integer | limits the number of results returned. (optional)
-page = 56 # Integer | used for pagination, allows skyping limit entries before starting to return results. (optional)
-
-try: 
-    # returns the results of the tests taken by the students.
-    api_response = api_instance.test_get(groupFilter=groupFilter, studentFilter=studentFilter, testFilter=testFilter, limit=limit, page=page)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->testGet: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-
-
-
-
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">groupFilter</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_testGet_groupFilter">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[EntryList]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        dictionary with the filters to apply to the groups. If empty no filter is applied.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">studentFilter</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_testGet_studentFilter">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[EntryList]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        dictionary with the filters to apply to the students. If empty no filter is applied.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">testFilter</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_testGet_testFilter">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[EntryList]
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        dictionary with the filters to apply to the tests. If empty no filter is applied.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">limit</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_testGet_limit">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        limits the number of results returned.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">page</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_testGet_page">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Integer
-                                                </span>
-                                
-                                                    <div class="inner description">
-                                                        used for pagination, allows skyping limit entries before starting to return results.
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            </table>
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - Ok, test are returned </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-testGet-200-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-testGet-200-schema">
-                                  <div id='responses-testGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Ok, test are returned",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_1"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-testGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-testGet-200-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-testGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
