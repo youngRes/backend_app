@@ -8,7 +8,9 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8883/data
-  description: docker based server
+  description: for local testing
+- url: http://torresquevedo.eui.upm.es:8883/data
+  description: development server at UPM
 security:
 - basicAuth: []
 paths:
@@ -531,7 +533,7 @@ components:
         filters:
           type: array
           description: list of filters that the user can access
-          example: 
+          example:
           - filter1
           - filter2
           - filter3
@@ -541,7 +543,7 @@ components:
         groups:
           type: array
           description: description of the events where this decession was taken
-          example: 
+          example:
           - group1
           - group2
           - group3
