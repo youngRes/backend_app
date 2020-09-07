@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
   consumption:
-    image: youngres/youngres_consumption_api:a5a0b03
+    image: youngres/youngres_consumption_api:ca798ff
     ports:
       - "8883:8080"
     expose:
