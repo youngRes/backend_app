@@ -9,7 +9,7 @@ info:
 servers:
 - url: http://localhost:8883/data
   description: for local testing
-- url: http://torresquevedo.eui.upm.es:8883/data
+- url: http://138.100.158.35:8883/data
   description: development server at UPM
 security:
 - basicAuth: []

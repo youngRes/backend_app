@@ -9,7 +9,7 @@ info:
 servers:
 - url: http://localhost:8882/gameplay
   description: for local testing
-- url: http://torresquevedo.eui.upm.es:8882/gameplay
+- url: http://138.100.158.35:8882/gameplay
   description: development server at upm
 security:
 - basicAuth: []
