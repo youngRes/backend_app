@@ -10,12 +10,14 @@ from swagger_server.models.game import Game
 from swagger_server.models.chapter import Chapter  # noqa: E501
 from swagger_server.models.event import Event  # noqa: E501
 from swagger_server.models.filter import Filter
+
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
 from swagger_server.models.inline_response2002 import InlineResponse2002  # noqa: E501
 from swagger_server.models.inline_response2003 import InlineResponse2003  # noqa: E501
 from swagger_server import util
 
+import swagger_server.mongo_connection.mongo_queries as dbq
 
 def decision_get(game_code, game_version, chapter_code):  # noqa: E501
     """returns decisions taken by students. Has several filter options.
@@ -33,24 +35,55 @@ def decision_get(game_code, game_version, chapter_code):  # noqa: E501
     """
     # Header paramets are not pass as a paramets, instead they are contained in the headers variable and need to processed by hand
     filters = None
+    existingFilters = False
     filters_str = connexion.request.headers.get("filters")
     if filters_str is not None:
+        existingFilters = True
         filters = FilterApply.from_dict(json.loads(filters_str))
+    
+    decisions = dbq.get_decisions(game_code, game_version, chapter_code)
 
-    # process the request
-    if chapter_code == "C1":
-        ds = [
-            Decision(event_code="e1.1", event_description="Whats animal is your pet?", event_type="multiple-choice", choice="cat"),
-            Decision(event_code="e1.1", event_description="Whats animal is your pet?", event_type="multiple-choice", choice="dog")
-        ]
+    ds = []
+    if existingFilters == False:
+        for dec in decisions:
+            event = dbq.get_event(game_code, game_version, chapter_code, dec['eventCode'])
+            ds.append(Decision(event_code=dec['eventCode'], event_description=event['description'], event_type=event['type'], choice=dec['decision']))
+        return InlineResponse2003(decisions=ds)
     else:
-        ds = [
-            Decision(event_code="e2.1", event_description="Seconds waiting for your friend", event_type="timed", choice="90"),
-            Decision(event_code="e2.1", event_description="Seconds waiting for your friend", event_type="timed", choice="10")
-        ]
-
-    return InlineResponse2003(decisions=ds)
-
+        for dec in decisions:
+            ## This variable manages if the decision fulfills the filters
+            valid_ = True
+            student = dbq.get_student(dec['studentCode'])  ## Get the student attached to this decision
+            for filtStu in filters.student: ## Loop over student filters
+                #return filtStu
+                filter_ = dbq.get_student_filter_type(filtStu._key) ## Get the student filter type (textual or numeric)
+                ## If the decision does not fulfill the filter, set valid to False
+                if filter_['type'] == 'textual':
+                    if student[filtStu._key] != filtStu._value:
+                        valid_ = False
+                        pass
+                elif filter_['type'] == 'numeric':
+                    if int(student[filtStu._key]) > int(filtStu._max_value) or int(student[filtStu._key]) < int(filtStu._min_value):
+                        valid_ = False
+                        pass
+            group = dbq.get_group(student['groupCode']) ## Get the group attached to this decision
+            for filtStu in filters.group: ## Loop over student filters
+                filter_ = dbq.get_group_filter_type(filtStu._key) ## Get the student filter type (textual or numeric)
+                ## If the decision does not fulfill the filter, set valid to False
+                if filter_['type'] == 'textual':
+                    if group[filtStu._key] != filtStu._value:
+                        valid_ = False
+                        pass
+                elif filter_['type'] == 'numeric':
+                    if int(group[filtStu._key]) > int(filtStu._max_value) or int(group[filtStu._key]) < int(filtStu._min_value):
+                        valid_ = False
+                        pass
+            ## If valid keeps True, the decision is added to the result list
+            if valid_ == True:
+                event = dbq.get_event(game_code, game_version, chapter_code, dec['eventCode'])
+                ds.append(Decision(event_code=dec['eventCode'], event_description=event['description'], event_type=event['type'], choice=dec['decision']))
+        return ds
+        return InlineResponse2003(decisions=ds)
 
 def descriptions_chapter_get(game_code, game_version, chapter_code):  # noqa: E501
     """returns information about the available games.
@@ -66,25 +99,10 @@ def descriptions_chapter_get(game_code, game_version, chapter_code):  # noqa: E5
     :rtype: Chapter
     """
 
-    if chapter_code == "C1":
-        return Chapter(
-            chapter_code="C1",
-            chapter_description="Chapter-1: Welcome to the school",
-            highlights=[
-                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ],
-            snapshot="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Happy_smiley_face.png/600px-Happy_smiley_face.png")
-    else:
-        return Chapter(
-            chapter_code="C2",
-            chapter_description="Chapter-2: Moms new job",
-            highlights=[
-                "H1 - Lorem ipsum dolomultiple-choicer sit amet, consectehttps://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Happy_smiley_face.png/600px-Happy_smiley_face.pngtur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ],
-            snapshot="https://es.m.wikipedia.org/wiki/Archivo:Happy_smiley_face.png#/media/File%3A718smiley.png")
-
+    chapter = dbq.get_chapter(game_code, game_version, chapter_code)
+    if chapter == None:
+        return None
+    return Chapter(chapter_code=chapter_code, chapter_description=chapter['chapterDescription'], highlights=chapter['highlights'], snapshot=chapter['snapshot'])
 
 def descriptions_event_get(game_code, game_version, chapter_code, event_code):  # noqa: E501
     """returns information about events inside the video game.
@@ -102,30 +120,18 @@ def descriptions_event_get(game_code, game_version, chapter_code, event_code):  
 
     :rtype: Event
     """
+    event = dbq.get_event(game_code, game_version, chapter_code, event_code)
 
-    if event_code == "e1.1":
-        e = Event(
-            event_code="e1.1",
-            event_description="Whats animal is your pet?",
-            highlights=[
-                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ],
-            event_type="multiple-choice",
-            parent_decision=None,
-            possible_choices=['cat', 'dog', 'no pet'])
-    else:
-        e = Event(
-            event_code="e2.1",
-            event_description="Seconds waiting for your friend",
-            highlights=[
-                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ],
-            event_type="timed",
-            parent_decision=None,
-            possible_choices=['1', '90'])
-    return e
+    if event == None:
+        return None
+
+    return Event(event_code=event_code,
+                event_description=event['description'], 
+                highlights=event['highlights'], 
+                event_type=event['type'], 
+                parent_decision=event['parentDecision'], 
+                possible_choices=event['possibleChoices']
+                )
 
 
 def descriptions_games_get(limit=None, page=None):  # noqa: E501
@@ -140,15 +146,22 @@ def descriptions_games_get(limit=None, page=None):  # noqa: E501
 
     :rtype: InlineResponse2002
     """
-    gs = [
-        Game(
-            game_code="G1",
-            game_version="v1",
-            game_description="Game were LGTBI content is discussed",
-            number_players="60",
-            countries=["Spain", "Finland"],
-            chapters=["C1", "C2"])
-    ]
+    games = dbq.get_games()
+    if games == None:
+        return None
+    gs = []
+    for index, game in enumerate(games):
+        if index < limit or limit==None:
+            students = dbq.get_game_students(game['gameCode'], game['version'])
+            countries = dbq.get_game_countries(game['gameCode'], game['version'], students)
+            gs.append(
+                Game(game_code=game['gameCode'],
+                     game_version=game['version'],
+                     game_description=game['gameDescription'],
+                     number_players=str(len(students)),
+                     countries=countries,
+                     chapters=game['chapters'])
+                    )
     return InlineResponse2002(games=gs)
 
 
@@ -157,41 +170,55 @@ def filters_group_get():  # noqa: E501
 
      # noqa: E501
 
-
     :rtype: InlineResponse200
     """
+
+    username = connexion.request.authorization.username
+
+    permissions = dbq.get_user_credentials(username)
+    all_filters = permissions['filters']
+    all_groups = permissions['groups']
+    filters = []
+    group_ids = []
+    for ele in all_filters:
+        filter_ = dbq.get_filter(ele)
+        if filter_['table'] == 'groups':
+            filters.append(Filter(id=ele, type=filter_['type'], values=dbq.get_filter_values(filter_['table'], filter_['field'])))
+    for ele in all_groups:
+        group_ = dbq.get_group(ele)
+        group_ids.append(Group(group_id=ele, description=group_['description']))
+
     return InlineResponse200(
-        filters=[
-            Filter(id="country", type="textual", values=["Spain", "Finland"]),
-            Filter(id="city", type="textual", values=["Madrid", "Oulu"])
-        ],
-        group_ids=[
-            Group(group_id="UPM_3A", description="Class 3º A from UPM"),
-            Group(group_id="UPM_3B", description="Class 3º B from UPM")
-        ])
+        filters=filters,
+        group_ids=group_ids
+        )
 
 
 def filters_student_get():  # noqa: E501
     """returns information related to the possible filters that can be apply to the students. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 
      # noqa: E501
-
-
     :rtype: InlineResponse2001
     """
+
+    username = connexion.request.authorization.username
+    permissions = dbq.get_user_credentials(username)
+    all_filters = permissions['filters']
+    filters = []
+    for ele in all_filters:
+        filter_ = dbq.get_filter(ele)
+        if filter_['table'] == 'students':
+            filters.append(Filter(id=ele, type=filter_['type'], values=dbq.get_filter_values(filter_['table'], filter_['field'])))
+
     return InlineResponse2001(
-        filters=[
-            Filter(id="sex", type="textual", values=["Female", "Male"]),
-            Filter(id="age", type="numeric", values=["10", "13"])
-        ])
+        filters=filters
+        )
 
 
 def filters_test_get():  # noqa: E501
     """returns information related to the possible filters that can be apply to the test. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 
      # noqa: E501
-
-
     :rtype: InlineResponse2001
     """
     return 'for now not in use'

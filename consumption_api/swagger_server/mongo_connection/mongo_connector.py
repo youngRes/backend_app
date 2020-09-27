@@ -141,3 +141,14 @@ class MongoDBConnection(object):
             raise RuntimeError("Database Connection need to be initialised")
         else:
             return cls.driver.login_db.credentials
+
+    @classmethod
+    def get_filters_collection(cls):
+        """
+        Gets the actual connection to the MongoDB database, and exception is raised if the connection is not initialized
+        :return: the connection object to the MongoDB database
+        """
+        if cls.driver is None:
+            raise RuntimeError("Database Connection need to be initialised")
+        else:
+            return cls.driver.games_db.filters

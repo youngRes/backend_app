@@ -8,6 +8,7 @@ from swagger_server.mongo_connection.mongo_connector import MongoDBConnection
 
 
 def main():
+    
     #initilize connection with MongoDB
     MongoDBConnection.initialize_connection('db', 27017)
 
