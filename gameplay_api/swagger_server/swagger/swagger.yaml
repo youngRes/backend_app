@@ -8,7 +8,9 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8882/gameplay
-  description: Gameplay api
+  description: for local testing
+- url: http://138.100.158.35:8882/gameplay
+  description: development server at upm
 security:
 - basicAuth: []
 paths:

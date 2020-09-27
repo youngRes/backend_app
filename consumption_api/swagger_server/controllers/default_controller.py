@@ -10,7 +10,7 @@ from swagger_server.models.game import Game
 from swagger_server.models.chapter import Chapter  # noqa: E501
 from swagger_server.models.event import Event  # noqa: E501
 from swagger_server.models.filter import Filter
-from swagger_server.models.credential import Credential
+
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
 from swagger_server.models.inline_response2002 import InlineResponse2002  # noqa: E501
@@ -85,8 +85,6 @@ def decision_get(game_code, game_version, chapter_code):  # noqa: E501
         return ds
         return InlineResponse2003(decisions=ds)
 
-
-
 def descriptions_chapter_get(game_code, game_version, chapter_code):  # noqa: E501
     """returns information about the available games.
 
@@ -106,7 +104,6 @@ def descriptions_chapter_get(game_code, game_version, chapter_code):  # noqa: E5
         return None
     return Chapter(chapter_code=chapter_code, chapter_description=chapter['chapterDescription'], highlights=chapter['highlights'], snapshot=chapter['snapshot'])
 
-
 def descriptions_event_get(game_code, game_version, chapter_code, event_code):  # noqa: E501
     """returns information about events inside the video game.
 
@@ -123,7 +120,6 @@ def descriptions_event_get(game_code, game_version, chapter_code, event_code):  
 
     :rtype: Event
     """
-
     event = dbq.get_event(game_code, game_version, chapter_code, event_code)
 
     if event == None:
@@ -150,7 +146,6 @@ def descriptions_games_get(limit=None, page=None):  # noqa: E501
 
     :rtype: InlineResponse2002
     """
-
     games = dbq.get_games()
     if games == None:
         return None
@@ -167,7 +162,6 @@ def descriptions_games_get(limit=None, page=None):  # noqa: E501
                      countries=countries,
                      chapters=game['chapters'])
                     )
-
     return InlineResponse2002(games=gs)
 
 
@@ -204,8 +198,6 @@ def filters_student_get():  # noqa: E501
     """returns information related to the possible filters that can be apply to the students. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 
      # noqa: E501
-
-
     :rtype: InlineResponse2001
     """
 
@@ -227,8 +219,6 @@ def filters_test_get():  # noqa: E501
     """returns information related to the possible filters that can be apply to the test. Each field contains the name, the type (numeric, textual) and all the values associated to that filter (without repetition).
 
      # noqa: E501
-
-
     :rtype: InlineResponse2001
     """
     return 'for now not in use'

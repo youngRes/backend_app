@@ -9,7 +9,7 @@ info:
 servers:
 - url: http://localhost:8883/data
   description: for local testing
-- url: http://torresquevedo.eui.upm.es:8883/data
+- url: http://138.100.158.35:8883/data
   description: development server at UPM
 security:
 - basicAuth: []
@@ -527,37 +527,6 @@ components:
         eventDescription: in this event the student is asked for its favorite pet...
         eventType: choice
         choice: cat
-    Credential:
-      type: object
-      properties:
-        filters:
-          type: array
-          description: list of filters that the user can access
-          example:
-          - filter1
-          - filter2
-          - filter3
-          - filter4
-          items:
-            type: string
-        groups:
-          type: array
-          description: description of the events where this decession was taken
-          example:
-          - group1
-          - group2
-          - group3
-          - group4
-          items:
-            type: string
-        password:
-          type: string
-          description: password for the user. Must be encrypted
-          example: pass
-        role:
-          type: string
-          description: Role that the user has in the system
-          example: admin
     inline_response_200:
       properties:
         filters:

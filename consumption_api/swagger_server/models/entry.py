@@ -14,7 +14,7 @@ class Entry(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, key: str=None, min_value: str=None, max_value: str=None, value: str=None):  # noqa: E501
+    def __init__(self, key: str=None, min_value: str=None, max_value: str=None):  # noqa: E501
         """Entry - a model defined in Swagger
 
         :param key: The key of this Entry.  # noqa: E501
@@ -27,20 +27,17 @@ class Entry(Model):
         self.swagger_types = {
             'key': str,
             'min_value': str,
-            'max_value': str,
-            'value': str
+            'max_value': str
         }
 
         self.attribute_map = {
             'key': 'key',
             'min_value': 'min_value',
-            'max_value': 'max_value',
-            'value': 'value'
+            'max_value': 'max_value'
         }
         self._key = key
         self._min_value = min_value
         self._max_value = max_value
-        self._value = value
 
     @classmethod
     def from_dict(cls, dikt) -> 'Entry':
@@ -115,25 +112,3 @@ class Entry(Model):
         """
 
         self._max_value = max_value
-
-    @property
-    def value(self) -> str:
-        """Gets the value of this Entry.
-
-
-        :return: The value of this Entry.
-        :rtype: str
-        """
-        return self._value
-
-    @max_value.setter
-    def value(self, value: str):
-        """Sets the max_value of this Entry.
-
-
-        :param value: The value of this Entry.
-        :type max_value: str
-        """
-
-        self._value = value
-
