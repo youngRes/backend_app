@@ -11,9 +11,42 @@ servers:
   description: for local testing
 - url: http://138.100.158.35:8883/data
   description: development server at UPM
-security:
-- basicAuth: []
 paths:
+  /login:
+    post:
+      summary: Logins an user into the system.
+      operationId: login_post
+      parameters:
+      - name: user
+        in: header
+        description: user name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: admin
+      - name: password
+        in: header
+        description: plain password
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: 1234
+      responses:
+        "200":
+          description: Ok, the user exists and a token is returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        "401":
+          description: Wrong credentials
+        "500":
+          description: Internal server error with the error message
+      x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/group:
     get:
       summary: returns information related to the possible filters that can be apply
@@ -31,6 +64,8 @@ paths:
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/student:
     get:
@@ -49,6 +84,8 @@ paths:
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/test:
     get:
@@ -67,6 +104,8 @@ paths:
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /descriptions/games:
     get:
@@ -103,6 +142,8 @@ paths:
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /descriptions/chapter:
     get:
@@ -147,8 +188,12 @@ paths:
                 $ref: '#/components/schemas/Chapter'
         "401":
           description: Wrong credentials
+        "404":
+          description: The specified chapter is not on the database
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /descriptions/event:
     get:
@@ -202,8 +247,12 @@ paths:
                 $ref: '#/components/schemas/Event'
         "401":
           description: Wrong credentials
+        "404":
+          description: The specified chapter is not on the database
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /decision:
     get:
@@ -259,6 +308,8 @@ paths:
           description: Wrong credentials
         "500":
           description: Internal server error with the error message
+      security:
+      - bearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.default_controller
 components:
   schemas:
@@ -527,6 +578,16 @@ components:
         eventDescription: in this event the student is asked for its favorite pet...
         eventType: choice
         choice: cat
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+          description: encrypted token to be stored on the client
+          example: gjhafHJGHghjhjfghJHLK
+      description: data type used as token in the JWT scheme
+      example:
+        token: gjhafHJGHghjhjfghJHLK
     inline_response_200:
       properties:
         filters:
@@ -621,7 +682,8 @@ components:
           eventType: choice
           choice: cat
   securitySchemes:
-    basicAuth:
+    bearerAuth:
       type: http
-      scheme: basic
-      x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: swagger_server.controllers.authorization_controller.check_bearerAuth
