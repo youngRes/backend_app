@@ -115,15 +115,15 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             event_code=row['eventCode'],
             event_description=event_dict[row['eventCode']]['description'],
             event_type=event_dict[row['eventCode']]['type'],
-            choice=list(row['fields'].values())[0] # the first value stored in the dictionary field is the actual choice
+            choice=list(row['fields'].values())[0]  # the first value stored in the dictionary field is the actual choice
         )
     try:
-        # Header paramets are not pass as a paramets, instead they are contained in
+        # Header parameters are not pass as a parameters, instead they are contained in
         # the headers variable and need to processed by hand
         filters_str = connexion.request.headers.get("filters")
         filters = None
         if filters_str is not None:
-             filters = FilterApply.from_dict(json.loads(filters_str))
+            filters = FilterApply.from_dict(json.loads(filters_str))
 
         # get the user from the token and check his groups
         username = token_info['user']
@@ -139,16 +139,16 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             group_ids = _process_group_filter(filters._group)
             students_ids = _process_student_filter(filters._student)
 
-        # get the events of the chapter for creating the decissions
+        # get the events of the chapter for creating the decisions
         event_dict = {}
         with dbq.get_events(game_code, game_version, chapter_code) as cursor:
             for row in cursor:
                 event_dict[row['_id']] = row
 
-        # get the list of eventCodes for retrieving the decissions
+        # get the list of eventCodes for retrieving the decisions
         event_ids = list(event_dict.keys())
 
-        # read and process the decissions
+        # read and process the decisions
         ds = [_make_decision(row) for row in dbq.get_decisions(students_ids, event_ids)]
         return InlineResponse2003(decisions=ds)
 
