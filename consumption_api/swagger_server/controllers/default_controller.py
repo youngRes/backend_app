@@ -1,8 +1,7 @@
 import connexion
 import json
-import six
 import sys
-from flask import abort
+
 from typing import List, Dict
 from werkzeug.exceptions import Unauthorized, InternalServerError, NotFound
 
@@ -20,7 +19,6 @@ from swagger_server.models.inline_response200 import InlineResponse200  # noqa: 
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
 from swagger_server.models.inline_response2002 import InlineResponse2002  # noqa: E501
 from swagger_server.models.inline_response2003 import InlineResponse2003  # noqa: E501
-from swagger_server import util
 
 import swagger_server.mongo_connection.mongo_queries as dbq
 
@@ -119,40 +117,44 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             event_type=event_dict[row['eventCode']]['type'],
             choice=list(row['fields'].values())[0] # the first value stored in the dictionary field is the actual choice
         )
+    try:
+        # Header paramets are not pass as a paramets, instead they are contained in
+        # the headers variable and need to processed by hand
+        filters_str = connexion.request.headers.get("filters")
+        filters = None
+        if filters_str is not None:
+             filters = FilterApply.from_dict(json.loads(filters_str))
 
-    # Header paramets are not pass as a paramets, instead they are contained in
-    # the headers variable and need to processed by hand
-    filters_str = connexion.request.headers.get("filters")
-    filters = None
-    if filters_str is not None:
-         filters = FilterApply.from_dict(json.loads(filters_str))
+        # get the user from the token and check his groups
+        username = token_info['user']
+        permissions = dbq.get_user_credentials(username)
+        all_groups = permissions['groups']
 
-    # get the user from the token and check his groups
-    username = token_info['user']
-    permissions = dbq.get_user_credentials(username)
-    all_groups = permissions['groups']
+        if filters is None:
+            # if no filters are present then select all the students available
+            # for the user
+            students_ids = dbq.get_students_in_groups(all_groups).distinct('_id')
+        else:
+            # process the students and groups filters
+            group_ids = _process_group_filter(filters._group)
+            students_ids = _process_student_filter(filters._student)
 
-    if filters is None:
-        # if no filters are present then select all the students available
-        # for the user
-        students_ids = dbq.get_students_in_groups(all_groups).distinct('_id')
-    else:
-        # process the students and groups filters
-        group_ids = _process_group_filter(filters._group)
-        students_ids = _process_student_filter(filters._student)
+        # get the events of the chapter for creating the decissions
+        event_dict = {}
+        with dbq.get_events(game_code, game_version, chapter_code) as cursor:
+            for row in cursor:
+                event_dict[row['_id']] = row
 
-    # get the events of the chapter for creating the decissions
-    event_dict = {}
-    with dbq.get_events(game_code, game_version, chapter_code) as cursor:
-        for row in cursor:
-            event_dict[row['_id']] = row
+        # get the list of eventCodes for retrieving the decissions
+        event_ids = list(event_dict.keys())
 
-    # get the list of eventCodes for retrieving the decissions
-    event_ids = list(event_dict.keys())
+        # read and process the decissions
+        ds = [_make_decision(row) for row in dbq.get_decisions(students_ids, event_ids)]
+        return InlineResponse2003(decisions=ds)
 
-    # read and process the decissions
-    ds = [_make_decision(row) for row in dbq.get_decisions(students_ids, event_ids)]
-    return InlineResponse2003(decisions=ds)
+    except Exception as e:
+        print(f'{e}', file=sys.stderr)
+        raise InternalServerError
 
 
 def descriptions_chapter_get(game_code, game_version, chapter_code, token_info):  # noqa: E501
@@ -181,6 +183,7 @@ def descriptions_chapter_get(game_code, game_version, chapter_code, token_info):
                 snapshot=chapter['snapshot'])
     else:
         raise NotFound
+
 
 def descriptions_event_get(game_code, game_version, chapter_code, event_code, token_info):  # noqa: E501
     """returns information about events inside the video game.
@@ -215,7 +218,6 @@ def descriptions_event_get(game_code, game_version, chapter_code, event_code, to
         raise NotFound
 
 
-
 def descriptions_games_get(token_info, limit=None, page=None):  # noqa: E501
     """returns information about the available games.
 
@@ -239,7 +241,7 @@ def descriptions_games_get(token_info, limit=None, page=None):  # noqa: E501
                 Game(game_code=game['gameCode'],
                      game_version=game['version'],
                      game_description=game['gameDescription'],
-                     number_players=str(len(students)),
+                     number_players=len(students),
                      countries=countries,
                      chapters=game['chapters'])
                     )
@@ -311,6 +313,7 @@ def filters_test_get(token_info):  # noqa: E501
     :rtype: InlineResponse2001
     """
     return f"{token_info['user']}"
+
 
 def login_post():  # noqa: E501event = dbq.get_event_by_id(event_code)
     """Logins an user into the system.

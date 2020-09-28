@@ -65,3 +65,4 @@ target/
 gameplay_api/.swagger-codegen-ignore
 gameplay_api/.swagger-codegen/
 consumption_api/.swagger-codegen/
+.idea/
