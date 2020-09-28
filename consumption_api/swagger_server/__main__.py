@@ -7,7 +7,7 @@ from swagger_server.mongo_connection.mongo_connector import MongoDBConnection
 
 
 def main():
-    MongoDBConnection.initialize_connection('db', 27017)
+    MongoDBConnection.initialize_connection('dummydb', 27017)
 
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = encoder.JSONEncoder
