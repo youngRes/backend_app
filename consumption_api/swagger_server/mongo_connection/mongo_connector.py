@@ -41,7 +41,6 @@ class MongoDBConnection(object):
             raise RuntimeError("Database Connection need to be initialised")
         else:
             cls.driver.drop_database('games_db')
-            cls.driver.drop_database('login_db')
 
     @classmethod
     def get_groups_collection(cls):
@@ -140,7 +139,7 @@ class MongoDBConnection(object):
         if cls.driver is None:
             raise RuntimeError("Database Connection need to be initialised")
         else:
-            return cls.driver.login_db.credentials
+            return cls.driver.games_db.credentials
 
     @classmethod
     def get_filters_collection(cls):

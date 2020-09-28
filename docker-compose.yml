@@ -27,7 +27,10 @@ services:
     depends_on:
       - db
   consumption:
-    image: youngres/youngres_consumption_api:ca798ff
+    image: youngres_consumption_api #youngres/youngres_consumption_api:ca798ff
+    environment:
+      # provide your credentials here
+      - SECRET_KEY=${SECRET_KEY}
     ports:
       - "8883:8080"
     expose:
