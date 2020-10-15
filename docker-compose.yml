@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
   consumption:
-    image: youngres/youngres_consumption_api:2edeeb3
+    image: youngres/youngres_consumption_api:3c60668
     environment:
       # provide your credentials here
       - SECRET_KEY=${SECRET_KEY}
