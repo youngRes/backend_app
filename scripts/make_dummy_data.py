@@ -53,7 +53,7 @@ def funtionality(host: str, port: int):
                 "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             ],
-            'snapshot': 'https://es.m.wikipedia.org/wiki/Archivo:Happy_smiley_face.png#/media/File%3A718smiley.png'
+            'snapshot': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/718smiley.png'
         },
         {
             'chapterCode': 'C1',
@@ -117,6 +117,20 @@ def funtionality(host: str, port: int):
             "type":"timed",
             "parentDecision":None,
             "possibleChoices":['1', '90']
+        },
+        {
+            "_id":"e.G1.1.3",
+            'chapterCode': 'C1',
+            'gameCode': 'G1',
+            'version': 'v1',
+            "description": "Who do you play with?",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"multiple-choice",
+            "parentDecision":None,
+            "possibleChoices":['Alan', 'Sally', 'play alone']
         },
         # CHAPTER 2
         {
@@ -272,6 +286,11 @@ def funtionality(host: str, port: int):
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '90'}
         },
+        {
+            'studentCode': '1',
+            'eventCode':'e.G1.1.3',
+            'fields': {'play': 'Alan'}
+        },
         # CHAPTER 2
         {
             'studentCode': '1',
@@ -296,6 +315,11 @@ def funtionality(host: str, port: int):
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '1'}
         },
+        {
+            'studentCode': '2',
+            'eventCode':'e.G1.1.3',
+            'fields': {'play': 'Sally'}
+        },
         # CHAPTER 2
         {
             'studentCode': '2',
@@ -319,6 +343,11 @@ def funtionality(host: str, port: int):
             'studentCode': '3',
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '30'}
+        },
+        {
+            'studentCode': '3',
+            'eventCode':'e.G1.1.3',
+            'fields': {'play': 'Sally'}
         },
         # CHAPTER 2
         {
@@ -366,6 +395,11 @@ def funtionality(host: str, port: int):
             'studentCode': '4',
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '5'}
+        },
+        {
+            'studentCode': '4',
+            'eventCode':'e.G1.1.3',
+            'fields': {'play': 'play alone'}
         },
         # CHAPTER 2
         {
