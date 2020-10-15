@@ -9,12 +9,20 @@ def funtionality(host: str, port: int):
 
     # GAMES
     db = driver.games_db.games
-    db.insert_one({
-        'gameCode': 'G1',
-        'version': 'v1',
-        'gameDescription': 'Game were LGTBI content is discussed',
-        'chapters': ['C1', 'C2']
-    })
+    db.insert_many([
+        {
+            'gameCode': 'G1',
+            'version': 'v1',
+            'gameDescription': 'Game were LGTBI content is discussed',
+            'chapters': ['C1', 'C2']
+        },
+        {
+            'gameCode': 'G2',
+            'version': 'v1',
+            'gameDescription': 'Game were Minorities content is discussed',
+            'chapters': ['C1', 'C2']
+        },
+    ])
 
     # CHAPTERS
     db = driver.games_db.chapters
@@ -46,14 +54,44 @@ def funtionality(host: str, port: int):
                 "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             ],
             'snapshot': 'https://es.m.wikipedia.org/wiki/Archivo:Happy_smiley_face.png#/media/File%3A718smiley.png'
+        },
+        {
+            'chapterCode': 'C1',
+            'gameCode': 'G2',
+            'version': 'v1',
+            'chapterDescription': 'Chapter-1: Leaving your home',
+            'startScene': 'scene1',
+            'startX':'100',
+            'startY':'100',
+            'highlights': [
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            'snapshot': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/MOREmoji_kirakira.svg/512px-MOREmoji_kirakira.svg.png'
+        },
+        {
+            'chapterCode': 'C2',
+            'gameCode': 'G2',
+            'version': 'v1',
+            'chapterDescription': 'Chapter-2: Arriving to a new country',
+            'startScene': 'scene3',
+            'startX':'100',
+            'startY':'100',
+            'highlights': [
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            'snapshot': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/MOREmoji_forcedsmile.svg/512px-MOREmoji_forcedsmile.svg.png'
         }
     ])
 
     # EVENTS
     db = driver.games_db.events
     db.insert_many([
+        # GAME 1
+        # CHAPTER 1
         {
-            "_id":"e1.1",
+            "_id":"e.G1.1.1",
             'chapterCode': 'C1',
             'gameCode': 'G1',
             'version': 'v1',
@@ -67,8 +105,8 @@ def funtionality(host: str, port: int):
             "possibleChoices":['cat', 'dog', 'no pet']
         },
         {
-            "_id":"e2.1",
-            'chapterCode': 'C2',
+            "_id":"e.G1.1.2",
+            'chapterCode': 'C1',
             'gameCode': 'G1',
             'version': 'v1',
             "description": "Seconds waiting for your friend?",
@@ -79,7 +117,95 @@ def funtionality(host: str, port: int):
             "type":"timed",
             "parentDecision":None,
             "possibleChoices":['1', '90']
-        }
+        },
+        # CHAPTER 2
+        {
+            "_id":"e.G1.2.1",
+            'chapterCode': 'C2',
+            'gameCode': 'G1',
+            'version': 'v1',
+            "description": "Seconds spend in the exercise",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"timed",
+            "parentDecision":None,
+            "possibleChoices":['30', '90']
+        },
+        {
+            "_id":"e.G1.2.2",
+            'chapterCode': 'C2',
+            'gameCode': 'G1',
+            'version': 'v1',
+            "description": "What do you have for lunch?",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"multiple-choice",
+            "parentDecision":None,
+            "possibleChoices":['pizza', 'hamburger', 'salad']
+        },
+        # GAME 2
+        # CHAPTER 1
+        {
+            "_id":"e.G2.1.1",
+            'chapterCode': 'C1',
+            'gameCode': 'G2',
+            'version': 'v1',
+            "description": "What vehicule do you take?",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"multiple-choice",
+            "parentDecision":None,
+            "possibleChoices":['boat', 'car', 'walking']
+        },
+        {
+            "_id":"e.G2.1.2",
+            'chapterCode': 'C1',
+            'gameCode': 'G2',
+            'version': 'v1',
+            "description": "Seconds spend hiding?",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"timed",
+            "parentDecision":None,
+            "possibleChoices":['1', '60']
+        },
+        # CHAPTER 2
+        {
+            "_id":"e.G2.2.1",
+            'chapterCode': 'C2',
+            'gameCode': 'G2',
+            'version': 'v1',
+            "description": "Seconds spend doing teh test",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"timed",
+            "parentDecision":None,
+            "possibleChoices":['30', '120']
+        },
+        {
+            "_id":"e.G2.2.2",
+            'chapterCode': 'C2',
+            'gameCode': 'G2',
+            'version': 'v1',
+            "description": "Where do you sit?",
+            "highlights":[
+                "H1 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "H2 - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ],
+            "type":"multiple-choice",
+            "parentDecision":None,
+            "possibleChoices":['front', 'middle', 'back']
+        },
     ])
 
     # GROUPS
@@ -133,45 +259,147 @@ def funtionality(host: str, port: int):
     # DECISIONS
     db = driver.games_db.decisions
     db.insert_many([
+        # Student 1
+        # GAME 1
+        # CHAPTER 1
         {
             'studentCode': '1',
-            'eventCode':'e1.1',
+            'eventCode':'e.G1.1.1',
             'fields': {'pet': 'cat'}
         },
         {
             'studentCode': '1',
-            'eventCode':'e2.1',
+            'eventCode':'e.G1.1.2',
             'fields': {'wait': '90'}
         },
+        # CHAPTER 2
+        {
+            'studentCode': '1',
+            'eventCode':'e.G1.2.1',
+            'fields': {'wait': '35'}
+        },
+        {
+            'studentCode': '1',
+            'eventCode':'e.G1.2.2',
+            'fields': {'eat': 'pizza'}
+        },
+        # Student 2
+        # GAME 1
+        # CHAPTER 1
         {
             'studentCode': '2',
-            'eventCode':'e1.1',
+            'eventCode':'e.G1.1.1',
             'fields': {'pet': 'dog'}
         },
         {
             'studentCode': '2',
-            'eventCode':'e2.1',
-            'fields': {'wait': '10'}
+            'eventCode':'e.G1.1.2',
+            'fields': {'wait': '1'}
+        },
+        # CHAPTER 2
+        {
+            'studentCode': '2',
+            'eventCode':'e.G1.2.1',
+            'fields': {'wait': '60'}
+        },
+        {
+            'studentCode': '2',
+            'eventCode':'e.G1.2.2',
+            'fields': {'eat': 'hamburger'}
+        },
+        # Student 3
+        # GAME 1
+        # CHAPTER 1
+        {
+            'studentCode': '3',
+            'eventCode':'e.G1.1.1',
+            'fields': {'pet': 'no pet'}
         },
         {
             'studentCode': '3',
-            'eventCode':'e1.1',
-            'fields': {'pet': 'cat'}
+            'eventCode':'e.G1.1.2',
+            'fields': {'wait': '30'}
+        },
+        # CHAPTER 2
+        {
+            'studentCode': '3',
+            'eventCode':'e.G1.2.1',
+            'fields': {'wait': '35'}
         },
         {
             'studentCode': '3',
-            'eventCode':'e2.1',
-            'fields': {'wait': '90'}
+            'eventCode':'e.G1.2.2',
+            'fields': {'eat': 'pizza'}
         },
+        # GAME 2
+        # CHAPTER 1
+        {
+            'studentCode': '3',
+            'eventCode':'e.G2.1.1',
+            'fields': {'vehicule': 'boat'}
+        },
+        {
+            'studentCode': '3',
+            'eventCode':'e.G2.1.2',
+            'fields': {'hide': '25'}
+        },
+        # CHAPTER 2
+        {
+            'studentCode': '3',
+            'eventCode':'e.G2.2.1',
+            'fields': {'spend': '60'}
+        },
+        {
+            'studentCode': '3',
+            'eventCode':'e.G2.2.2',
+            'fields': {'sit': 'middle'}
+        },
+        # Student 4
+        # GAME 1
+        # CHAPTER 1
         {
             'studentCode': '4',
-            'eventCode':'e1.1',
+            'eventCode':'e.G1.1.1',
             'fields': {'pet': 'dog'}
         },
         {
             'studentCode': '4',
-            'eventCode':'e2.1',
-            'fields': {'wait': '10'}
+            'eventCode':'e.G1.1.2',
+            'fields': {'wait': '5'}
+        },
+        # CHAPTER 2
+        {
+            'studentCode': '4',
+            'eventCode':'e.G1.2.1',
+            'fields': {'wait': '25'}
+        },
+        {
+            'studentCode': '4',
+            'eventCode':'e.G1.2.2',
+            'fields': {'eat': 'hamburger'}
+        },
+        # GAME 2
+        # CHAPTER 1
+        {
+            'studentCode': '4',
+            'eventCode':'e.G2.1.1',
+            'fields': {'vehicule': 'car'}
+        },
+        {
+            'studentCode': '4',
+            'eventCode':'e.G2.1.2',
+            'fields': {'hide': '5'}
+        },
+        # CHAPTER 2
+        {
+            'studentCode': '4',
+            'eventCode':'e.G2.2.1',
+            'fields': {'spend': '90'}
+        },
+        {
+            'studentCode': '4',
+            'eventCode':'e.G2.2.2',
+            'fields': {'sit': 'back'}
         }
     ])
 
