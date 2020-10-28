@@ -28,7 +28,7 @@ services:
         condition: on-failure
   # ===========================================================================
   gameplay:
-    image: youngres/youngres_gameplay_api:ba0c44c
+    image: youngres/youngres_gameplay_api:faf348b
     ports:
       - "8882:8080"
     expose:
