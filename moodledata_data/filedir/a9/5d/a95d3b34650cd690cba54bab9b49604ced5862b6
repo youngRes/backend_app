@@ -1,0 +1,45 @@
+{
+  "title": "Ejercicio1",
+  "date": "21/10/20",
+  "areaCodes": [
+    "div"
+  ],
+  "areas": {
+    "es": "Diversos"
+  },
+  "levelCodes": [
+    "PRI"
+  ],
+  "levels": {
+    "es": "Primaria (6-12)"
+  },
+  "description": {},
+  "license": {
+    "es": "Esta obra está bajo una licencia de Creative Commons <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0\">BY-NC-SA<\/a>"
+  },
+  "meta_langs": [
+    "es"
+  ],
+  "mainFile": "ejercicio1.jclic",
+  "cover": "project-cover.jpg",
+  "thumbnail": "project-thumb.jpg",
+  "activities": 3,
+  "mediaFiles": 9,
+  "totalSize": 459393,
+  "files": [
+    "director3-resized2.jpg",
+    "ejercicio1.jclic",
+    "ejercicio1.jclic.js",
+    "favicon.ico",
+    "icon-192.png",
+    "icon-72.png",
+    "imsmanifest.xml",
+    "index.html",
+    "project-cover.jpg",
+    "project-thumb.jpg",
+    "project.json",
+    "prota_enfadada-resized.jpg",
+    "prota_entrada2.png",
+    "tristeza_madre-resized.jpg"
+  ]
+}

@@ -1,0 +1,8 @@
+[
+null,
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"People1","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"Protagonista","traits":[],"initialLevel":1,"maxLevel":99,"name":"Prota","nickname":"","note":"","profile":""},
+{"id":2,"battlerName":"","characterIndex":0,"characterName":"Protagonista_femenina","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"Protagonista_chica","traits":[],"initialLevel":1,"maxLevel":99,"name":"Rebeca","nickname":"","note":"","profile":""},
+{"id":3,"battlerName":"","characterIndex":0,"characterName":"Ahmed","classId":1,"equips":[0,0,0,0,0],"faceIndex":2,"faceName":"Ahmed","traits":[],"initialLevel":1,"maxLevel":99,"name":"Ahmed","nickname":"","note":"","profile":""},
+{"id":4,"battlerName":"","characterIndex":0,"characterName":"Angel","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"Angel","traits":[],"initialLevel":1,"maxLevel":99,"name":"Tom","nickname":"","note":"","profile":""},
+{"id":5,"battlerName":"","characterIndex":0,"characterName":"Rob","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Rob","traits":[],"initialLevel":1,"maxLevel":99,"name":"Rob","nickname":"","note":"","profile":""}
+]

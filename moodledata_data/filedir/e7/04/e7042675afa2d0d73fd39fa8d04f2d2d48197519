@@ -1,0 +1,19 @@
+{
+    "basic":{
+        "gameCode": "1",
+        "version": "1"
+    },
+    "basicAuth": {
+            "username":"test",
+            "password":"test"
+        },
+    "APIURL": {
+            "urlStartScene1":"http://138.100.158.35:8882/gameplay/chapterStartScene/",
+            "urlSavedVariables1":"http://138.100.158.35:8882/gameplay/savedVariables/",
+            "urlStoreDecision1":"http://138.100.158.35:8882/gameplay/storeDecision/",
+            "urlStartScene":"http://138.100.158.35:8882/gameplay/chapterStartScene/",
+            "urlSavedVariables":"http://138.100.158.35:8882/gameplay/savedVariables/",
+            "urlStoreDecision":"http://138.100.158.35:8882/gameplay/storeDecision/"
+        }
+}
+
