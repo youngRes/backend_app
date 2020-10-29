@@ -1,6 +1,7 @@
 version: "3"
 volumes:
   db-data:
+  dummy-db:
 services:
   db:
     image: mongo
@@ -14,6 +15,18 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+  # ===========================================================================
+  # this servide only exists for the dummy data database when move to production
+  # is better to remove it
+  dummydb:
+    image: mongo
+    volumes:
+      - dummy-db:/data/db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  # ===========================================================================
   gameplay:
     image: youngres/youngres_gameplay_api:faf348b
     ports:
@@ -27,7 +40,7 @@ services:
     depends_on:
       - db
   consumption:
-    image: youngres/youngres_consumption_api:0de2539
+    image: youngres_consumption_api # youngres/youngres_consumption_api:2edeeb3
     environment:
       # provide your credentials here
       - SECRET_KEY=${SECRET_KEY}

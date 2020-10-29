@@ -280,7 +280,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '1',
             'eventCode':'e.G1.1.1',
-            'fields': {'pet': '1'}
+            'fields': {'pet': 'cat'}
         },
         {
             'studentCode': '1',
@@ -290,7 +290,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '1',
             'eventCode':'e.G1.1.3',
-            'fields': {'play': '1'}
+            'fields': {'play': 'Alan'}
         },
         # CHAPTER 2
         {
@@ -301,7 +301,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '1',
             'eventCode':'e.G1.2.2',
-            'fields': {'eat': '1'}
+            'fields': {'eat': 'pizza'}
         },
         # Student 2
         # GAME 1
@@ -309,7 +309,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '2',
             'eventCode':'e.G1.1.1',
-            'fields': {'pet': '2'}
+            'fields': {'pet': 'dog'}
         },
         {
             'studentCode': '2',
@@ -319,7 +319,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '2',
             'eventCode':'e.G1.1.3',
-            'fields': {'play': '2'}
+            'fields': {'play': 'Sally'}
         },
         # CHAPTER 2
         {
@@ -330,7 +330,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '2',
             'eventCode':'e.G1.2.2',
-            'fields': {'eat': '2'}
+            'fields': {'eat': 'hamburger'}
         },
         # Student 3
         # GAME 1
@@ -338,17 +338,18 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '3',
             'eventCode':'e.G1.1.1',
-            'fields': {'pet': '3'}
+            'fields': {'pet': 'no pet'}
         },
         {
             'studentCode': '3',
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '30'}
         },
+        # CHAPTER 2
         {
             'studentCode': '3',
             'eventCode':'e.G1.1.3',
-            'fields': {'play': '2'}
+            'fields': {'play': 'Sally'}
         },
         # CHAPTER 2
         {
@@ -359,14 +360,14 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '3',
             'eventCode':'e.G1.2.2',
-            'fields': {'eat': '1'}
+            'fields': {'eat': 'pizza'}
         },
         # GAME 2
         # CHAPTER 1
         {
             'studentCode': '3',
             'eventCode':'e.G2.1.1',
-            'fields': {'vehicule': '1'}
+            'fields': {'vehicule': 'boat'}
         },
         {
             'studentCode': '3',
@@ -382,7 +383,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '3',
             'eventCode':'e.G2.2.2',
-            'fields': {'sit': '2'}
+            'fields': {'sit': 'middle'}
         },
         # Student 4
         # GAME 1
@@ -390,7 +391,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '4',
             'eventCode':'e.G1.1.1',
-            'fields': {'pet': '2'}
+            'fields': {'pet': 'dog'}
         },
         {
             'studentCode': '4',
@@ -400,7 +401,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '4',
             'eventCode':'e.G1.1.3',
-            'fields': {'play': '3'}
+            'fields': {'play': 'play alone'}
         },
         # CHAPTER 2
         {
@@ -411,14 +412,14 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '4',
             'eventCode':'e.G1.2.2',
-            'fields': {'eat': '2'}
+            'fields': {'eat': 'hamburger'}
         },
         # GAME 2
         # CHAPTER 1
         {
             'studentCode': '4',
             'eventCode':'e.G2.1.1',
-            'fields': {'vehicule': '2'}
+            'fields': {'vehicule': 'car'}
         },
         {
             'studentCode': '4',
@@ -434,7 +435,7 @@ def funtionality(host: str, port: int):
         {
             'studentCode': '4',
             'eventCode':'e.G2.2.2',
-            'fields': {'sit': '3'}
+            'fields': {'sit': 'back'}
         }
     ])
 
