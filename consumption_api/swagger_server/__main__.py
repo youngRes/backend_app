@@ -2,6 +2,7 @@
 
 import connexion
 
+from flask_cors import CORS
 from swagger_server import encoder
 from swagger_server.mongo_connection.mongo_connector import MongoDBConnection
 from flask_cors import CORS

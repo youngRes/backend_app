@@ -3,6 +3,9 @@ This file contains all the queries to the database, it must use the
 MongoDBConnection to connect to the MOngoDB so its transparent to the user
 """
 
+from typing import Dict
+
+from swagger_server.models import Decision
 from swagger_server.mongo_connection.mongo_connector import MongoDBConnection
 
 
@@ -13,28 +16,21 @@ def check_connection():
     """
     return MongoDBConnection.driver.server_info()
 
-def get_start_scene(game_code, version, chapter_code):
+def get_start_scene(game_code: str, version: str, chapter_code: str) -> Dict[str, str]:
+    gameChapters = MongoDBConnection.get_chapters_collection().find_one({'chapterCode':chapter_code, 'gameCode':game_code,'version':version})
+    if gameChapters is not None:
+        return {'startScene': gameChapters['startScene'], 'startX': gameChapters['startX'], 'startY': gameChapters['startY']}
+    else:
+        return None
 
-    gameChapters = MongoDBConnection.get_chapters_collection().find_one({'chapterCode':chapter_code,'game':{'gameCode':game_code,'version':version}})
-
-    try:
-        return {'startScene':gameChapters['startScene'], 'startX':gameChapters['startX'],'startY':gameChapters['startY']}
-    except TypeError:
-        return ""
-
-def get_saved_state_scene(student_code, game_code, version, variable_name):
-
+def get_saved_state(student_code: str, game_code: str, version: str, variable_name: str):
     savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
+    if savedStateVariables is not None and variable_name in savedStateVariables['variables']:
+        return savedStateVariables['variables'][variable_name]
+    else:
+        return None
 
-    try:
-        _return = savedStateVariables['variables'][variable_name]
-    except:
-        _return = ""
-
-    return _return
-
-def post_saved_state_scene(student_code, game_code, version, variable_name, value):
-
+def post_saved_state_scene(student_code: str, game_code: str, version: str, variable_name: str, value: str):
 
     #docs = MongoDBConnection.get_saved_states_collection().find({'studentCode':str(student_code), 'gameCode':str(game_code), 'version':str(version)})
     savedStateVariables = MongoDBConnection.get_saved_states_collection().find_one({'studentCode':student_code, 'gameCode':game_code, 'version':version})
@@ -54,9 +50,8 @@ def post_saved_state_scene(student_code, game_code, version, variable_name, valu
         }
         MongoDBConnection.get_saved_states_collection().insert_one(savedStateVariables)
 
-    return True
 
-def post_decision(student_code, event_code, decision):
+def post_decision(student_code: str, event_code: str, decision: Decision):
 
     ids = MongoDBConnection.get_decisions_collection().find().distinct('decisionCode')
 
@@ -71,4 +66,3 @@ def post_decision(student_code, event_code, decision):
     else:
         MongoDBConnection.get_decisions_collection().insert_one({'eventCode':event_code, 'studentCode':student_code,'fields':finalDecision})
 
-    return True

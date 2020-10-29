@@ -1,0 +1,43 @@
+{
+  "title": "Reconocimiento_facial",
+  "date": "26/10/20",
+  "levelCodes": [
+    "PRI"
+  ],
+  "levels": {
+    "es": "Primaria (6-12)"
+  },
+  "description": {
+    "es": ""
+  },
+  "license": {
+    "es": "Esta obra está bajo una licencia de Creative Commons <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0\">BY-NC-SA<\/a>"
+  },
+  "meta_langs": [
+    "es"
+  ],
+  "mainFile": "reconocimiento_facial.jclic",
+  "cover": "project-cover.jpg",
+  "thumbnail": "project-thumb.jpg",
+  "activities": 1,
+  "mediaFiles": 11,
+  "totalSize": 479530,
+  "files": [
+    "ahmed1.png",
+    "ahmed2.png",
+    "favicon.ico",
+    "gafas-resized.jpg",
+    "icon-192.png",
+    "icon-72.png",
+    "imsmanifest.xml",
+    "index.html",
+    "madre-resized.jpg",
+    "mike.png",
+    "project-cover.jpg",
+    "project-thumb.jpg",
+    "project.json",
+    "prota-resized.jpg",
+    "reconocimiento_facial.jclic",
+    "reconocimiento_facial.jclic.js"
+  ]
+}
