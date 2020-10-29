@@ -1,0 +1,7 @@
+function NewHttpReq(){var httpReq=!1;if(typeof XMLHttpRequest!='undefined'){httpReq=new XMLHttpRequest()}else{try{httpReq=new ActiveXObject("Msxml2.XMLHTTP.4.0")}catch(e){try{httpReq=new ActiveXObject("Msxml2.XMLHTTP")}catch(ee){try{httpReq=new ActiveXObject("Microsoft.XMLHTTP")}catch(eee){httpReq=!1}}}}
+return httpReq}
+function DoRequest(httpReq,url,param){if(window.mod_scorm_is_window_closing&&navigator&&navigator.sendBeacon&&FormData){var vars=param.split('&'),i=0,pair,key,value,formData=new FormData();for(i=0;i<vars.length;i++){pair=vars[i].split('=');key=decodeURIComponent(pair[0]);value=decodeURIComponent(pair[1]);formData.append(key,value)}
+formData.append('unloading','1');navigator.sendBeacon(url,formData);return"true\n0"}
+httpReq.open("POST",url,!1);httpReq.setRequestHeader('Content-Type','application/x-www-form-urlencoded');try{httpReq.send(param)}catch(e){return!1}
+if(httpReq.status==200){return httpReq.responseText}else{return httpReq.status}}
+function popupwin(content){var op=window.open();op.document.open('text/plain');op.document.write(content);op.document.close()}(function(){window.mod_scorm_is_window_closing=!1;var toggle=function(){window.mod_scorm_is_window_closing=!0};window.addEventListener('beforeunload',toggle);window.addEventListener('unload',toggle);window.addEventListener('pagehide',toggle);window.addEventListener('visibilitychange',toggle)})()

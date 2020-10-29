@@ -1,0 +1,32 @@
+{
+  "title": "Lema_S1",
+  "date": "22/10/20",
+  "description": {
+    "es": ""
+  },
+  "license": {
+    "es": "Esta obra está bajo una licencia de Creative Commons <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0\">BY-NC-SA<\/a>"
+  },
+  "meta_langs": [
+    "es"
+  ],
+  "mainFile": "lema_s1.jclic",
+  "cover": "project-cover.jpg",
+  "thumbnail": "project-thumb.jpg",
+  "activities": 1,
+  "mediaFiles": 6,
+  "totalSize": 88765,
+  "files": [
+    "favicon.ico",
+    "icon-192.png",
+    "icon-72.png",
+    "imsmanifest.xml",
+    "index.html",
+    "lema_s1.jclic",
+    "lema_s1.jclic.js",
+    "lema_sesion1-resized3.jpg",
+    "project-cover.jpg",
+    "project-thumb.jpg",
+    "project.json"
+  ]
+}
