@@ -1,16 +1,11 @@
-import sys
-
 import connexion
 import six
-import json
-from flask import  make_response
 
 import swagger_server.mongo_connection.mongo_queries as dbq
 from swagger_server.models.decision import Decision  # noqa: E501
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
 from swagger_server import util
-from werkzeug.exceptions import  InternalServerError, NotFound, BadRequest
 
 
 def chapter_start_scene_get(game_code, version, chapter_code):  # noqa: E501
@@ -27,17 +22,12 @@ def chapter_start_scene_get(game_code, version, chapter_code):  # noqa: E501
 
     :rtype: InlineResponse2001
     """
-    try:
-        queryResult = dbq.get_start_scene(game_code, version, chapter_code)
-    except Exception as e:
-        print(f'{e}', file=sys.stderr)
-        raise InternalServerError
 
-    if queryResult is not None:
+    queryResult = dbq.get_start_scene(game_code, version, chapter_code)
+    if queryResult != "":
         return InlineResponse2001(queryResult)
     else:
-        raise NotFound
-
+        return "No data found"
 
 
 def saved_variables_get(student_code, game_code, version, variable_name):  # noqa: E501
@@ -56,16 +46,9 @@ def saved_variables_get(student_code, game_code, version, variable_name):  # noq
 
     :rtype: InlineResponse200
     """
-    try:
-        queryResult = dbq.get_saved_state(student_code, game_code, version, variable_name)
-    except Exception as e:
-        print(f'{e}', file=sys.stderr)
-        raise InternalServerError
 
-    if queryResult is not None:
-        return InlineResponse200(queryResult)
-    else:
-        raise NotFound
+    queryResult = dbq.get_saved_state_scene(student_code, game_code, version, variable_name)
+    return InlineResponse2001(queryResult)
 
 def saved_variables_post(student_code, game_code, version, variable_name, value):  # noqa: E501
     """Store/Update a variable with variableName and value value if possible. If the user has no saved state for a specific game a new saved state must be generated.
@@ -85,15 +68,15 @@ def saved_variables_post(student_code, game_code, version, variable_name, value)
 
     :rtype: None
     """
-    try:
-        dbq.post_saved_state_scene(student_code, game_code, version, variable_name, value)
-        return make_response("OK", 200)
-    except Exception as e:
-        print(f'{e}', file=sys.stderr)
-        raise InternalServerError
+    queryResult = dbq.post_saved_state_scene(student_code, game_code, version, variable_name, value)
+    if queryResult == True:
+        return {'msg':'Variable Correctly Saved'}
+    else:
+        return {'errorMsg':'Error when saving variable to DD.BB.',
+                'newDoc':queryResult}
 
 
-def store_decision_post(student_code, event_code):  # noqa: E501
+def store_decision_post(student_code, event_code, decision=None):  # noqa: E501
     """Store/Update a new user decision related to the event eventCode with the variables data  into the database.
 
      # noqa: E501
@@ -107,18 +90,7 @@ def store_decision_post(student_code, event_code):  # noqa: E501
 
     :rtype: None
     """
-
-    # Header parameters are not pass as a parameters, instead they are contained in
-    # the headers variable and need to processed by hand
-    decision_str = connexion.request.headers.get("decision")
-    if decision_str is not None:
-        try:
-            decision = Decision.from_dict(json.loads(decision_str))
-            dbq.post_decision(student_code, event_code, decision)
-            return make_response("OK", 200)
-        except Exception as e:
-            print(f'{e}', file=sys.stderr)
-            raise InternalServerError
-    else:
-        raise BadRequest
-
+    if connexion.request.is_json:
+        decision = Decision.from_dict(connexion.request.get_json())  # noqa: E501
+    queryResult = dbq.post_decision(student_code, event_code, decision)
+    return queryResult

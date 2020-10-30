@@ -3,7 +3,6 @@
 import argparse
 import pymongo
 
-
 def funtionality(host: str, port: int):
 
     driver = pymongo.MongoClient(host, port)
@@ -345,7 +344,6 @@ def funtionality(host: str, port: int):
             'eventCode':'e.G1.1.2',
             'fields': {'wait': '30'}
         },
-        # CHAPTER 2
         {
             'studentCode': '3',
             'eventCode':'e.G1.1.3',

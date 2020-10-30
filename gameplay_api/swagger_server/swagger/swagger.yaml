@@ -182,13 +182,11 @@ paths:
           type: string
       - name: decision
         in: header
-        required: true
+        required: false
         style: simple
         explode: false
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Decision"
+        schema:
+          $ref: '#/components/schemas/Decision'
       responses:
         "200":
           description: The decision was stored/updated correctly

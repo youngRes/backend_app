@@ -111,28 +111,11 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             return all_students
 
     def _make_decision(row) -> Decision:
-        # if the event type is "multiple-choice" translate the choice to the possible values
-        if event_dict[row['eventCode']]['type'] == "multiple-choice":
-            # The first value stored in the dictionary field is the actual choice
-            choice_index = int(list(row['fields'].values())[0])
-
-            # Read the value of this choice from the possible values stored at the event
-            possible_values = event_dict[row['eventCode']]['possibleChoices']
-            if 0 < choice_index <= len(possible_values):
-                choice = possible_values[choice_index - 1]
-            else:
-                choice = "ERROR"
-                print(f'decision {row["_id"]} reference choice {choice_index} but this choice is not available among '
-                      f'the possible choices: {possible_values}', file=sys.stderr)
-        else:
-            # in the case of numeric type events just return the raw value
-            choice = list(row['fields'].values())[0]
-
         return Decision(
             event_code=row['eventCode'],
             event_description=event_dict[row['eventCode']]['description'],
             event_type=event_dict[row['eventCode']]['type'],
-            choice=choice
+            choice=list(row['fields'].values())[0]  # the first value stored in the dictionary field is the actual choice
         )
     try:
         # Header parameters are not pass as a parameters, instead they are contained in
