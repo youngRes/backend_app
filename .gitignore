@@ -66,3 +66,10 @@ gameplay_api/.swagger-codegen-ignore
 gameplay_api/.swagger-codegen/
 consumption_api/.swagger-codegen/
 .idea/
+
+# moodle
+moodledata_data/cache
+moodledata_data/localcache
+moodledata_data/sessions
+moodledata_data/temp
+moodledata_data/trashdir
