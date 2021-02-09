@@ -16,6 +16,10 @@ def check_connection():
     """
     return MongoDBConnection.driver.server_info()
 
+def student_exists(studentCode: str) -> bool:
+    db = MongoDBConnection.get_students_collection()
+    return db.find_one({'studentCode': studentCode}) is not None
+
 def get_start_scene(game_code: str, version: str, chapter_code: str) -> Dict[str, str]:
     gameChapters = MongoDBConnection.get_chapters_collection().find_one({'chapterCode':chapter_code, 'gameCode':game_code,'version':version})
     if gameChapters is not None:

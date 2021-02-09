@@ -13,6 +13,28 @@ from swagger_server import util
 from werkzeug.exceptions import  InternalServerError, NotFound, BadRequest
 
 
+def check_student_code_get(student_code):  # noqa: E501
+    """Checks if a studentCode exists in the database.
+
+     # noqa: E501
+
+    :param student_code: code to identify a student
+    :type student_code: str
+
+    :rtype: None
+    """
+    try:
+        queryResult = dbq.student_exists(student_code)
+    except Exception as e:
+        print(f'{e}', file=sys.stderr)
+        raise InternalServerError
+
+    if queryResult:
+        return make_response("OK", 200)
+    else:
+        raise NotFound
+
+
 def chapter_start_scene_get(game_code, version, chapter_code):  # noqa: E501
     """Returns the start scene of a chapter as a sceneID if possible
 

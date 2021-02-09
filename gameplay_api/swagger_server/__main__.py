@@ -7,7 +7,6 @@ from swagger_server import encoder
 from swagger_server.mongo_connection.mongo_connector import MongoDBConnection
 
 
-
 def main():
     
     #initilize connection with MongoDB
