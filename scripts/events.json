@@ -1256,19 +1256,6 @@
         "parentDecision": null,
         "possibleChoices":["Cat, dog, turtle, hamster", "Dog, hamster, canary and lizard", "She does not like animals", "Hamster, dog, turtle, cat" ]
       },
-	  {
-        "_id": "96",
-        "chapterCode": "1477",
-        "gameCode": "1",
-        "version": "1",
-        "description": "Which animals did Lori said, and on which order?",
-        "highlights":[
-          "The main character shall talk with 5 different partners to try his/her active listening skills. In this case, the questions are directed to Lori."
-        ],
-        "type":"multiple-choice",
-        "parentDecision": null,
-        "possibleChoices":["Cat, dog, turtle, hamster", "Dog, hamster, canary and lizard", "She does not like animals", "Hamster, dog, turtle, cat" ]
-      },
       {
         "_id": "97",
         "chapterCode": "1477",
