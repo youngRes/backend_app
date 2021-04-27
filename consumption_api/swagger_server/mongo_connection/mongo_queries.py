@@ -56,7 +56,7 @@ def get_game_countries(game_code, version, students):
     groups = db.find({"_id": {"$in": students}}).distinct('groupCode')
 
     db = MongoDBConnection.get_groups_collection()
-    return db.find({"_id": {"$in": groups}}).distinct('country')
+    return db.find({"groupCode": {"$in": groups}}).distinct('country')
 
 def get_games():
 
