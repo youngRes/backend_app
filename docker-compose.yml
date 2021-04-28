@@ -15,7 +15,10 @@ services:
       restart_policy:
         condition: on-failure
   gameplay:
-    image: youngres/youngres_gameplay_api:f85e5471
+    #image: youngres/youngres_gameplay_api:f85e5471
+    build:
+      context: ./gameplay_api
+      dockerfile: Dockerfile
     ports:
       - "8882:8080"
     expose:
@@ -27,7 +30,11 @@ services:
     depends_on:
       - db
   consumption:
-    image: youngres/youngres_consumption_api:0de2539
+    # image: youngres/youngres_consumption_api:0de2539
+    #image: youngres_consumption_api
+    build:
+      context: ./consumption_api
+      dockerfile: Dockerfile
     environment:
       # provide your credentials here
       - SECRET_KEY=${SECRET_KEY}
@@ -35,6 +42,22 @@ services:
       - "8883:8080"
     expose:
       - "8883"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - db
+  visualization:
+    # image: youngres/youngres_consumption_api:0de2539
+    #image: youngres_consumption_api
+    build:
+      context: ./youngres
+      dockerfile: Dockerfile
+    ports:
+      - "8885:8080"
+    expose:
+      - "8885"
     deploy:
       replicas: 1
       restart_policy:
