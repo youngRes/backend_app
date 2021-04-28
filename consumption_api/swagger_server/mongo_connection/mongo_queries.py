@@ -14,7 +14,7 @@ def get_chapter(game_code, version, chapter_code):
 
 def get_event_by_id(_id):
 
-    event = MongoDBConnection.get_events_collection().find_one({'_id':_id})
+    event = MongoDBConnection.get_events_collection().find_one({'eventCode':_id})
 
     return event
 
@@ -32,13 +32,13 @@ def get_decisions(student_ids: List[str], event_ids: List[str]) -> pymongo.curso
 
 def get_game_students(game_code: str, version: str) -> List[str]:
     db = MongoDBConnection.get_events_collection()
-    events = [r['_id'] for r in db.find({'gameCode':game_code, 'version':version}, {'_id': 1})]
+    events = [r['eventCode'] for r in db.find({'gameCode':game_code, 'version':version}, {'eventCode': 1})]
 
     db = MongoDBConnection.get_decisions_collection()
     return db.find({'eventCode': {'$in': events}}, {'studentCode': 1}).distinct('studentCode')
 
 def get_student(student_code):
-    student = MongoDBConnection.get_students_collection().find_one({'_id':student_code})
+    student = MongoDBConnection.get_students_collection().find_one({'studentCode':student_code})
     return student
 
 def get_students_in_groups(group_ids: List[str]) -> pymongo.cursor.Cursor:
@@ -48,12 +48,12 @@ def get_students_in_groups(group_ids: List[str]) -> pymongo.cursor.Cursor:
 
 def get_students_pass_filter(query: dict) -> List[str]:
     db = MongoDBConnection.get_students_collection()
-    return db.find(query, {'_id': 1}).distinct('_id')
+    return db.find(query, {'studentCode': 1}).distinct('studentCode')
 
 
 def get_game_countries(game_code, version, students):
     db = MongoDBConnection.get_students_collection()
-    groups = db.find({"_id": {"$in": students}}).distinct('groupCode')
+    groups = db.find({"studentCode": {"$in": students}}).distinct('groupCode')
 
     db = MongoDBConnection.get_groups_collection()
     return db.find({"groupCode": {"$in": groups}}).distinct('country')
@@ -66,7 +66,7 @@ def get_games():
 
 def get_user_credentials(username):
 
-    return MongoDBConnection.get_credentials_collection().find_one({"_id": username})
+    return MongoDBConnection.get_credentials_collection().find_one({"username": username})
 
 def get_filter_values(table, column):
 
@@ -96,24 +96,24 @@ def get_filter_values(table, column):
 
 def get_group_filter_values(group_ids: List[str], column: str) -> List[str]:
     db = MongoDBConnection.get_groups_collection()
-    return db.find({'_id': {'$in': group_ids}}, {column: 1}).distinct(column)
+    return db.find({'groupCode': {'$in': group_ids}}, {'_id': 0, column: 1}).distinct(column)
 
 
 def get_student_filter_values(student_ids: List[str], column: str) -> List[str]:
     db = MongoDBConnection.get_students_collection()
-    return db.find({'_id': {'$in': student_ids}}, {column: 1}).distinct(column)
+    return db.find({'studentCode': {'$in': student_ids}}, {'_id': 0, column: 1}).distinct(column)
 
 
 def get_filter(id):
-    return MongoDBConnection.get_filters_collection().find_one({'_id':id})
+    return MongoDBConnection.get_filters_collection().find_one({'filterCode':id})
 
 
 def get_filters(ids: List[str], table: str = None) -> pymongo.cursor.Cursor:
-    query = {'_id': {'$in': ids}}
+    query = {'filterCode': {'$in': ids}}
     if table is not None:
         query['table'] = table
 
-    return MongoDBConnection.get_filters_collection().find(query)
+    return MongoDBConnection.get_filters_collection().find(query, {'_id': 0})
 
 
 def get_filter_type_dict(table: str) -> Dict[str, str]:
@@ -132,25 +132,25 @@ def get_filter_type_dict(table: str) -> Dict[str, str]:
 
 
 def get_group(id):
-    return MongoDBConnection.get_groups_collection().find_one({'_id':id})
+    return MongoDBConnection.get_groups_collection().find_one({'groupCode':id})
 
 
 def get_groups(ids: List[str]) -> pymongo.cursor.Cursor:
-    return MongoDBConnection.get_groups_collection().find({'_id': {'$in': ids}})
+    return MongoDBConnection.get_groups_collection().find({'groupCode': {'$in': ids}})
 
 
 def get_groups_pass_filter(query: dict) -> List[str]:
     db = MongoDBConnection.get_groups_collection()
-    return db.find(query, {'_id': 1}).distinct('_id')
+    return db.find(query, {'groupCode': 1}).distinct('groupCode')
 
 
 def get_student_filter_type(field):
 
-    return MongoDBConnection.get_filters_collection().find_one({'table':'students', 'field':field})
+    return MongoDBConnection.get_filters_collection().find_one({'table':'students', 'field':field}, {'_id': 0})
 
 def get_group_filter_type(field):
 
-    return MongoDBConnection.get_filters_collection().find_one({'table':'groups', 'field':field})
+    return MongoDBConnection.get_filters_collection().find_one({'table':'groups', 'field':field}, {'_id': 0})
 
 def check_connection():
     """
