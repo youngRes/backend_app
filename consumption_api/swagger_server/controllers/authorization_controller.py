@@ -18,7 +18,7 @@ def check_bearerAuth(token):
     contained in the token is returned, otherwise an exception is raised
     """
     try:
-        return jwt.decode(token, os.environ['SECRET_KEY'])
+        return jwt.decode(token, os.environ['SECRET_KEY'], algorithms="HS256")
     except Exception as e:
         six.raise_from(Unauthorized, e)
 
@@ -31,8 +31,8 @@ def make_token(user: str) -> Token:
         'user': user,
         'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=24)
     }
-    token = jwt.encode(data, os.environ['SECRET_KEY'])
-    return Token(token.decode('UTF-8'))
+    token = jwt.encode(data, os.environ['SECRET_KEY'], algorithm="HS256")
+    return Token(token)
 
 def check_user_credentials(user: str, password: str) -> bool:
     """

@@ -86,7 +86,7 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
 
             # if necessary add the specific groups to the query
             if group_id_filters:
-                query['_id'] = {'$in': group_id_filters}
+                query['groupCode'] = {'$in': group_id_filters}
 
             return dbq.get_groups_pass_filter(query)
         else:
@@ -98,12 +98,12 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
         """
         Extracts from the database the students that passes the filters
         """
-        all_students = dbq.get_students_in_groups(group_ids).distinct('_id')
+        all_students = dbq.get_students_in_groups(group_ids).distinct('studentCode')
         if student_filters:
             # not None and not empty, then apply query
             std_field_types = dbq.get_filter_type_dict("students")
             query = _filter2query(student_filters, std_field_types)
-            query['_id'] = {'$in': all_students}
+            query['studentCode'] = {'$in': all_students}
             return dbq.get_students_pass_filter(query)
         else:
             # if no student filter is included then all the groups of the user
@@ -114,16 +114,21 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
         # if the event type is "multiple-choice" translate the choice to the possible values
         if event_dict[row['eventCode']]['type'] == "multiple-choice":
             # The first value stored in the dictionary field is the actual choice
-            choice_index = int(list(row['fields'].values())[0])
+            try:
+                choice_index = int(list(row['fields'].values())[0])
 
-            # Read the value of this choice from the possible values stored at the event
-            possible_values = event_dict[row['eventCode']]['possibleChoices']
-            if 0 < choice_index <= len(possible_values):
-                choice = possible_values[choice_index - 1]
-            else:
-                choice = "ERROR"
-                print(f'decision {row["_id"]} reference choice {choice_index} but this choice is not available among '
-                      f'the possible choices: {possible_values}', file=sys.stderr)
+                # Read the value of this choice from the possible values stored at the event
+                possible_values = event_dict[row['eventCode']]['possibleChoices']
+                if 0 < choice_index <= len(possible_values):
+                    choice = possible_values[choice_index - 1]
+                else:
+                    choice = "ERROR"
+                    print(f'decision {row["_id"]} reference choice {choice_index} but this choice is not available among '
+                          f'the possible choices: {possible_values}', file=sys.stderr)
+            except ValueError:
+                # if the conversion of a choice_index fails that means the RPGMaker has sent that value already
+                # with the choice name
+                choice = list(row['fields'].values())[0]
         else:
             # in the case of numeric type events just return the raw value
             choice = list(row['fields'].values())[0]
@@ -150,7 +155,7 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
         if filters is None:
             # if no filters are present then select all the students available
             # for the user
-            students_ids = dbq.get_students_in_groups(all_groups).distinct('_id')
+            students_ids = dbq.get_students_in_groups(all_groups).distinct('studentCode')
         else:
             # process the students and groups filters
             group_ids = _process_group_filter(filters._group)
@@ -160,7 +165,7 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
         event_dict = {}
         with dbq.get_events(game_code, game_version, chapter_code) as cursor:
             for row in cursor:
-                event_dict[row['_id']] = row
+                event_dict[row['eventCode']] = row
 
         # get the list of eventCodes for retrieving the decisions
         event_ids = list(event_dict.keys())
@@ -282,7 +287,7 @@ def filters_group_get(token_info):  # noqa: E501
             values=dbq.get_group_filter_values(all_groups, row['field']))
 
     def _make_group(row):
-        return Group(group_id=row['_id'], description=row['description'])
+        return Group(group_id=row['groupCode'], description=row['description'])
 
     try:
         username = token_info['user']
@@ -314,7 +319,7 @@ def filters_student_get(token_info):  # noqa: E501
         username = token_info['user']
 
         permissions = dbq.get_user_credentials(username)
-        all_students = dbq.get_students_in_groups(permissions['groups']).distinct('_id')
+        all_students = dbq.get_students_in_groups(permissions['groups']).distinct('studentCode')
         filters = [_make_filter(row) for row in dbq.get_filters(permissions['filters'], 'students')]
 
         return InlineResponse2001(filters=filters)
