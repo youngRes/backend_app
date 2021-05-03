@@ -32,7 +32,7 @@ def make_token(user: str) -> Token:
         'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=24)
     }
     token = jwt.encode(data, os.environ['SECRET_KEY'], algorithm="HS256")
-    return Token(token.decode('UTF-8'))
+    return Token(token)
 
 def check_user_credentials(user: str, password: str) -> bool:
     """
