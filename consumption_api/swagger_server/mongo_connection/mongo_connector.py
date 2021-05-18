@@ -2,6 +2,7 @@
     This static class stores the connection to a MongoDB database so it can be used by all controllers and be initialize
     out of them, like this the same code of the controllers can be used for testing and for production.
 """
+import os
 import pymongo
 import gridfs
 
@@ -24,7 +25,8 @@ class MongoDBConnection(object):
         """
         cls.host = host
         cls.port = port
-        cls.driver = pymongo.MongoClient(cls.host, cls.port)
+        cls.driver = pymongo.MongoClient(cls.host, cls.port, 
+            username=os.environ['MONGO_USER'], password=os.environ['MONGO_PASSWORD'])
 
     @classmethod
     def reinitialize(cls):
@@ -33,7 +35,8 @@ class MongoDBConnection(object):
         a new thread is created only if a fork is created.
         :return:
         """
-        cls.driver = pymongo.MongoClient(cls.host, cls.port)
+        cls.driver = pymongo.MongoClient(cls.host, cls.port, 
+            username=os.environ['MONGO_USER'], password=os.environ['MONGO_PASSWORD'])
 
     @classmethod
     def drop_database(cls):
