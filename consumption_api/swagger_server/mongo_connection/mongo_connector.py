@@ -23,10 +23,13 @@ class MongoDBConnection(object):
         :param port: port where the MongoDB is listening
         :return None
         """
+        username = os.environ.get("MONGO_USER", None)
+        password = os.environ.get("MONGO_PASSWORD", None)
+
         cls.host = host
         cls.port = port
         cls.driver = pymongo.MongoClient(cls.host, cls.port, 
-            username=os.environ['MONGO_USER'], password=os.environ['MONGO_PASSWORD'])
+            username=username, password=password)
 
     @classmethod
     def reinitialize(cls):
@@ -35,8 +38,10 @@ class MongoDBConnection(object):
         a new thread is created only if a fork is created.
         :return:
         """
+        username = os.environ.get("MONGO_USER", None)
+        password = os.environ.get("MONGO_PASSWORD", None)
         cls.driver = pymongo.MongoClient(cls.host, cls.port, 
-            username=os.environ['MONGO_USER'], password=os.environ['MONGO_PASSWORD'])
+            username=username, password=password)
 
     @classmethod
     def drop_database(cls):

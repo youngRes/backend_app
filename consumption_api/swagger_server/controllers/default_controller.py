@@ -103,7 +103,11 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             # not None and not empty, then apply query
             std_field_types = dbq.get_filter_type_dict("students")
             query = _filter2query(student_filters, std_field_types)
-            query['studentCode'] = {'$in': all_students}
+
+            # hotfix, now we can get decision for a single student, in that case, studentCode will be already filled
+            if "studentCode" not in query:
+                query['studentCode'] = {'$in': all_students}
+
             return dbq.get_students_pass_filter(query)
         else:
             # if no student filter is included then all the groups of the user
