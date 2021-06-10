@@ -212,6 +212,17 @@ import axios from "axios";
                     this.decisions = res.data.decisions;
 
                     this.dataAnalysis();
+                    let i =0;
+                    this.chartDATA = [];
+                    this.unique_decision_final.forEach(value => {
+                      this.chartDATA.push({
+                        name: 'bar'+ i++,
+                        type: 'bar',
+                        stack: 'one',
+                        barWidth: 20,
+                        data: value.choice
+                      });
+                    });
 
 
                     this.barChartLoad();
