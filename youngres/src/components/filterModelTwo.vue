@@ -47,22 +47,31 @@
                     <input type="checkbox" v-model="student" @change="filterUpdate()"> Student
                 </p>
 
-                <div class="group" :class="student ? '' : 'group_block'">
-                    <p>
+               <div class="group" :class="student ? '' : 'group_block'">
+                    <p v-if="ageAvailable">
                         <input v-model="age" type="checkbox" @change="filterUpdate()"> Age
                     </p>
-                    <p>
+                    <p v-if="ageAvailable">
                         Min <input :class="MinError ? 'error': ''" type="number" @change="filterUpdate()" @keyup="limitCheck()"  :min="limit_min" :max="max_age" v-model="min_age" :disabled="!age"  style="width: 50px">
 
                         Max <input :class="MaxError ? 'error': ''" type="number"  @change="filterUpdate()" @keyup="limitCheck()"   :max="limit_max" :min="min_age" v-model="max_age" :disabled="!age" style="width: 50px">
                         <br/><span v-if="(MinError || MaxError)">Age Limit: {{limit_min}} - {{limit_max}}</span>
                     </p>
-                    <p v-if="sex_list.length > 0">
+
+                    <p v-if="sexAvailable">
                         <input type="checkbox" v-model="sex" @change="filterUpdate()"> Gender
                     </p>
 
-                    <select v-if="sex_list.length > 0" v-model="selected_sex" :disabled="!sex" @change="filterUpdate()">
+                    <select v-if="sexAvailable" v-model="selected_sex" :disabled="!sex" @change="filterUpdate()">
                         <option v-for="item in sex_list" :key="item" :value="item">{{item}}</option>
+                    </select>
+
+                    <p v-if="studentAvailable">
+                        <input type="checkbox" v-model="studentCode" @change="filterUpdate()"> Student Code
+                    </p>
+
+                    <select v-if="studentAvailable" v-model="selected_student" :disabled="!studentCode" @change="filterUpdate()">
+                        <option v-for="item in student_list" :key="item" :value="item">{{item}}</option>
                     </select>
 
                 </div>
@@ -93,6 +102,8 @@
           MaxError: false,
 
           student: false,
+          studentCode: false,
+          selected_student: null,
           selected_sex: 'Male',
           selected_groups: [],
           countryList: [],
@@ -105,6 +116,11 @@
           selectedCity: '',
           type: false,
           sex_list: [],
+          student_list: [],
+
+          ageAvailable: false,
+          sexAvailable: false,
+          studentAvailable: false
         };
       },
       mounted(){
@@ -134,20 +150,22 @@
           }
           if(Filter[1].filters !== undefined){
 
-            if(Filter[1].filters[0].id === "age") {
+           for (var i = 0; i < Filter[1].filters.length; i++) {
+              var actFilter = Filter[1].filters[i]
 
-              this.limit_min = Filter[1].filters[0].values[0];
-              this.limit_max = Filter[1].filters[0].values[1];
-
-            }else if(Filter[1].filters.length > 1  && Filter[1].filters[1].id === "age"){
-              this.limit_min = Filter[1].filters[1].values[0];
-              this.limit_max = Filter[1].filters[1].values[1];
-            }
-
-            if(Filter[1].filters[0].id === "sex") {
-              this.sex_list = Filter[1].filters[0].values;
-            }else if(Filter[1].filters.length > 1  && Filter[1].filters[1].id === "sex"){
-              this.sex_list = Filter[1].filters[1].values;
+              if (actFilter.id == 'age')  {
+                this.ageAvailable = true;
+                this.limit_min = Math.min(actFilter.values);
+                this.limit_max = Math.max(actFilter.values);
+              } else if (actFilter.id == "sex") {
+                this.sexAvailable = true;
+                this.sex_list = actFilter.values;
+              } else if (actFilter.id == "studentCode") {
+                this.studentAvailable = true;
+                this.student_list = actFilter.values;
+              } else {
+                console.error("unknown filter type: " + actFilter.id);
+              }
             }
 
           }
@@ -261,6 +279,18 @@
                   //remove city
                   this.filterHeader['student'].filter(item => {
                     delete item.sex
+                  });
+                }
+
+                /*Add student code*/
+                if (this.studentCode) {
+                  if(this.filterHeader['student'] === null)
+                    this.filterHeader['student'] = [];
+
+                  this.filterHeader['student'].push({"key" : "studentCode", "min_value" : this.selected_student});
+                } else if (this.filterHeader['student'] !== null) {
+                  this.filterHeader['student'].filter(item => {
+                    delete item.studentCode
                   });
                 }
               }else{
