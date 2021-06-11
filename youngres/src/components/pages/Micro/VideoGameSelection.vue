@@ -14,7 +14,7 @@
 
                     <div class=" col-4">
                         <select class="custom-select" @change="selectGame($event)">
-                            <option v-for="(item, index) in result" :key="index" :value="index">{{item.gameCode}} </option>
+                            <option v-for="(item, index) in this.$store.state.games" :key="index" :value="index">{{item.gameCode}} </option>
                         </select>
                     </div>
                     <div class="col-4">
@@ -98,7 +98,7 @@
     export default {
         data: function(){
             return {
-                loading: true,
+                loading: false,
                 result: [], //all data in the variable
                 country: null, //country
                 flag: [], //all flags
@@ -112,20 +112,7 @@
             };
         },
         mounted () {
-
-            //Get User ALl events druing initial load
-
-          axios.get('descriptions/games?limit=20')
-              .then(res => {
-                this.result = JSON.parse(res.request.response).games;
-                this.$store.state.selectedData = this.result;
-                this.loading = false;
-                if(this.result.length > 0){
-                  this.loadGameData(0);
-                }
-              });
-
-
+            this.loadGameData(0);
         },
         methods: {
             next(){
@@ -158,27 +145,14 @@
                 this.loadGameData(event.target.value);
             },
             loadGameData(index){
-
-                this.description = this.result[index].gameDescription;
-                this.selectedGame = this.result[index].gameCode;
-                this.NumPlay = this.result[index].numberPlayers;
-                this.chapter = this.result[index].chapters;
-                this.selectedGameVersion = this.result[index].gameVersion;
+                let result = this.$store.state.games;
+                this.description = result[index].gameDescription;
+                this.selectedGame = result[index].gameCode;
+                this.NumPlay = result[index].numberPlayers;
+                this.chapter = result[index].chapters;
+                this.selectedGameVersion = result[index].gameVersion;
                 this.selectedChapter = this.chapter[0];
-                this.country = this.result[index].countries;
-/*                var listCountry =this.result[index].contries;
-this.flag = [];
-                for(var item in listCountry){
-                    var name = listCountry[item].trim().toLocaleLowerCase();
-
-                    axios.get('https://restcountries.eu/rest/v2/name/'+name).then(
-                        res => {
-                            var list = JSON.parse(res.request.response);
-                            this.flag.push(list[0]);
-                        }
-
-                    );
-                }*/
+                this.country = result[index].countries;
             }
         }
     }

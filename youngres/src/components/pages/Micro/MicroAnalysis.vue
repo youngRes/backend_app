@@ -10,11 +10,6 @@
         <div class="content">
             <p class="title">To visualize Event decisions, select Game, Chapter and Event type (Choice/ Timed):</p>
             <div class="row">
-                <div class=" col-md-2">
-                    <select class="custom-select" v-model="game" @change="selectGame($event)">
-                        <option v-for="(item, index) in result" :key="index" :value="item.gameCode">{{item.gameCode}} </option>
-                    </select>
-                </div>
                 <div class="col-md-2">
                     <select class="custom-select" v-model="chapter"  @change="selectChapter($event)">
                         <option v-for="(item, index) in chapters" :key="index" :value="item">{{item}} </option>
@@ -105,63 +100,14 @@ import axios from "axios";
             }
         },
         mounted(){
-
-
-
-
-
           this.game = this.$route.params.game;
           this.chapter = this.$route.params.chapter;
           this.version = this.$route.params.version;
+          this.loadData();
+          this.submitData();
 
-          const requestOne = axios.get("descriptions/games");
-          const requestTwo = axios.get("filters/group");
-          const requestThree = axios.get("filters/student");
-
-
-          axios.all([requestOne, requestTwo, requestThree ]).then(axios.spread((...responses) => {
-            this.$store.state.games = responses[0].data.games;
-            this.GroupFilter = responses[1].data
-            this.filterStudent = responses[2].data
-
-            this.groupsList = this.GroupFilter.group_ids;
-            this.SelectGroupOne = this.$route.params.groupOne;
-            this.SelectGroupTwo = this.$route.params.groupTwo;
-            this.loadData();
+          this.$root.$on('updateData1', () => { // here you need to use the arrow function
             this.submitData();
-
-          })).catch(errors => {
-            console.log(errors);
-          })
-
-
-          axios.get('descriptions/games')
-              .then(res => {
-                this.$store.state.games = JSON.parse(res.request.response).games;
-                this.loading = false;
-                this.loadData();
-                this.submitData();
-              });
-
-
-          this.$root.$on('loadFilterHeaderSingle', (Filter) => { // here you need to use the arrow function
-            this.getFilterHeader = {};
-            if(Filter.group !== null && Filter.group !== undefined) {
-              if(Filter.student === null )
-                delete  Filter.student;
-
-              this.getFilterHeader = Filter;
-
-            } else if(Filter.student !== null && Filter.student !== undefined) {
-
-              if(Filter.group === null )
-                delete  Filter.group;
-
-              this.getFilterHeader = Filter;
-            }
-
-            this.submitData();
-
           });
 
         }
@@ -182,10 +128,7 @@ import axios from "axios";
             this.$modal.show("chapter_info");
           },
             filter(){
-
-              this.$root.$emit('loadFilterDate', [this.GroupFilter, this.filterStudent, "single"]);
-              this.$modal.show('filter');
-
+              this.$modal.show('filter1');
             },
             back(){
                 this.$router.push('/main/single/VideoGameSelection/');
@@ -193,6 +136,7 @@ import axios from "axios";
             selectGame(event){
                 this.game = event.target.value;
                 this.loadData();
+                this.submitData();
             },
             selectChoice(event){
                 this.choice = event.target.value;
@@ -201,52 +145,30 @@ import axios from "axios";
             },
             selectChapter(event){
                 this.chapter = event.target.value;
-
+                this.submitData();
             },
             submitData(){
 
                 this.loading = true;
-                if(this.getFilterHeader !== null && JSON.stringify(this.getFilterHeader) !== JSON.stringify({})) {
+                
+                axios.get("decision?gameCode=" + this.game + "&gameVersion=" + this.version + "&chapterCode=" + this.chapter, {headers: {filters: JSON.stringify(this.$store.state.filterH1)}}).then(res => {
+                  this.decisions = res.data.decisions;
 
-                  axios.get("decision?gameCode=" + this.game + "&gameVersion=" + this.version + "&chapterCode=" + this.chapter, {headers: {filters: JSON.stringify(this.getFilterHeader)}}).then(res => {
-                    this.decisions = res.data.decisions;
-
-                    this.dataAnalysis();
-                    let i =0;
-                    this.chartDATA = [];
-                    this.unique_decision_final.forEach(value => {
-                      this.chartDATA.push({
-                        name: 'bar'+ i++,
-                        type: 'bar',
-                        stack: 'one',
-                        barWidth: 20,
-                        data: value.choice
-                      });
+                  this.dataAnalysis();
+                  let i =0;
+                  this.chartDATA = [];
+                  this.unique_decision_final.forEach(value => {
+                    this.chartDATA.push({
+                      name: 'bar'+ i++,
+                      type: 'bar',
+                      stack: 'one',
+                      barWidth: 20,
+                      data: value.choice
                     });
-
-
-                    this.barChartLoad();
                   });
-
-                }else {
-                  axios.get("decision?gameCode=" + this.game + "&gameVersion=" + this.version + "&chapterCode=" + this.chapter).then(res => {
-                    this.decisions = res.data.decisions;
-                    this.dataAnalysis();
-                    let i =0;
-                    this.chartDATA = [];
-                    this.unique_decision_final.forEach(value => {
-                      this.chartDATA.push({
-                        name: 'bar'+ i++,
-                        type: 'bar',
-                        stack: 'one',
-                        barWidth: 20,
-                        data: value.choice
-                      });
-                    });
-
-                    this.barChartLoad();
-                  });
-                }
+                  this.barChartLoad();
+                  this.loading = false;
+                });
             },
             loadData(){
                 let key = this.game;
@@ -261,9 +183,7 @@ import axios from "axios";
                     res = res[0];
                     this.chapters = res.chapters;
                     this.version = res.gameVersion;
-                    //this.chapter = this.chapters[0];
                 }
-
             },
             dataAnalysis(){
                 this.distinct_event_temp = [];
@@ -382,7 +302,7 @@ import axios from "axios";
                             formatter: function (params) {
                               console.log(params)
                                 return params.data.event +': '+params.data.description+'<br>Answer: “'+params.data.name+'” <br/>Selected by: '+
-                                    params.value+'% of the students';
+                                    params.value.toFixed(2) + '% of the students';
                             }
                         },
                         calculable: true,
@@ -452,8 +372,6 @@ import axios from "axios";
                         ]
                     };
                 }
-
-              this.loading = false;
             },
             gotoEvent(value){
                 if(this.getFilterHeader === null || JSON.stringify(this.getFilterHeader) === "{}")
