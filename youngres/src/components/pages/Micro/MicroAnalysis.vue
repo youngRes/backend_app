@@ -24,7 +24,6 @@
                 </div>
                 <div class="col-md-5 mt-sm-3 mt-md-0">
                     <button class="btn btn-primary" @click="filter()">Filter</button>
-                    <button class="btn btn-success" style="margin-left: 10px" @click="submitData()">Visualize</button>
                     <button class="btn btn-dark" style="margin-left: 10px" @click="chapterInfo()">Chapter Info</button>
                 </div>
             </div>

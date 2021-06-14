@@ -23,13 +23,12 @@
           </select>
         </div>
         <div class="col-md-5 mt-sm-3 mt-md-0">
-          <button class="btn btn-success" style="margin-left: 10px" @click="submit()">Visualize</button>
           <button class="btn btn-dark" style="margin-left: 10px" @click="chapterInfo()">Chapter Info</button>
         </div>
       </div>
       <div class="row mt-3">
-        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupOne()">Filter 1</button></div>
-        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupTwo()">Filter 2</button></div>
+        <div class="col-md-1"><button class="btn btn-info" @click="filterGroupOne()">Filter 1</button></div>
+        <div class="col-md-1"><button class="btn btn-warning" @click="filterGroupTwo()">Filter 2</button></div>
       </div>
       <div class="row">
         <div class="col-md-9">
@@ -110,6 +109,8 @@ export default {
       time_event_list: [],
       time_event_list_name: [],
       time_event_list_two: [],
+      colors_1 : ["#03045e","#023e8a","#0077b6","#0096c7","#00b4d8","#48cae4","#90e0ef","#ade8f4","#caf0f8"],
+      colors_2 : ["#ffe169","#fad643","#edc531","#dbb42c","#c9a227","#b69121","#a47e1b","#926c15","#805b10","#76520e"]
     }
   },
   mounted(){
@@ -347,12 +348,9 @@ export default {
 
         let i = 0;
 
-
-
         group_one.forEach( value => {
-          i++;
           if(value.choice !== undefined){
-
+             i++;
 
             var gr = this.SelectGroupOne;
 
@@ -379,19 +377,19 @@ export default {
                       }
                     }
                   },
-                  data: value.choice
+                  data: value.choice,
+                  color : this.colors_1[i % this.colors_1.length]
                 }
             );
           }
 
         });
 
+        i=0;
         group_two.forEach( value => {
-          i++;
-
 
           if(value.choice !== undefined) {
-
+            i++;
 
             var gr = this.SelectGroupTwo;
             this.listData.push(
@@ -417,7 +415,8 @@ export default {
                       }
                     }
                   },
-                  data: value.choice
+                  data: value.choice,
+                  color : this.colors_2[i % this.colors_2.length]
                 }
             );
           }

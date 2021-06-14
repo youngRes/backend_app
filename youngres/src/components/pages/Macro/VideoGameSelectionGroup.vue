@@ -29,10 +29,10 @@
                 <p class="title mt-3">Please select the Two Groups:</p>
                 <div class="row ">
                 <div class="col-md-3 offset-1">
-                  <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupOne()">Filter 1</button></div>
+                  <div class="col-md-1"><button class="btn btn-info" @click="filterGroupOne()">Filter 1</button></div>
                 </div>
                 <div class="col-md-3">
-                  <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupTwo()">Filter 2</button></div>
+                  <div class="col-md-1"><button class="btn btn-warning" @click="filterGroupTwo()">Filter 2</button></div>
                 </div>
               </div>
             </div>

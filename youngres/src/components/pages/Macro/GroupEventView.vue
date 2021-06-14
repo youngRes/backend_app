@@ -560,7 +560,8 @@ export default {
                   }
                 }
               },
-              data: this.possibleChoicesGroupOne
+              data: this.possibleChoicesGroupOne,
+              color: "#023e8a"
             },
             {
               name: this.groupTwo,
@@ -581,7 +582,8 @@ export default {
                   }
                 }
               },
-              data: this.possibleChoicesGroupTwo
+              data: this.possibleChoicesGroupTwo,
+              color: "#d6d32f"
             }
           ]
         }
