@@ -16,11 +16,11 @@
           </select>
         </div>
         <div class="col-md-3">
-          <select class="custom-select" v-if="choice === 'multiple-choice'" v-model="gameevent" style="margin-left: 10px;" @change="loadData($event)">
+          <select class="custom-select" v-if="choice === 'multiple-choice'" v-model="gameevent" style="margin-left: 10px;" @change="getData($event)">
             <option v-for="(item, index) in distinct_event" :key="index" :value="item">{{item}} </option>
           </select>
 
-          <select class="custom-select" v-if="choice === 'timed'" v-model="gameevent" style="margin-left: 10px;" @change="loadData($event)">
+          <select class="custom-select" v-if="choice === 'timed'" v-model="gameevent" style="margin-left: 10px;" @change="getData($event)">
             <option v-for="(item, index) in distinct_event_temp" :key="index" :value="item">{{item}} </option>
           </select>
         </div>
@@ -155,44 +155,15 @@ export default {
     this.chapter = this.$route.params.chapter;
     this.choice = this.$route.params.choice;
     this.version = this.$route.params.version;
-
-
-
-    this.groupOne = this.$route.params.groupOne;
-    this.groupTwo = this.$route.params.groupTwo;
-
-
-    axios.get('descriptions/games')
-        .then(resx => {
-          this.$store.state.games = JSON.parse(resx.request.response).games;
-
-          let key = this.game;
-          this.result = this.$store.state.games;
-          let res = this.result.filter(
-              function(data){
-                if(data.gameCode === key)
-                  return data
-              }
-          );
-          if(res.length > 0){
-            res = res[0];
-            this.chapters = res.chapters;
-            this.version = res.gameVersion;
-          }
-
-          this.loadData();
-
-        });
-
-
-
-
-
+    this.loadData();
+    this.getData();
   },
+
   methods: {
     exportOpt(){
       window.print();
     },
+    
     changeChapter(event){
       this.distinct_event = [];
       this.distinct_event_temp = [];
@@ -257,28 +228,38 @@ export default {
           if (this.distinct_event_temp.length > 0)
             this.gameevent = this.distinct_event_temp[0];
         }
-        this.loadData();
+        this.getData();
 
       }));
-
-
-
-
-
-
-
     },
+
+    loadData(){
+      let key = this.game;
+      this.result = this.$store.state.games;
+      let res = this.result.filter(
+          function(data){
+            if(data.gameCode === key)
+              return data
+          }
+      );
+      if(res.length > 0){
+        res = res[0];
+        this.chapters = res.chapters;
+        this.version = res.gameVersion;
+        //this.chapter = this.chapters[0];
+      }
+    },
+    
     changeEvent(event){
       this.gameevent = event.target.value;
       this.loadEvent();
     },
-    loadData(){
+    getData(){
 
       this.loading = true;
 
-      const requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: this.$route.query.groupOne}});
-      const requestTwo = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: this.$route.query.groupTwo}});
-
+      const requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.$store.state.filterH1)}});
+      const requestTwo = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.$store.state.filterH2)}});
       const requestThree = axios.get("descriptions/event?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter+"&eventCode="+this.gameevent);
 
       axios.all([requestOne, requestTwo, requestThree]).then(axios.spread((...responses) => {
@@ -579,7 +560,8 @@ export default {
                   }
                 }
               },
-              data: this.possibleChoicesGroupOne
+              data: this.possibleChoicesGroupOne,
+              color: "#023e8a"
             },
             {
               name: this.groupTwo,
@@ -600,7 +582,8 @@ export default {
                   }
                 }
               },
-              data: this.possibleChoicesGroupTwo
+              data: this.possibleChoicesGroupTwo,
+              color: "#d6d32f"
             }
           ]
         }

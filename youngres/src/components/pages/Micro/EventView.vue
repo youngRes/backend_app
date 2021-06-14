@@ -170,12 +170,7 @@ export default {
     },
     loadData(){
       this.loading = true;
-      let requestOne;
-      if(this.$route.query.filter !== undefined)
-        requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: this.$route.query.filter}});
-      else
-        requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter);
-
+      const requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.$store.state.filterH1)}});
       const requestThree = axios.get("descriptions/event?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter+"&eventCode="+this.gameevent);
 
       axios.all([requestOne, requestThree]).then(axios.spread((...responses) => {

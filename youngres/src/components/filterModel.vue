@@ -1,5 +1,5 @@
 <template>
-    <modal name="filter" height="auto" class="mymodal">
+    <modal name="filter1" height="auto" class="mymodal">
         <p style="text-align: center; padding: 20px; font-weight: bold;">Filter</p>
         <div class="row" style="min-height: 310px;">
             <div class="col-md-6">
@@ -10,24 +10,24 @@
 
                 <div class="group" style="padding: 0" :class="group ? '' : 'group_block'">
                     <div class="group">
-                        <p>
+                        <p v-if="countryAvailable">
                             <input type="checkbox" v-model="country" @change="filterUpdate()"> Country
                         </p>
-                        <select :disabled="!country" v-model="selectedCountry" @change="filterUpdate()">
+                        <select v-if="countryAvailable" :disabled="!country" v-model="selectedCountry" @change="filterUpdate()">
                             <option v-for="item in countryList" :key="item">{{item}}</option>
                         </select>
 
-                        <p>
+                        <p v-if="cityAvailable">
                             <input type="checkbox" v-model="city" @change="filterUpdate()"> City
                         </p>
-                        <select :disabled="!city"  v-model="selectedCity" @change="filterUpdate()">
+                        <select v-if="cityAvailable" :disabled="!city"  v-model="selectedCity" @change="filterUpdate()">
                           <option v-for="item in cityList" :key="item">{{item}}</option>
                         </select>
                     </div>
-                    <p style="text-align: center" v-if="type">
+                    <p style="text-align: center">
                         <input type="checkbox" v-model="s_group"  @change="filterUpdate()"> Specific Groups
                     </p>
-                    <div class="group" :class="s_group ? '' : 'group_block'" v-if="type">
+                    <div class="group" :class="s_group ? '' : 'group_block'">
                         <ul class="group_id_list" @change="filterUpdate()">
 
                         <li v-for="item in groupIdList" :key="item.group_id">
@@ -90,6 +90,7 @@
     export default {
       data: function () {
         return {
+          error: false,
           s_group: false,
           country: false,
           city: false,
@@ -120,56 +121,57 @@
 
           ageAvailable: false,
           sexAvailable: false,
-          studentAvailable: false
+          studentAvailable: false,
+          countryAvailable: false,
+          cityAvailable: false
         };
       },
       mounted(){
+        this.$root.$on("processFilters", () => {
+            let Filter = this.$store.state.availableFilters;
 
-        this.$root.$on('loadFilterDate', (Filter) => {
-          //console.log(Filter);
-          this.type = Filter[2] === "single";
-          if(Filter[0].filters !== undefined) {
+            if(Filter[0].filters !== undefined) {
 
-            if(Filter[0].filters[0].id === "city"){
-              this.cityList = Filter[0].filters[0].values;
-            }else{
-              this.cityList = Filter[0].filters[1].values;
-            }
+              for (let i = 0; i < Filter[0].filters.length; i++) {
+                let actFilter = Filter[0].filters[i]
 
-            if(Filter[0].filters[0].id === "country")
-              this.countryList = Filter[0].filters[0].values;
-            else
-              this.countryList = Filter[0].filters[1].values;
-
-            if(this.type)
+                if (actFilter.id == "city") {
+                  this.cityAvailable = true;
+                  this.cityList = actFilter.values;
+                } else if (actFilter.id == "country") {
+                  this.countryAvailable = true;
+                  this.countryList = actFilter.values;
+                } else {
+                  console.error("unknown filter type: " + actFilter.id);
+                }
+              }
               this.groupIdList = Filter[0].group_ids;
-          }
-          if(Filter[1].filters !== undefined){
+            }
+            if(Filter[1].filters !== undefined){
 
-            for (var i = 0; i < Filter[1].filters.length; i++) {
-              var actFilter = Filter[1].filters[i]
+              for (let i = 0; i < Filter[1].filters.length; i++) {
+                let actFilter = Filter[1].filters[i]
 
-              if (actFilter.id == 'age')  {
-                this.ageAvailable = true;
-                this.limit_min = Math.min(actFilter.values);
-                this.limit_max = Math.max(actFilter.values);
-              } else if (actFilter.id == "sex") {
-                this.sexAvailable = true;
-                this.sex_list = actFilter.values;
-              } else if (actFilter.id == "studentCode") {
-                this.studentAvailable = true;
-                this.student_list = actFilter.values;
-              } else {
-                console.error("unknown filter type: " + actFilter.id);
+                if (actFilter.id == 'age')  {
+                  this.ageAvailable = true;
+                  this.limit_min = Math.min(actFilter.values);
+                  this.limit_max = Math.max(actFilter.values);
+                } else if (actFilter.id == "sex") {
+                  this.sexAvailable = true;
+                  this.sex_list = actFilter.values;
+                } else if (actFilter.id == "studentCode") {
+                  this.studentAvailable = true;
+                  this.student_list = actFilter.values;
+                } else {
+                  console.error("unknown filter type: " + actFilter.id);
+                }
               }
             }
-
-          }
         });
       }
       , methods:{
             close(){
-                this.$modal.hide('filter');
+                this.$modal.hide('filter1');
             },
             limitCheck(){
 
@@ -187,15 +189,9 @@
 
             },
             filter(){
-
-              this.$modal.hide('filter');
-              if(this.type) {
-                this.$root.$emit('loadFilterHeaderSingle', this.filterHeader);
-              }
-              else {
-                this.$root.$emit('loadFilterHeaderGroup', this.filterHeader);
-                /*this.$root.$emit('loadFilterHeaderGroupTwo', this.filterHeader);*/
-              }
+              this.$modal.hide('filter1');
+              this.$store.commit("changeFilter1", this.filterHeader);
+              this.$root.$emit('updateData1');
             },
             filterUpdate(){
               this.filterHeader = {};
@@ -309,7 +305,6 @@
             this.selected_groups = selected;
             this.filterUpdate();
           }
-
         }
 
     }
