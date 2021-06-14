@@ -14,7 +14,7 @@
 
                     <div class=" col-4">
                         <select class="custom-select" v-model="selectedGame" @change="selectGame()">
-                            <option v-for="(item, index) in result" :key="index" :value="item">{{item.gameCode}} </option>
+                            <option v-for="(item, index) in this.$store.state.games" :key="index" :value="item">{{item.gameCode}} </option>
                         </select>
                     </div>
                     <div class="col-4">
@@ -29,28 +29,12 @@
                 <p class="title mt-3">Please select the Two Groups:</p>
                 <div class="row ">
                 <div class="col-md-3 offset-1">
-                  <select class="custom-select" v-model="SelectGroupOne" >
-                    <option v-for="(item, index) in groupsList" :key="index" :value="item.group_id">{{item.group_id}} </option>
-                  </select>
+                  <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupOne()">Filter 1</button></div>
                 </div>
                 <div class="col-md-3">
-                  <select class="custom-select" v-model="SelectGroupTwo">
-                    <option v-for="(item, index) in groupsList" :key="index" :value="item.group_id">{{item.group_id}}</option>
-                  </select>
+                  <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupTwo()">Filter 2</button></div>
                 </div>
               </div>
-                <!--<p style="margin-top: 10px;">Please select Option filter:</p>
-                <div>
-                    <div class="content">
-                        <div class="row offset-3">
-
-                            <div class="col-3">
-                                <button class="btn btn-dark">Filter</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-                <!--<p style="margin-top: 10px;">filter the events you want to visualize:</p>-->
             </div>
             <div class="col-4">
                 <strong>Game Description: </strong> {{description}}
@@ -88,7 +72,7 @@
     export default {
         data: function(){
             return {
-                loading: true,
+                loading: false,
                 result: [], //all data in the variable
                 country: null, //country
                 flag: [], //all flags
@@ -106,34 +90,15 @@
             };
         },
         mounted () {
-
-
-
-          axios.get('descriptions/games?limit=20')
-              .then(res => {
-                this.result = JSON.parse(res.request.response).games;
-                this.$store.state.selectedData = this.result;
-                axios.get("filters/group").then(res => {
-                  this.groupsList = JSON.parse(res.request.response).group_ids;
-                  if(this.groupsList.length > 0)
-                    this.SelectGroupOne = this.groupsList[0].group_id;
-                  if(this.groupsList.length > 1)
-                    this.SelectGroupTwo = this.groupsList[1].group_id;
-                  else if(this.groupsList.length > 0)
-                    this.SelectGroupTwo = this.groupsList[0].group_id;
-
-                  this.loading = false;
-                });
-
-                if(this.result.length > 0){
-                  this.loadGameData(0);
-                }
-              });
-
-
-
+          this.loadGameData(0);
         },
         methods: {
+          filterGroupOne(){
+            this.$modal.show('filter1');
+          },
+          filterGroupTwo(){
+            this.$modal.show('filter2');
+          },
             next(){
 
               this.$router.push('/main/group/VideoGameSelection/'+this.selectedGame.gameCode+'/'+this.selectedChapter+'/'+ this.selectedGameVersion +'/'+this.SelectGroupOne+'/'+this.SelectGroupTwo+'/MacroAnalysis/');
@@ -154,41 +119,20 @@
 
             back(){
                 this.$router.push('/main');
-            }
-            ,
-            selectGame(){
-              console.log(this.selectedGame.gameCode);
-              var i = 0;
-              for(; i < this.result.length ; i++){
-                if(this.result[i].gameCode === this.selectedGame.gameCode)
-                  break;
-              }
-              this.chapter = this.selectedGame.chapters;
-              this.selectedChapter = this.chapter[0];
-              this.loadGameData(i);
+            },
+            selectGame(event){
+                this.loadGameData(event.target.value);
             },
             loadGameData(index){
-
-                this.description = this.result[index].gameDescription;
-                this.selectedGame = this.result[index];
-                this.NumPlay = this.result[index].numberPlayers;
-                this.chapter = this.result[index].chapters;
-                this.selectedGameVersion = this.result[index].gameVersion;
+                let result = this.$store.state.games
+                this.description = result[index].gameDescription;
+                this.selectedGame = result[index];
+                this.NumPlay = result[index].numberPlayers;
+                this.chapter = result[index].chapters;
+                this.selectedGameVersion = result[index].gameVersion;
                 this.selectedChapter = this.chapter[0];
 
-                this.country = this.result[index].countries;
-    /*            var listCountry =this.result[index].contries;
-                this.flag = [];
-                for(var item in listCountry){
-                    var name = listCountry[item].trim().toLocaleLowerCase();
-                    xaxios.get('http://restcountries.eu/rest/v2/name/'+name).then(
-                        res => {
-                            var list = JSON.parse(res.request.response);
-                            this.flag.push(list[0]);
-                        }
-
-                    )
-                }*/
+                this.country = result[index].countries;
             }
         }
     }

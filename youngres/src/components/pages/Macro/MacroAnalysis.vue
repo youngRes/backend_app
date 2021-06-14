@@ -11,11 +11,6 @@
       <p class="title">You have selected:</p>
       <div class="row">
         <div class="col-md-2">
-          <select class="custom-select" v-model="game" @change="selectGame($event)">
-            <option v-for="(item, index) in result" :key="index" :value="item.gameCode">{{item.gameCode}} </option>
-          </select>
-        </div>
-        <div class="col-md-2">
           <select class="custom-select" v-model="chapter"  @change="selectChapter($event)">
             <option v-for="(item, index) in chapters" :key="index" :value="item">{{item}} </option>
           </select>
@@ -33,19 +28,8 @@
         </div>
       </div>
       <div class="row mt-3">
-        <div class="col-md-3">
-          <select class="custom-select" v-model="SelectGroupOne" >
-            <option v-for="(item, index) in groupsList" :key="index" :value="item.group_id">{{item.group_id}} </option>
-          </select>
-
-        </div>
-        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupOne()">Filter</button></div>
-        <div class="col-md-3">
-          <select class="custom-select" v-model="SelectGroupTwo">
-            <option v-for="(item, index) in groupsList" :key="index" :value="item.group_id">{{item.group_id}}</option>
-          </select>
-        </div>
-        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupTwo()">Filter</button></div>
+        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupOne()">Filter 1</button></div>
+        <div class="col-md-1"><button class="btn btn-primary" @click="filterGroupTwo()">Filter 2</button></div>
       </div>
       <div class="row">
         <div class="col-md-9">
@@ -134,46 +118,16 @@ export default {
     this.chapter = this.$route.params.chapter;
     this.version = this.$route.params.version;
 
-    const requestOne = axios.get("descriptions/games");
-    const requestTwo = axios.get("filters/group");
-    const requestThree = axios.get("filters/student");
+    this.loadData();
+    this.getData();
 
-
-    axios.all([requestOne, requestTwo, requestThree ]).then(axios.spread((...responses) => {
-      this.$store.state.games = responses[0].data.games;
-      this.GroupFilter = responses[1].data
-      this.filterStudent = responses[2].data
-
-      this.groupsList = this.GroupFilter.group_ids;
-      this.SelectGroupOne = this.$route.params.groupOne;
-      this.SelectGroupTwo = this.$route.params.groupTwo;
-      this.loadData();
-
-      this.submitData();
-      this.submitDataTwo();
-      this.getData();
-    })).catch(errors => {
-      console.log(errors);
-    })
-
-
-    this.$root.$on('loadFilterHeaderGroup', (Filter) => { // here you need to use the arrow function
-      this.getFilterHeader = {};
-      this.getFilterHeader = Filter;
-      //console.log(Filter);
-      this.submitData();
+    this.$root.$on('updateData1', () => { // here you need to use the arrow function
       this.getData();
     });
 
-
-    this.$root.$on('loadFilterHeaderGroupTwo', (Filter) => { // here you need to use the arrow function
-      this.getFilterHeader_two = {};
-      this.getFilterHeader_two = Filter;
-      //console.log(Filter);
-      this.submitDataTwo();
+    this.$root.$on('updateData2', () => { // here you need to use the arrow function
       this.getData();
     });
-
 
   }
   ,
@@ -185,16 +139,10 @@ export default {
       this.$router.push('/main');
     },
     filterGroupOne(){
-
-      this.$root.$emit('loadFilterDate', [this.GroupFilter, this.filterStudent, "group"]);
-      this.$modal.show('filter');
-
+      this.$modal.show('filter1');
     },
     filterGroupTwo(){
-
-      this.$root.$emit('loadFilterDateTwo', [this.GroupFilter, this.filterStudent, "group"]);
-      this.$modal.show('filterTwo');
-
+      this.$modal.show('filter2');
     },
     back(){
       this.$router.push('/main/group/VideoGameSelection/');
@@ -210,6 +158,7 @@ export default {
     },
     selectChapter(event){
       this.chapter = event.target.value;
+      this.getData();
 
     },
     submit(){
@@ -306,13 +255,8 @@ export default {
     },
     getData(){
 
-      this.filterCheck();
-
-      const requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.getFilterHeader)}});
-      const requestTwo = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.getFilterHeader_two)}});
-
-
-
+      const requestOne = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.$store.state.filterH1)}});
+      const requestTwo = axios.get("decision?gameCode="+this.game+"&gameVersion="+this.version+"&chapterCode="+this.chapter, { headers: { filters: JSON.stringify(this.$store.state.filterH2)}});
 
 
       axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
@@ -419,14 +363,14 @@ export default {
                   stack: 'one',
                   barWidth: '20',
                   label: {
-                    show: true,
+                    show: false,
                     position: 'insideBottom',
 
                     align: 'left',
                     verticalAlign: 'middle',
                     rotate: 90,
                     formatter: function(param) {
-                      return param.data.value ? gr : '' ;
+                      return param.data.value.toFixed(2) ? gr : '' ;
                     },
                     fontSize: 12,
                     rich: {
@@ -457,7 +401,7 @@ export default {
                   stack: 'two',
                   barWidth: '20',
                   label: {
-                    show: true,
+                    show: false,
                     position: 'insideBottom',
 
                     align: 'left',
@@ -918,7 +862,7 @@ export default {
             formatter: function (params) {
              // console.log(params)
               return params.data.event +': '+params.data.description+'<br>Answer: “'+params.data.name+'” <br/>Selected by: '+
-                  params.value+'% of the students';
+                  params.value.toFixed(2) +'% of the students';
             }
           },
           xAxis: {
@@ -1002,7 +946,7 @@ export default {
               std_two = Math.sqrt(sum_two / (count_two));
 
 
-              return Event+' : '+description+'<br/>'+groupOne+' Avg: ' + (mean === 'NaN' ? 0 : mean ) + ' secs.<br/>'+groupOne+' Std: ' + std.toFixed(2)+' secs.<br/> '+groupTwo+' Avg: ' + (mean_two === 'NaN' ? 0 : mean_two ) + ' secs.<br/>'+groupTwo+' Std: ' + std_two.toFixed(2)+' secs.';
+              return Event+' : '+description+'<br/>'+groupOne+' Avg: ' + (mean === 'NaN' ? 0 : mean.toFixed(2) ) + ' secs.<br/>'+groupOne+' Std: ' + std.toFixed(2)+' secs.<br/> '+groupTwo+' Avg: ' + (mean_two === 'NaN' ? 0 : mean_two.toFixed(2) ) + ' secs.<br/>'+groupTwo+' Std: ' + std_two.toFixed(2)+' secs.';
             }
           },
           xAxis: {

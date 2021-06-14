@@ -15,12 +15,12 @@
 
    import filterModel from "@/components/filterModel";
    import ChapterInfoModal from "@/components/pages/ChapterInfoModal";
-   //import filterModelTwo from "@/components/filterModelTwo";
+   import filterModelTwo from "@/components/filterModelTwo";
 
    export default {
         components:{
             'filter-view': filterModel,
-            'filter-view-two': filterModel,
+            'filter-view-two': filterModelTwo,
             'chapter-info': ChapterInfoModal
         },
         data: function(){
