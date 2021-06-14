@@ -26,7 +26,7 @@ export default new Vuex.Store({
             router.push('/');
         },
         login: (state, payload) => {
-            state.userName = payload.userName;
+            state.userName = payload.user;
 
             axios.post("login", null, {
                 headers: {
