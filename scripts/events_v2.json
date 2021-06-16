@@ -210,7 +210,10 @@
           "After listening to Rob and his group conversation, Kami asks the main character if he feels that they try to push him/her to be aggressive."
         ],
         "type":"multiple-choice",
-        "parentDecision": null,
+        "parentDecision": {
+          "parentEvent": "14",
+          "triggerDecision": 1
+        },
         "possibleChoices":["Yes", "No"],
 		"correctChoice": 2,
 		"evaluation": {"type": "Rob_group"}
@@ -337,7 +340,10 @@
           "After listening to Rob and his group conversation, Kami asks the main character if he thinks Rob is worried about your discussion with mom."
         ],
         "type":"multiple-choice",
-        "parentDecision": null,
+        "parentDecision": {
+          "parentEvent": "14",
+          "triggerDecision": 2
+        },
         "possibleChoices":["Yes", "No"],
 		"correctChoice": 1,
 		"evaluation": {"type": "Rob_group"}
@@ -352,7 +358,10 @@
           "After listening to Rob and his group conversation, Kami asks the main character why did he change its opinion about the fight with Ahmed."
         ],
         "type":"multiple-choice",
-        "parentDecision": null,
+        "parentDecision": {
+          "parentEvent": "14",
+          "triggerDecision": 3
+        },
         "possibleChoices":["Due to the argument with mom", "Due to the argument with the director", "Is a general feeling", "Being alone made me think"]
       },
 	  {
@@ -475,7 +484,10 @@
           "Once the main character tries to answer Ahmed using his language, he changes his expression. The player shall identify the emotion."
         ],
         "type":"multiple-choice",
-        "parentDecision": null,
+        "parentDecision": {
+          "parentEvent": "31",
+          "triggerDecision": [1, 2, 3]
+        },
         "possibleChoices":["Happy", "Sad", "Upset", "Scared"],
 		"correctChoice": 1,
 		"evaluation": {"type": "emotion_identification", "measure": "pre"}
