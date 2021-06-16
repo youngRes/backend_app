@@ -74,3 +74,7 @@ moodledata_data/localcache
 moodledata_data/sessions
 moodledata_data/temp
 moodledata_data/trashdir
+
+# visualization tool
+youngres/package-lock.json
+youngres/yarn.lock
