@@ -1,0 +1,76 @@
+version: "3"
+volumes:
+  db-data:
+services:
+  db:
+    image: mongo:4.2
+    environment:
+      # provide your credentials here
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    volumes:
+      - db-data:/data/db
+    ports:
+      - "8884:27017"
+    expose:
+      - "8884"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  gameplay:
+    #image: youngres/youngres_gameplay_api:f85e5471
+    environment:
+      # provide your credentials here
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    build:
+      context: ./gameplay_api
+      dockerfile: Dockerfile
+    ports:
+      - "8882:8080"
+    expose:
+      - "8882"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - db
+  consumption:
+    # image: youngres/youngres_consumption_api:0de2539
+    #image: youngres_consumption_api
+    build:
+      context: ./consumption_api
+      dockerfile: Dockerfile
+    environment:
+      # provide your credentials here
+      - SECRET_KEY=${SECRET_KEY}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "8883:8080"
+    expose:
+      - "8883"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - db
+  visualization:
+    # image: youngres/youngres_consumption_api:0de2539
+    #image: youngres_consumption_api
+    build:
+      context: ./youngres
+      dockerfile: Dockerfile
+    ports:
+      - "8885:8080"
+    expose:
+      - "8885"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - db
