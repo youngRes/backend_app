@@ -19,7 +19,7 @@ paths:
       parameters:
       - name: user
         in: header
-        description: user name
+        description: User id
         required: true
         style: simple
         explode: false
@@ -28,7 +28,7 @@ paths:
           example: admin
       - name: password
         in: header
-        description: plain password
+        description: password in plain text
         required: true
         style: simple
         explode: false
@@ -37,7 +37,7 @@ paths:
           example: 1234
       responses:
         "200":
-          description: Ok, the user exists and a token is returned
+          description: "Ok, the user exists and a token is returned"
           content:
             application/json:
               schema:
@@ -49,13 +49,13 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/group:
     get:
-      summary: returns information related to the possible filters that can be apply
-        to the groups. Each field contains the name, the type (numeric, textual) and
-        all the values associated to that field (without repetition).
+      summary: "returns information related to the possible filters that can be apply\
+        \ to the groups. Each field contains the name, the type (numeric, textual)\
+        \ and all the values associated to that field (without repetition)."
       operationId: filters_group_get
       responses:
         "200":
-          description: Ok, group filters are returned
+          description: "Ok, group filters are returned"
           content:
             application/json:
               schema:
@@ -69,13 +69,13 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/student:
     get:
-      summary: returns information related to the possible filters that can be apply
-        to the students. Each field contains the name, the type (numeric, textual)
-        and all the values associated to that filter (without repetition).
+      summary: "returns information related to the possible filters that can be apply\
+        \ to the students. Each field contains the name, the type (numeric, textual)\
+        \ and all the values associated to that filter (without repetition)."
       operationId: filters_student_get
       responses:
         "200":
-          description: Ok, group filters are returned
+          description: "Ok, group filters are returned"
           content:
             application/json:
               schema:
@@ -89,13 +89,13 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.default_controller
   /filters/test:
     get:
-      summary: returns information related to the possible filters that can be apply
-        to the test. Each field contains the name, the type (numeric, textual) and
-        all the values associated to that filter (without repetition).
+      summary: "returns information related to the possible filters that can be apply\
+        \ to the test. Each field contains the name, the type (numeric, textual) and\
+        \ all the values associated to that filter (without repetition)."
       operationId: filters_test_get
       responses:
         "200":
-          description: Ok, group filters are returned
+          description: "Ok, group filters are returned"
           content:
             application/json:
               schema:
@@ -123,8 +123,8 @@ paths:
           default: 20
       - name: page
         in: query
-        description: used for pagination, allows skyping limit entries before starting
-          to return results.
+        description: "used for pagination, allows skyping limit entries before starting\
+          \ to return results."
         required: false
         style: form
         explode: true
@@ -133,7 +133,7 @@ paths:
           default: 0
       responses:
         "200":
-          description: Ok, games information is returned
+          description: "Ok, games information is returned"
           content:
             application/json:
               schema:
@@ -181,15 +181,13 @@ paths:
           example: chapter_3
       responses:
         "200":
-          description: Ok, games information is returned
+          description: "Ok, games information is returned"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Chapter'
         "401":
           description: Wrong credentials
-        "404":
-          description: The specified chapter is not on the database
         "500":
           description: Internal server error with the error message
       security:
@@ -240,15 +238,13 @@ paths:
           example: event3.5
       responses:
         "200":
-          description: Ok, test are returned
+          description: "Ok, test are returned"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Event'
         "401":
           description: Wrong credentials
-        "404":
-          description: The specified chapter is not on the database
         "500":
           description: Internal server error with the error message
       security:
@@ -299,7 +295,7 @@ paths:
               $ref: '#/components/schemas/FilterApply'
       responses:
         "200":
-          description: Ok, test are returned
+          description: "Ok, test are returned"
           content:
             application/json:
               schema:
@@ -358,18 +354,18 @@ components:
           example: textual
         values:
           type: array
-          description: contains all the possible values of that field if type is textual.
-            If types is numeric contains two elements, the first one is the minimum,
-            the second one is the maximum.
+          description: "contains all the possible values of that field if type is\
+            \ textual. If types is numeric contains two elements, the first one is\
+            \ the minimum, the second one is the maximum."
           example:
           - Madrid
           - Oulu
           items:
             type: string
-      description: data type used to retrieve the information related to a filter.
-        Type can be numeric or textual, if textual values contains a list with all
-        the possible values of that filter. If numeric, then the list contains two
-        elements, the first one is the minimun and the second one is the maximum.
+      description: "data type used to retrieve the information related to a filter.\
+        \ Type can be numeric or textual, if textual values contains a list with all\
+        \ the possible values of that filter. If numeric, then the list contains two\
+        \ elements, the first one is the minimun and the second one is the maximum."
       example:
         values:
         - Madrid
@@ -391,11 +387,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Entry'
-      description: Contains a list of filter to be applied when retrieving decissions.
-        Is a Json object with a "group","student" and "test" attributes that contains
-        a List of "Entry" objects with the filters to applied to their respective
-        fields. If any attribute (group, student or test) contains an empty list no
-        filter is applied.
+      description: "Contains a list of filter to be applied when retrieving decissions.\
+        \ Is a Json object with a \"group\",\"student\" and \"test\" attributes that\
+        \ contains a List of \"Entry\" objects with the filters to applied to their\
+        \ respective fields. If any attribute (group, student or test) contains an\
+        \ empty list no filter is applied."
     Group:
       type: object
       properties:
@@ -450,10 +446,6 @@ components:
             type: string
       description: data type to store the information related to a video game.
       example:
-        contries:
-        - Spain
-        - Greece
-        - Finland
         numberPlayers: 30
         chapters:
         - chapter_1
@@ -462,6 +454,10 @@ components:
         gameVersion: v.0.1
         gameCode: Game-1
         gameDescription: Game where LGTBI content is included...
+        countries:
+        - Spain
+        - Greece
+        - Finland
     Chapter:
       type: object
       properties:
@@ -517,7 +513,7 @@ components:
             type: string
         eventType:
           type: string
-          description: type of  the event (multiple choice, timed ...etc)
+          description: "type of  the event (multiple choice, timed ...etc)"
           example: choice
         parentDecision:
           $ref: '#/components/schemas/Decision'
@@ -538,6 +534,12 @@ components:
         eventCode: event-1-2-3
         parentDecision:
           eventCode: event-1-2-3
+          student:
+            country: Spain
+            studentCode: student1
+            city: Madrid
+            sex: male
+            age: "13"
           eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
           choice: cat
@@ -564,20 +566,63 @@ components:
           example: in this event the student is asked for its favorite pet...
         eventType:
           type: string
-          description: type of  the event (multiple choice, timed ...etc)
+          description: "type of  the event (multiple choice, timed ...etc)"
           example: choice
         choice:
           type: string
-          description: String with the choice a student take in that event, depending
-            on eventType this value can be numeric or a string. However the API always
-            returns an string an latter conversion need to be made on the front-end.
+          description: "String with the choice a student take in that event, depending\
+            \ on eventType this value can be numeric or a string. However the API\
+            \ always returns an string an latter conversion need to be made on the\
+            \ front-end."
           example: cat
+        student:
+          $ref: '#/components/schemas/Student'
       description: data type to store the decision taken during an event
       example:
         eventCode: event-1-2-3
+        student:
+          country: Spain
+          studentCode: student1
+          city: Madrid
+          sex: male
+          age: "13"
         eventDescription: in this event the student is asked for its favorite pet...
         eventType: choice
         choice: cat
+    Student:
+      type: object
+      properties:
+        studentCode:
+          type: string
+          description: Code that indentifies a student
+          example: student1
+        sex:
+          type: string
+          description: male or female
+          example: male
+        age:
+          type: string
+          description: age of a student
+          example: "13"
+        country:
+          type: string
+          description: country where the student is from
+          example: Spain
+        city:
+          type: string
+          description: city where the student is from
+          example: Madrid
+        groupCode:
+          description: code that identifies the group of the student
+          type: string
+          example: group01
+      description: Data to store the information of a student
+      example:
+        country: Spain
+        studentCode: student1
+        city: Madrid
+        sex: male
+        age: "13"
     Token:
       type: object
       properties:
@@ -641,11 +686,7 @@ components:
             $ref: '#/components/schemas/Game'
       example:
         games:
-        - contries:
-          - Spain
-          - Greece
-          - Finland
-          numberPlayers: 30
+        - numberPlayers: 30
           chapters:
           - chapter_1
           - chapter_2
@@ -653,11 +694,11 @@ components:
           gameVersion: v.0.1
           gameCode: Game-1
           gameDescription: Game where LGTBI content is included...
-        - contries:
+          countries:
           - Spain
           - Greece
           - Finland
-          numberPlayers: 30
+        - numberPlayers: 30
           chapters:
           - chapter_1
           - chapter_2
@@ -665,6 +706,10 @@ components:
           gameVersion: v.0.1
           gameCode: Game-1
           gameDescription: Game where LGTBI content is included...
+          countries:
+          - Spain
+          - Greece
+          - Finland
     inline_response_200_3:
       properties:
         decisions:
@@ -674,10 +719,22 @@ components:
       example:
         decisions:
         - eventCode: event-1-2-3
+          student:
+            country: Spain
+            studentCode: student1
+            city: Madrid
+            sex: male
+            age: "13"
           eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
           choice: cat
         - eventCode: event-1-2-3
+          student:
+            country: Spain
+            studentCode: student1
+            city: Madrid
+            sex: male
+            age: "13"
           eventDescription: in this event the student is asked for its favorite pet...
           eventType: choice
           choice: cat
@@ -687,3 +744,4 @@ components:
       scheme: bearer
       bearerFormat: JWT
       x-bearerInfoFunc: swagger_server.controllers.authorization_controller.check_bearerAuth
+
