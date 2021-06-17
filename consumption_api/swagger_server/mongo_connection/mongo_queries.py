@@ -29,6 +29,20 @@ def get_decisions(student_ids: List[str], event_ids: List[str]) -> pymongo.curso
     decisions = db.find({'studentCode': {'$in': student_ids}, 'eventCode': {'$in': event_ids}})
     return decisions
 
+def get_student_and_group(student_code: str) -> dict:
+    db = MongoDBConnection.get_students_collection()
+    cursor = db.aggregate([
+        {"$match": {"studentCode": student_code}},
+        {"$lookup": {
+            "from": "groups",
+            "localField": "groupCode",
+            "foreignField": "groupCode",
+            "as": "group"
+        }},
+        {"$unwind": "$group"},
+        {"$project": {"_id": 0, "studentCode": 1, "sex": 1, "age": 1, "country": "$group.country", "city": "$group.city", "groupCode": "$group.groupCode"}}
+    ])
+    return list(cursor)[0] if cursor is not None else None
 
 def get_game_students(game_code: str, version: str) -> List[str]:
     db = MongoDBConnection.get_events_collection()

@@ -154,8 +154,8 @@
 
                 if (actFilter.id == 'age')  {
                   this.ageAvailable = true;
-                  this.limit_min = Math.min(actFilter.values);
-                  this.limit_max = Math.max(actFilter.values);
+                  this.limit_min = Math.min(...actFilter.values);
+                  this.limit_max = Math.max(...actFilter.values);
                 } else if (actFilter.id == "sex") {
                   this.sexAvailable = true;
                   this.sex_list = actFilter.values;

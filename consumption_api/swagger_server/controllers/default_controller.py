@@ -14,6 +14,7 @@ from swagger_server.models.chapter import Chapter  # noqa: E501
 from swagger_server.models.event import Event  # noqa: E501
 from swagger_server.models.filter import Filter
 from swagger_server.models.entry import Entry
+from swagger_server.models.student import Student
 
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.inline_response2001 import InlineResponse2001  # noqa: E501
@@ -39,10 +40,14 @@ def _filter2query(filters: List[Entry], filter_types: Dict[str, str]) -> dict:
         elif ftr_type == 'numeric':
             # if the type is numeric then the value of that column need
             # to be between the specified values
-            query[f._key] = {
-                '$gte': f._min_value,
-                '$lte': f._max_value
-            }
+            try:
+                query[f._key] = {
+                    '$gte': int(f._min_value),
+                    '$lte': int(f._max_value)
+                }
+            except ValueError as e:
+                print(f'{e}', file=sys.stderr)
+
         else:
             raise KeyError(f"unknow filter type {ftr_type}")
     return query
@@ -141,8 +146,24 @@ def decision_get(game_code, game_version, chapter_code, token_info):  # noqa: E5
             event_code=row['eventCode'],
             event_description=event_dict[row['eventCode']]['description'],
             event_type=event_dict[row['eventCode']]['type'],
-            choice=choice
+            choice=choice,
+            student=_make_student(row["studentCode"])
         )
+
+    def _make_student(student_code: str) -> Student:
+        student_data = dbq.get_student_and_group(student_code)
+        if student_data is not None:
+            return Student(
+                student_code=student_data["studentCode"],
+                sex=student_data["sex"],
+                age=student_data["age"],
+                country=student_data["country"],
+                city=student_data["city"],
+                group_code=student_data["groupCode"]
+            )
+        else:
+            return None
+
     try:
         # Header parameters are not pass as a parameters, instead they are contained in
         # the headers variable and need to processed by hand

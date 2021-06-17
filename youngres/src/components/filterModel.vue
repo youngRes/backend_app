@@ -111,7 +111,7 @@
           cityList: [],
           groupIdList: [],
           limit_min: 0,
-          limit_max: 0,
+          limit_max: 100,
           filterHeader: {},
           selectedCountry: '',
           selectedCity: '',
@@ -154,8 +154,8 @@
 
                 if (actFilter.id == 'age')  {
                   this.ageAvailable = true;
-                  this.limit_min = Math.min(actFilter.values);
-                  this.limit_max = Math.max(actFilter.values);
+                  this.limit_min = Math.min(...actFilter.values);
+                  this.limit_max = Math.max(...actFilter.values);
                 } else if (actFilter.id == "sex") {
                   this.sexAvailable = true;
                   this.sex_list = actFilter.values;
@@ -175,17 +175,20 @@
             },
             limitCheck(){
 
-              if(this.min_age >= this.limit_min && this.min_age <= this.max_age)
+              if(parseInt(this.min_age) < this.limit_min || parseInt(this.min_age) > parseInt(this.max_age))
               {
-                this.MinError = false;
-              }else
                 this.MinError = true;
+              }else {
+                this.MinError = false;
+              }
 
-              if(this.max_age <= this.limit_max && this.max_age >= this.min_age)
+              if(parseInt(this.max_age) > this.limit_max || parseInt(this.max_age) < parseInt(this.min_age))
               {
-                this.MaxError = false;
-              }else
                 this.MaxError = true;
+              }else {
+                this.MaxError = false;
+              }
+
 
             },
             filter(){
