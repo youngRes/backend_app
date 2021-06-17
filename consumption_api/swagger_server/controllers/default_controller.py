@@ -40,10 +40,14 @@ def _filter2query(filters: List[Entry], filter_types: Dict[str, str]) -> dict:
         elif ftr_type == 'numeric':
             # if the type is numeric then the value of that column need
             # to be between the specified values
-            query[f._key] = {
-                '$gte': f._min_value,
-                '$lte': f._max_value
-            }
+            try:
+                query[f._key] = {
+                    '$gte': int(f._min_value),
+                    '$lte': int(f._max_value)
+                }
+            except ValueError as e:
+                print(f'{e}', file=sys.stderr)
+
         else:
             raise KeyError(f"unknow filter type {ftr_type}")
     return query
