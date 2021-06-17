@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
+from swagger_server.models.student import Student  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -14,7 +15,7 @@ class Decision(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, event_code: str=None, event_description: str=None, event_type: str=None, choice: str=None):  # noqa: E501
+    def __init__(self, event_code: str=None, event_description: str=None, event_type: str=None, choice: str=None, student: Student=None):  # noqa: E501
         """Decision - a model defined in Swagger
 
         :param event_code: The event_code of this Decision.  # noqa: E501
@@ -25,24 +26,29 @@ class Decision(Model):
         :type event_type: str
         :param choice: The choice of this Decision.  # noqa: E501
         :type choice: str
+        :param student: The student of this Decision.  # noqa: E501
+        :type student: Student
         """
         self.swagger_types = {
             'event_code': str,
             'event_description': str,
             'event_type': str,
-            'choice': str
+            'choice': str,
+            'student': Student
         }
 
         self.attribute_map = {
             'event_code': 'eventCode',
             'event_description': 'eventDescription',
             'event_type': 'eventType',
-            'choice': 'choice'
+            'choice': 'choice',
+            'student': 'student'
         }
         self._event_code = event_code
         self._event_description = event_description
         self._event_type = event_type
         self._choice = choice
+        self._student = student
 
     @classmethod
     def from_dict(cls, dikt) -> 'Decision':
@@ -146,3 +152,24 @@ class Decision(Model):
         """
 
         self._choice = choice
+
+    @property
+    def student(self) -> Student:
+        """Gets the student of this Decision.
+
+
+        :return: The student of this Decision.
+        :rtype: Student
+        """
+        return self._student
+
+    @student.setter
+    def student(self, student: Student):
+        """Sets the student of this Decision.
+
+
+        :param student: The student of this Decision.
+        :type student: Student
+        """
+
+        self._student = student
