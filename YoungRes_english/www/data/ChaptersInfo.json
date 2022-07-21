@@ -1,0 +1,12 @@
+[null,
+{"id":1,"mapId":1,"expanded":false,"name":"Capítulo 1: Introducción","order":1,"parentId":0,"scrollX":1081.3333333333333,"scrollY":681.3333333333334},
+{"id":2,"mapId":8,"expanded":true,"name":"Capítulo 2: Entrada al Cole","order":18,"parentId":23,"scrollX":1092,"scrollY":614.6666666666666},
+{"id":3,"mapId":31,"expanded":false,"name":"Capitulo 3","order":30,"parentId":0,"scrollX":1092,"scrollY":614.6666666666666},
+{"id":4,"mapId":43,"expanded":false,"name":"Capítulo 4: Recreo","order":42,"parentId":0,"scrollX":1092,"scrollY":614.6666666666666},
+{"id":5,"mapId":51,"expanded":false,"name":"Capítulo 5: Recuerdos","order":50,"parentId":0,"scrollX":1092,"scrollY":614.6666666666666},
+{"id":6,"mapId":68,"expanded":true,"name":"Capítulo 6: Gimnasio","order":67,"parentId":54,"scrollX":819,"scrollY":461},
+{"id":7,"mapId":69,"expanded":true,"name":"Capítulo 7: Siria 1","order":74,"parentId":73,"scrollX":811,"scrollY":615},
+{"id":8,"mapId":78,"expanded":true,"name":"Capítulo 8: Siria 4 Post","order":77,"parentId":73,"scrollX":1092,"scrollY":453},
+{"id":9,"mapId":82,"expanded":false,"name":"Capítulo 9: Clase","order":81,"parentId":0,"scrollX":1092,"scrollY":614.6666666666666},
+{"id":10,"mapId":89,"expanded":false,"name":"Capítulo 10: Interior de Casa","order":88,"parentId":0,"scrollX":1092,"scrollY":614.6666666666666}
+]

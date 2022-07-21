@@ -1,0 +1,20 @@
+{
+    "basic":{
+        "gameCode": "1",
+        "version": "1"
+    },
+    "basicAuth": {
+            "username":"test",
+            "password":"test"
+        },
+    "APIURL": {
+            "urlCheckStudentCode":"http://localhost:8882/gameplay/checkStudentCode/",
+            "urlStartScene1":"http://localhost:8882/gameplay/chapterStartScene/",
+            "urlSavedVariables1":"http://localhost:8882/gameplay/savedVariables/",
+            "urlStoreDecision1":"http://localhost:8882/gameplay/storeDecision/",
+            "urlStartScene":"http://localhost:8882/gameplay/chapterStartScene/",
+            "urlSavedVariables":"http://localhost:8882/gameplay/savedVariables/",
+            "urlStoreDecision":"http://localhost:8882/gameplay/storeDecision/"
+        }
+}
+
