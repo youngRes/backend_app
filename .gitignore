@@ -81,3 +81,4 @@ youngres/yarn.lock
 
 # game saves
 .game_data
+.env

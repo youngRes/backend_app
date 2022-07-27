@@ -6,9 +6,14 @@ Backend application on the YoungRes project.
 
 This is a docker project and is composed of several services each one implemented as a docker image, to play the game:
 
-1. Configure credentials in `.env` file.
+1. Create a `.env` file with your credentials
+`` 
+MONGO_USER="change_username"
+MONGO_PASSWORD="change_password"
+SECRET_KEY="change_secret"
+``
 2. Start the backend with run `docker-compose up -d`
-3. Once the backend has started, run `YoungRes_english/Game.exe` start playing the game. 
+3. Once the backend has started, run `YoungRes_english/Game.exe` to start playing the game. 
 
 ## Credentials
 
@@ -16,7 +21,7 @@ The youngRes video game store the decision taken by the players in a data base. 
 By default the database contains an user named `student`. In addition, to use the visualization application different
 credentials are required. By default and `admin` user is created with a password `youngres`.
 
-**WARNINNG** Change these credentials when deploying the aplication.
+**WARNINNG Change these credentials when deploying the aplication.**
 
 ## List of Chapters
 
