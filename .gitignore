@@ -78,3 +78,7 @@ moodledata_data/trashdir
 # visualization tool
 youngres/package-lock.json
 youngres/yarn.lock
+
+# game saves
+.game_data
+.env

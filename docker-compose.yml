@@ -1,15 +1,16 @@
 version: "3"
 volumes:
-  db-data:
+  youngres-db-data:
 services:
   db:
     image: mongo:4.2
+    volumes:
+      - youngres-db-data:/data/db
+      - ./game_data/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
-      # provide your credentials here
+      - MONGO_INITDB_DATABASE=games_db
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
-    volumes:
-      - db-data:/data/db
     ports:
       - "8884:27017"
     expose:
@@ -19,14 +20,14 @@ services:
       restart_policy:
         condition: on-failure
   gameplay:
-    #image: youngres/youngres_gameplay_api:f85e5471
+    build:
+      context: ./gameplay_api
+      dockerfile: Dockerfile
     environment:
       # provide your credentials here
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
-    build:
-      context: ./gameplay_api
-      dockerfile: Dockerfile
+      - MONGO_INITDB_DATABASE="games_db"
     ports:
       - "8882:8080"
     expose:
@@ -38,8 +39,6 @@ services:
     depends_on:
       - db
   consumption:
-    # image: youngres/youngres_consumption_api:0de2539
-    #image: youngres_consumption_api
     build:
       context: ./consumption_api
       dockerfile: Dockerfile
@@ -59,10 +58,8 @@ services:
     depends_on:
       - db
   visualization:
-    # image: youngres/youngres_consumption_api:0de2539
-    #image: youngres_consumption_api
     build:
-      context: ./youngres
+      context: ./visualization
       dockerfile: Dockerfile
     ports:
       - "8885:8080"
