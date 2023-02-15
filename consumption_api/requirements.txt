@@ -18,6 +18,6 @@ requests==2.22.0
 six==1.14.0
 swagger-ui-bundle==0.0.6
 urllib3==1.25.8
-Werkzeug==0.16.0
+Werkzeug==2.2.3
 pyjwt
 flask-cors
